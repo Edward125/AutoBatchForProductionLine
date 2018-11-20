@@ -142,18 +142,99 @@ namespace Edward
         private static String m_imageFile;
         private static Color m_transColor;
         private Bitmap m_bmp;
+        private GroupBox groupBox1;
+        private CheckBox checkBox5;
+        private CheckBox checkBox4;
+        private CheckBox checkBox3;
+        private CheckBox chkSetWiFi;
+        private CheckBox chkSyncTime;
         private DelegateCloseSplash m_delegateClose;
         #endregion
 
         private void InitializeComponent()
         {
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkSyncTime = new System.Windows.Forms.CheckBox();
+            this.chkSetWiFi = new System.Windows.Forms.CheckBox();
+            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.checkBox5 = new System.Windows.Forms.CheckBox();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.checkBox5);
+            this.groupBox1.Controls.Add(this.checkBox4);
+            this.groupBox1.Controls.Add(this.checkBox3);
+            this.groupBox1.Controls.Add(this.chkSetWiFi);
+            this.groupBox1.Controls.Add(this.chkSyncTime);
+            this.groupBox1.Location = new System.Drawing.Point(24, 30);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(210, 452);
+            this.groupBox1.TabIndex = 0;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "groupBox1";
+            // 
+            // chkSyncTime
+            // 
+            this.chkSyncTime.AutoSize = true;
+            this.chkSyncTime.Location = new System.Drawing.Point(23, 45);
+            this.chkSyncTime.Name = "chkSyncTime";
+            this.chkSyncTime.Size = new System.Drawing.Size(96, 16);
+            this.chkSyncTime.TabIndex = 1;
+            this.chkSyncTime.Text = "自动同步时间";
+            this.chkSyncTime.UseVisualStyleBackColor = true;
+            // 
+            // chkSetWiFi
+            // 
+            this.chkSetWiFi.AutoSize = true;
+            this.chkSetWiFi.Location = new System.Drawing.Point(23, 77);
+            this.chkSetWiFi.Name = "chkSetWiFi";
+            this.chkSetWiFi.Size = new System.Drawing.Size(96, 16);
+            this.chkSetWiFi.TabIndex = 2;
+            this.chkSetWiFi.Text = "自动设置WiFi";
+            this.chkSetWiFi.UseVisualStyleBackColor = true;
+            // 
+            // checkBox3
+            // 
+            this.checkBox3.AutoSize = true;
+            this.checkBox3.Location = new System.Drawing.Point(23, 111);
+            this.checkBox3.Name = "checkBox3";
+            this.checkBox3.Size = new System.Drawing.Size(78, 16);
+            this.checkBox3.TabIndex = 3;
+            this.checkBox3.Text = "checkBox3";
+            this.checkBox3.UseVisualStyleBackColor = true;
+            // 
+            // checkBox4
+            // 
+            this.checkBox4.AutoSize = true;
+            this.checkBox4.Location = new System.Drawing.Point(23, 150);
+            this.checkBox4.Name = "checkBox4";
+            this.checkBox4.Size = new System.Drawing.Size(78, 16);
+            this.checkBox4.TabIndex = 4;
+            this.checkBox4.Text = "checkBox4";
+            this.checkBox4.UseVisualStyleBackColor = true;
+            // 
+            // checkBox5
+            // 
+            this.checkBox5.AutoSize = true;
+            this.checkBox5.Location = new System.Drawing.Point(23, 185);
+            this.checkBox5.Name = "checkBox5";
+            this.checkBox5.Size = new System.Drawing.Size(78, 16);
+            this.checkBox5.TabIndex = 5;
+            this.checkBox5.Text = "checkBox5";
+            this.checkBox5.UseVisualStyleBackColor = true;
             // 
             // SplashForm
             // 
-            this.ClientSize = new System.Drawing.Size(1092, 529);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(1092, 543);
+            this.Controls.Add(this.groupBox1);
             this.Name = "SplashForm";
             this.Load += new System.EventHandler(this.SplashForm_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
             this.ResumeLayout(false);
 
         }
