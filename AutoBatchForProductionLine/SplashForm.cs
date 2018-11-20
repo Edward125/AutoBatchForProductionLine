@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Data;
 using System.Diagnostics;
 using System.Threading;
+using System.Reflection;
 
 namespace Edward
 {
@@ -13,14 +14,14 @@ namespace Edward
 
 
     //
-        // SplashForm.StartSplash(@".\splash.bmp", Color.FromArgb(128, 128, 128)); 
-        //// simulating operations at startup
-        //System.Threading.Thread.Sleep(1000);
-        //// close the splash screen
-        //SplashForm.CloseSplash();
+    // SplashForm.StartSplash(@".\splash.bmp", Color.FromArgb(128, 128, 128)); 
+    //// simulating operations at startup
+    //System.Threading.Thread.Sleep(1000);
+    //// close the splash screen
+    //SplashForm.CloseSplash();
 
 
-    public  class SplashForm:Form 
+    public class SplashForm : Form
     {
         #region Constructor
         public SplashForm(String imageFile, Color col)
@@ -69,6 +70,8 @@ namespace Edward
             m_transColor = col;
             MySplashThreadFunc();
         }
+
+
         // Call this method with the image file path and the color 
         // in the image to be rendered transparent
         public static void StartSplash(String imageFile, Color col)
@@ -79,6 +82,7 @@ namespace Edward
             Thread InstanceCaller = new Thread(new ThreadStart(MySplashThreadFunc));
             InstanceCaller.Start();
         }
+
 
         // Call this at the end of your apps initialization to close the splash screen
         public static void CloseSplash()
@@ -158,5 +162,53 @@ namespace Edward
         {
 
         }
+
+        /// <summary>
+        /// 定义一个资源文件名 资源文件名 = 工程的默认命名空间+文件名(不带扩展名)
+        /// </summary>
+        private string PublicResourceFileName = "AutoBatchForProductionLine.Resources";
+
+        /// <summary>
+        /// 从资源文件中读取一个资源
+        /// </summary>
+        /// <param name="resFile">资源文件名称 命名空间+文件名称</param>
+        /// <param name="resName">要读取的资源名称</param>
+        /// <returns>返回一个资源 读取失败返回NULL</returns>
+        public System.Object ReadFromResourceFile(String resName)
+        {
+
+            try
+            {
+                Assembly myAssembly;
+                myAssembly = Assembly.GetExecutingAssembly();
+                System.Resources.ResourceManager rm = new
+                System.Resources.ResourceManager(PublicResourceFileName, myAssembly);
+                return rm.GetObject(resName);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+
+        /// <summary>
+        /// 获取资源图片
+        /// </summary>
+        /// <param name="name">文件名</param>
+        /// <returns>资源图片</returns>
+        public Bitmap GetResourceImage(String name)
+        {
+            Object tempbitmap = null;
+            tempbitmap = ReadFromResourceFile(name);
+            if (tempbitmap.GetType().Equals(typeof(Bitmap)))
+            {
+                return (Bitmap)tempbitmap;
+            }
+            return null;
+        }
+        //调用GetResourceImage方法即可。name为文件的名称不带有后缀.
+
     }
 }
