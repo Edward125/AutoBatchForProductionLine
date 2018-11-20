@@ -151,7 +151,7 @@ namespace Edward
             // 
             // SplashForm
             // 
-            this.ClientSize = new System.Drawing.Size(284, 262);
+            this.ClientSize = new System.Drawing.Size(1092, 529);
             this.Name = "SplashForm";
             this.Load += new System.EventHandler(this.SplashForm_Load);
             this.ResumeLayout(false);

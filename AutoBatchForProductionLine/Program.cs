@@ -21,21 +21,34 @@ namespace AutoBatchForProductionLine
             Application.SetCompatibleTextRenderingDefault(false);
             //Application.Run(new frmMain());
 
-            if (!File.Exists(@".\logo1.png"))
-            {
-                //Assembly assem = this.GetType().Assembly;
-                Assembly assem = System.Reflection.Assembly.GetEntryAssembly();
-                Stream stream = assem.GetManifestResourceStream("AutoBatchForProductionLine.Resources.logo1.png");
-                System.Drawing.Image.FromStream(stream).Save("logo1.png");
-            }
+            //if (!File.Exists(@".\logo1.png"))
+            //{
+            //    //Assembly assem = this.GetType().Assembly;
+            //    Assembly assem = System.Reflection.Assembly.GetEntryAssembly();
+            //    Stream stream = assem.GetManifestResourceStream("AutoBatchForProductionLine.Resources.logo1.png");
+            //    System.Drawing.Image.FromStream(stream).Save("logo1.png");
+            //}
 
 
-            SplashForm.StartSplash(@".\logo1.png", Color.FromArgb(128, 128, 128));
+            SplashForm.StartSplash(@".\logo.png", Color.FromArgb(128, 128, 128));
             // simulating operations at startup
             System.Threading.Thread.Sleep(1000);
             // close the splash screen
             SplashForm.CloseSplash();
+            Application.Run(new frmMain());
+
+
+
+
+
+
+
 
         }
+
+
+
+
+
     }
 }
