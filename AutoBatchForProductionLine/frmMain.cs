@@ -400,6 +400,12 @@ namespace AutoBatchForProductionLine
             CheckCheckboxCheckState(chkSetPoweOff);
         }
 
+        private void btnSetting_Click(object sender, EventArgs e)
+        {
+            Form f = new frmSetting();
+            f.ShowDialog();
+        }
+
 
 
 
