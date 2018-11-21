@@ -57,6 +57,7 @@
     <Compile Include="SplashForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="subfun.cs" />
     <Compile Include="WaterTextBox.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
