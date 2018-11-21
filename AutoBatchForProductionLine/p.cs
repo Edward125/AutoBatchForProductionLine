@@ -12,8 +12,8 @@ namespace AutoBatchForProductionLine
     {
 
 
-        public static string AppFolder = Application.StartupPath +"自动生产工具";
-        public static string IniPath = AppFolder + @"\SysConfig";
+        public static string AppFolder = Application.StartupPath +@"\自动生产工具";
+        public static string IniPath = AppFolder + @"\SysConfig.ini";
         //SysConfig
         public static string CurrentDevice = string.Empty ; //当前选择的执法仪
         public static string SyncTime = "0";
@@ -110,7 +110,53 @@ namespace AutoBatchForProductionLine
 
         }
 
+        public static void ReadIni()
+        {
+            IniFile.iniFilePathValue = IniPath;
+            if (File.Exists(IniPath))
+            {
+                CurrentDevice = IniFile.IniReadValue("SysConfig", "CurrentDevice");
+                SyncTime = IniFile.IniReadValue("SysConfig", "SyncTime");
+                SetWiFi = IniFile.IniReadValue("SysConfig", "SetWiFi");
+                SetAPN = IniFile.IniReadValue("SysConfig", "SetAPN");
+                SetCMSV6 = IniFile.IniReadValue("SysConfig", "SetCMSV6");
+                SetGB28181 = IniFile.IniReadValue("SysConfig", "SetGB28181");
+                SetCheckNet = IniFile.IniReadValue("SysConfig", "SetCheckNet");
+                SetGPS = IniFile.IniReadValue("SysConfig", "SetGPS");
+                SetPowerOff = IniFile.IniReadValue("SysConfig", "SetPowerOff");
+                //
+                WiFiSSID = IniFile.IniReadValue("WiFi", "WiFiSSID");
+                WiFiPwd = IniFile.IniReadValue("WiFi", "WiFiPwd");
+                //
+                APN = IniFile.IniReadValue("APN", "APN");
+                APNUser = IniFile.IniReadValue("APN", "APNUser");
+                APNPwd = IniFile.IniReadValue("APN", "APNPwd");
+                //
+               CMSV6IP = IniFile.IniReadValue("CMSV6", "CMSV6IP");
+               CMSV6Port = IniFile.IniReadValue("CMSV6", "CMSV6Port" );
+               CMSV6ReportTime = IniFile.IniReadValue("CMSV6", "CMSV6ReportTime");
+                //
+               GB2_ServIP = IniFile.IniReadValue("GB28181", "GB2_ServIP");
+               GB2_ServPort = IniFile.IniReadValue("GB28181", "GB2_ServPort");
+               GB2_DevNo = IniFile.IniReadValue("GB28181", "GB2_DevNo");
+               GB2_ChnNo = IniFile.IniReadValue("GB28181", "GB2_ChnNo");
+               GB2_ServNo = IniFile.IniReadValue("GB28181", "GB2_ServNo");
+               GB2_Passwd = IniFile.IniReadValue("GB28181", "GB2_Passwd");
+                //
+               NetCheckIP = IniFile.IniReadValue("NetCheck", "NetCheckIP");
+               NetCheckPort = IniFile.IniReadValue("NetCheck", "NetCheckPort");
+               //
+               GPS = IniFile.IniReadValue("GPS", "GPS");
+               //
+               PowerOff = IniFile.IniReadValue("PowerOff", "PowerOff");
+            
+            
+            
+            
+            
+            }
 
+        }
 
 
     }

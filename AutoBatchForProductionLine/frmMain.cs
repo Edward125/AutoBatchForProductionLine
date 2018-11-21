@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using Edward;
 
 namespace AutoBatchForProductionLine
 {
@@ -22,8 +23,7 @@ namespace AutoBatchForProductionLine
 
 
         private static Vendor LoginDevice;  //当前设备的方案商
-
-
+        private static Model LoginModel;//当前设备的型号
 
         public enum Model
         {
@@ -46,10 +46,25 @@ namespace AutoBatchForProductionLine
         private void frmMain_Load(object sender, EventArgs e)
         {
             //this.BackColor = Color.Snow;
+            LoadUI();
             
         }
 
 
+        private void LoadUI()
+        {
+            p.CreateFolder();
+            p.CreateIni();
+            p.ReadIni();
+            LoadData();
+        }
+
+
+        private void LoadData()
+        {
+            if (!string.IsNullOrEmpty(p.CurrentDevice))
+                comboBodyType.Text = p.CurrentDevice;
+        }
 
         #region combobox
 
@@ -89,53 +104,33 @@ namespace AutoBatchForProductionLine
 
         private void cmboBodyType_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            IniFile.IniWriteValue("SysConfig", "CurrentDevice", comboBodyType.Text);
             switch (comboBodyType.Text)
             {
 
                 case "H6":
                     LoginDevice = Vendor.Cammpro;
-                    chkSyncTime.Enabled = true;
-                    chkSetAPN.Enabled = false;
-                    chkSetCMSV6.Enabled = false;
-                    chkSetGB28181.Enabled = false;
-                    chkSetWiFi.Enabled = false;
-                    chkSetGPS.Enabled = false;
-                    chkSetCheckNet.Enabled = false;
-                    chkSetPoweOff.Enabled = false;
+                    LoginModel  = Model.H6;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
                     break;
                 case "H8":
                     LoginDevice = Vendor.EasyStorage;
-                    chkSyncTime.Enabled = true;
-                    chkSetAPN.Enabled = false;
-                    chkSetCMSV6.Enabled = false;
-                    chkSetGB28181.Enabled = false;
-                    chkSetWiFi.Enabled = false;
-                    chkSetGPS.Enabled = false;
-                    chkSetCheckNet.Enabled = false;
-                    chkSetPoweOff.Enabled = false;
+                    LoginModel = Model.H8;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
                     break;
                 case "G5":
                     LoginDevice = Vendor.EasyStorage;
-                    chkSyncTime.Enabled = true;
-                    chkSetAPN.Enabled = true;
-                    chkSetCMSV6.Enabled = true;
-                    chkSetGB28181.Enabled = true;
-                    chkSetWiFi.Enabled = true;
-                    chkSetGPS.Enabled = true;
-                    chkSetCheckNet.Enabled = true;
-                    chkSetPoweOff.Enabled = true;
+                    LoginModel = Model.G5;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
                     break;
                 case "G9":
                     LoginDevice = Vendor.Cammpro;
-                     chkSyncTime.Enabled = true;
-                    chkSetAPN.Enabled = false;
-                    chkSetCMSV6.Enabled = true;
-                    chkSetGB28181.Enabled = false;
-                    chkSetWiFi.Enabled = true;
-                    chkSetGPS.Enabled = false;
-                    chkSetCheckNet.Enabled = false;
-                    chkSetPoweOff.Enabled = false;
+                    LoginModel = Model.G9;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
                     break;
                 default:
                     break;
@@ -200,7 +195,52 @@ namespace AutoBatchForProductionLine
                     break;
             }
         }
+
         #endregion
+
+
+
+
+        private void LoadConfigByModel(Model _model)
+        {
+           p. SyncTime = IniFile.IniReadValue(_model.ToString (), "SyncTime");
+           p.SetWiFi = IniFile.IniReadValue(_model.ToString(), "SetWiFi");
+           p.SetAPN = IniFile.IniReadValue(_model.ToString(), "SetAPN");
+           p.SetCMSV6 = IniFile.IniReadValue(_model.ToString(), "SetCMSV6");
+           p.SetGB28181 = IniFile.IniReadValue(_model.ToString(), "SetGB28181");
+           p.SetCheckNet = IniFile.IniReadValue(_model.ToString(), "SetCheckNet");
+           p.SetGPS = IniFile.IniReadValue(_model.ToString(), "SetGPS");
+           p.SetPowerOff = IniFile.IniReadValue(_model.ToString(), "SetPowerOff");
+
+           CheckConfigValueAndCheckbox(p.SyncTime, chkSyncTime);
+           CheckConfigValueAndCheckbox(p.SetWiFi, chkSetWiFi);
+           CheckConfigValueAndCheckbox(p.SetAPN, chkSetAPN);
+           CheckConfigValueAndCheckbox(p.SetCMSV6, chkSetCMSV6);
+           CheckConfigValueAndCheckbox(p.SetGB28181, chkSetGB28181);
+           CheckConfigValueAndCheckbox(p.SetCheckNet, chkSetCheckNet);
+           CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
+           CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
+
+          
+        }
+
+
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="param"></param>
+        /// <param name="checkbox"></param>
+        private void CheckConfigValueAndCheckbox(string param, CheckBox checkbox)
+        {
+            if (param == "1")
+                checkbox.Checked = true;
+            if (param == "0")
+                checkbox.Checked = false;
+        }
+
+
 
 
         private void CheckCheckboxCheckState(CheckBox checkbox)
@@ -234,42 +274,90 @@ namespace AutoBatchForProductionLine
         private void chkSyncTime_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSyncTime);
+            string State = string.Empty;
+            if (chkSyncTime.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SyncTime", State);
 
         }
 
         private void chkSetWiFi_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetWiFi);
+            string State = string.Empty;
+            if (chkSetWiFi.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetWiFi", State);
         }
 
         private void chkSetCMSV6_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetCMSV6);
+            string State = string.Empty;
+            if (chkSetCMSV6.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetCMSV6", State);
         }
 
         private void chkSetAPN_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetAPN);
+            string State = string.Empty;
+            if (chkSetAPN.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetAPN", State);
         }
 
         private void chkSetGB28181_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetGB28181);
+            string State = string.Empty;
+            if (chkSetGB28181.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetGB28181", State);
         }
 
         private void chkSetCheckNet_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetCheckNet);
+            string State = string.Empty;
+            if (chkSetCheckNet.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetCheckNet", State);
         }
 
         private void chkSetGPS_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetGPS);
+            string State = string.Empty;
+            if (chkSetGPS.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetGPS", State);
         }
 
         private void chkSetPoweOff_CheckedChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetPoweOff);
+            string State = string.Empty;
+            if (chkSetPoweOff.Checked)
+                State = "1";
+            else
+                State = "0";
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetPowerOff", State);
         }
 
         private void chkSyncTime_EnabledChanged(object sender, EventArgs e)
@@ -311,6 +399,8 @@ namespace AutoBatchForProductionLine
         {
             CheckCheckboxCheckState(chkSetPoweOff);
         }
+
+
 
 
 

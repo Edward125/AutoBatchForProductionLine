@@ -40,8 +40,14 @@
             this.chkSetCMSV6 = new System.Windows.Forms.CheckBox();
             this.chkSetWiFi = new System.Windows.Forms.CheckBox();
             this.chkSyncTime = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnRestart = new System.Windows.Forms.Button();
+            this.btnOnlyOnce = new System.Windows.Forms.Button();
+            this.btnAutoRun = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox2
@@ -216,12 +222,61 @@
             this.chkSyncTime.CheckedChanged += new System.EventHandler(this.chkSyncTime_CheckedChanged);
             this.chkSyncTime.EnabledChanged += new System.EventHandler(this.chkSyncTime_EnabledChanged);
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Location = new System.Drawing.Point(163, 27);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(804, 419);
+            this.groupBox3.TabIndex = 4;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "信息列表";
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.btnRestart);
+            this.groupBox4.Controls.Add(this.btnOnlyOnce);
+            this.groupBox4.Controls.Add(this.btnAutoRun);
+            this.groupBox4.Location = new System.Drawing.Point(12, 301);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(145, 145);
+            this.groupBox4.TabIndex = 0;
+            this.groupBox4.TabStop = false;
+            // 
+            // btnRestart
+            // 
+            this.btnRestart.Location = new System.Drawing.Point(19, 102);
+            this.btnRestart.Name = "btnRestart";
+            this.btnRestart.Size = new System.Drawing.Size(102, 35);
+            this.btnRestart.TabIndex = 2;
+            this.btnRestart.Text = "重启软件";
+            this.btnRestart.UseVisualStyleBackColor = true;
+            // 
+            // btnOnlyOnce
+            // 
+            this.btnOnlyOnce.Location = new System.Drawing.Point(19, 61);
+            this.btnOnlyOnce.Name = "btnOnlyOnce";
+            this.btnOnlyOnce.Size = new System.Drawing.Size(102, 35);
+            this.btnOnlyOnce.TabIndex = 1;
+            this.btnOnlyOnce.Text = "手动单次运行";
+            this.btnOnlyOnce.UseVisualStyleBackColor = true;
+            // 
+            // btnAutoRun
+            // 
+            this.btnAutoRun.Location = new System.Drawing.Point(19, 20);
+            this.btnAutoRun.Name = "btnAutoRun";
+            this.btnAutoRun.Size = new System.Drawing.Size(102, 35);
+            this.btnAutoRun.TabIndex = 0;
+            this.btnAutoRun.Text = "自动侦测运行";
+            this.btnAutoRun.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(992, 327);
+            this.ClientSize = new System.Drawing.Size(983, 454);
+            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmMain";
@@ -231,6 +286,7 @@
             this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -249,6 +305,11 @@
         private System.Windows.Forms.CheckBox chkSetAPN;
         private System.Windows.Forms.CheckBox chkSetWiFi;
         private System.Windows.Forms.CheckBox chkSyncTime;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.Button btnOnlyOnce;
+        private System.Windows.Forms.Button btnAutoRun;
+        private System.Windows.Forms.Button btnRestart;
     }
 }
 
