@@ -32,6 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBodyType = new System.Windows.Forms.ComboBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnSetting = new System.Windows.Forms.Button();
             this.chkSetPoweOff = new System.Windows.Forms.CheckBox();
             this.chkSetGPS = new System.Windows.Forms.CheckBox();
             this.chkSetAPN = new System.Windows.Forms.CheckBox();
@@ -41,13 +42,12 @@
             this.chkSetWiFi = new System.Windows.Forms.CheckBox();
             this.chkSyncTime = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.lstInfo = new System.Windows.Forms.ListView();
+            this.lstMsg = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.btnAutoRun = new System.Windows.Forms.Button();
-            this.lstMsg = new System.Windows.Forms.ListBox();
-            this.lstInfo = new System.Windows.Forms.ListView();
-            this.btnSetting = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -106,6 +106,17 @@
             this.groupBox1.TabIndex = 2;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "项目设置";
+            // 
+            // btnSetting
+            // 
+            this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnSetting.Location = new System.Drawing.Point(19, 192);
+            this.btnSetting.Name = "btnSetting";
+            this.btnSetting.Size = new System.Drawing.Size(102, 30);
+            this.btnSetting.TabIndex = 3;
+            this.btnSetting.Text = "详细参数设置";
+            this.btnSetting.UseVisualStyleBackColor = true;
+            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
             // 
             // chkSetPoweOff
             // 
@@ -238,6 +249,24 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "信息列表";
             // 
+            // lstInfo
+            // 
+            this.lstInfo.Location = new System.Drawing.Point(483, 19);
+            this.lstInfo.Name = "lstInfo";
+            this.lstInfo.Size = new System.Drawing.Size(315, 377);
+            this.lstInfo.TabIndex = 1;
+            this.lstInfo.UseCompatibleStateImageBehavior = false;
+            this.lstInfo.View = System.Windows.Forms.View.Details;
+            // 
+            // lstMsg
+            // 
+            this.lstMsg.FormattingEnabled = true;
+            this.lstMsg.ItemHeight = 12;
+            this.lstMsg.Location = new System.Drawing.Point(15, 20);
+            this.lstMsg.Name = "lstMsg";
+            this.lstMsg.Size = new System.Drawing.Size(462, 376);
+            this.lstMsg.TabIndex = 0;
+            // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.btnRestart);
@@ -279,35 +308,6 @@
             this.btnAutoRun.Text = "自动侦测运行";
             this.btnAutoRun.UseVisualStyleBackColor = true;
             // 
-            // lstMsg
-            // 
-            this.lstMsg.FormattingEnabled = true;
-            this.lstMsg.ItemHeight = 12;
-            this.lstMsg.Location = new System.Drawing.Point(15, 20);
-            this.lstMsg.Name = "lstMsg";
-            this.lstMsg.Size = new System.Drawing.Size(462, 376);
-            this.lstMsg.TabIndex = 0;
-            // 
-            // lstInfo
-            // 
-            this.lstInfo.Location = new System.Drawing.Point(483, 19);
-            this.lstInfo.Name = "lstInfo";
-            this.lstInfo.Size = new System.Drawing.Size(315, 377);
-            this.lstInfo.TabIndex = 1;
-            this.lstInfo.UseCompatibleStateImageBehavior = false;
-            this.lstInfo.View = System.Windows.Forms.View.Details;
-            // 
-            // btnSetting
-            // 
-            this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSetting.Location = new System.Drawing.Point(19, 192);
-            this.btnSetting.Name = "btnSetting";
-            this.btnSetting.Size = new System.Drawing.Size(102, 30);
-            this.btnSetting.TabIndex = 3;
-            this.btnSetting.Text = "详细参数设置";
-            this.btnSetting.UseVisualStyleBackColor = true;
-            this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -319,6 +319,7 @@
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Name = "frmMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.groupBox2.ResumeLayout(false);
