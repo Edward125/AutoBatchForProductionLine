@@ -43,6 +43,18 @@ namespace AutoBatchForProductionLine
             EasyStorage
         }
 
+
+        /// <summary>
+        /// APN
+        /// </summary>
+        public class APN
+        {
+            public string ApnName { set; get; }
+            public string ApnUser { set; get; }
+            public string ApnPwd { set; get; }
+        }
+
+
         /// <summary>
         /// Only Wifi
         /// </summary>
@@ -634,6 +646,50 @@ namespace AutoBatchForProductionLine
 
 
 
+        /// <summary>
+        /// 设置APN信息
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="apn"></param>
+        /// <returns></returns>
+        private bool SetAPNInfo(Vendor logindevice, string password, APN apn)
+        {
+
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                byte[] Apn = new byte[64];
+                byte[] ApnUser = new byte[64];
+                byte[] ApnPwd = new byte[64];
+                Apn = System.Text.Encoding.Default.GetBytes(apn.ApnName.PadRight(64, '\0').ToArray());
+                ApnUser = System.Text.Encoding.Default.GetBytes(apn.ApnUser.PadRight(64, '\0').ToArray());
+                ApnPwd = System.Text.Encoding.Default.GetBytes(apn.ApnPwd.PadRight(64, '\0').ToArray());
+
+                result = BODYCAMDLL_API_YZ.BC_SetVpn(BCHandle, password, Apn, ApnUser, ApnPwd);
+                if (result == 1)
+                    return true;
+            }
+
+            //if (logindevice == DeviceType.Cammpro)
+            //{
+            //    byte[] APN = new byte[32];
+            //    int iRet_SetAPN = -1;
+            //    APN = Encoding.Default.GetBytes(apn.ApnName.PadRight(32, '\0').ToArray());
+            //    ZFYDLL_API_MC.Set4GAPN(APN, password, ref iRet_SetAPN);
+
+            //    byte[] PIN = new byte[32];
+            //    int iRet_SetPIN = -1;
+            //    PIN = Encoding.Default.GetBytes(apn.ApnPin.PadRight(32, '\0').ToArray());
+            //    ZFYDLL_API_MC.Set4GPIN(PIN, password, ref iRet_SetPIN);
+
+            //    //if (iRet_SetAPN == 7 && iRet_SetPIN == 7)
+            //    return true;
+
+            //}
+
+            return false;
+        }
 
 
 
