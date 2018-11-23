@@ -14,6 +14,7 @@ namespace AutoBatchForProductionLine
 
         public static string AppFolder = Application.StartupPath +@"\自动生产工具";
         public static string IniPath = AppFolder + @"\SysConfig.ini";
+        
         //SysConfig
         public static string CurrentDevice = string.Empty ; //当前选择的执法仪
         public static string SyncTime = "0";
@@ -34,7 +35,7 @@ namespace AutoBatchForProductionLine
         //CMSV6
         public static string CMSV6IP = string.Empty;
         public static string CMSV6Port = string.Empty;
-        public static string CMSV6ReportTime = string.Empty;
+        public static string CMSV6ReportTime = "50";
         //GB28181
         public static string GB2_ServIP = string.Empty;
         public static string GB2_ServPort = string.Empty;
@@ -53,6 +54,30 @@ namespace AutoBatchForProductionLine
         //PowerOff
         public static string PowerOff = "0";
 
+
+        public static SetErrorCode CheckParamErrorCode;
+
+        public   enum SetErrorCode
+        {
+            OK = 0,
+            WIFISSID,
+            WIFIPWD,
+            CMSV6IP,
+            CMSV6RerpotTime,
+            APN,
+            APNUser,
+            APNPwd,
+            CheckNetIP,
+            CheckNetPort,
+            GB2_IP,
+            GB2_Port,
+            GB2_DevNo,
+            GB2_ChnNo,
+            GB2_SerNo,
+            GB2_Passwd
+
+
+        }
 
 
         /// <summary>

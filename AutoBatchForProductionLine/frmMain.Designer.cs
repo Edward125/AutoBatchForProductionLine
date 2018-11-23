@@ -297,6 +297,7 @@
             this.btnOnlyOnce.TabIndex = 1;
             this.btnOnlyOnce.Text = "手动单次运行";
             this.btnOnlyOnce.UseVisualStyleBackColor = true;
+            this.btnOnlyOnce.Click += new System.EventHandler(this.btnOnlyOnce_Click);
             // 
             // btnAutoRun
             // 

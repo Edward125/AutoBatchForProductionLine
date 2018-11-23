@@ -71,7 +71,7 @@
             this.txtCheckNetPort = new System.Windows.Forms.TextBox();
             this.txtCheckNetIP = new System.Windows.Forms.TextBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
-            this.radOpenGPS = new System.Windows.Forms.RadioButton();
+            this.rabOpenGPS = new System.Windows.Forms.RadioButton();
             this.rabCloseGPS = new System.Windows.Forms.RadioButton();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -484,7 +484,7 @@
             // 
             // groupBox6
             // 
-            this.groupBox6.Controls.Add(this.radOpenGPS);
+            this.groupBox6.Controls.Add(this.rabOpenGPS);
             this.groupBox6.Controls.Add(this.rabCloseGPS);
             this.groupBox6.Location = new System.Drawing.Point(26, 204);
             this.groupBox6.Name = "groupBox6";
@@ -493,16 +493,17 @@
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "GPS设置";
             // 
-            // radOpenGPS
+            // rabOpenGPS
             // 
-            this.radOpenGPS.AutoSize = true;
-            this.radOpenGPS.Location = new System.Drawing.Point(18, 19);
-            this.radOpenGPS.Name = "radOpenGPS";
-            this.radOpenGPS.Size = new System.Drawing.Size(65, 16);
-            this.radOpenGPS.TabIndex = 12;
-            this.radOpenGPS.TabStop = true;
-            this.radOpenGPS.Text = "打开GPS";
-            this.radOpenGPS.UseVisualStyleBackColor = true;
+            this.rabOpenGPS.AutoSize = true;
+            this.rabOpenGPS.Location = new System.Drawing.Point(18, 19);
+            this.rabOpenGPS.Name = "rabOpenGPS";
+            this.rabOpenGPS.Size = new System.Drawing.Size(65, 16);
+            this.rabOpenGPS.TabIndex = 12;
+            this.rabOpenGPS.TabStop = true;
+            this.rabOpenGPS.Text = "打开GPS";
+            this.rabOpenGPS.UseVisualStyleBackColor = true;
+            this.rabOpenGPS.CheckedChanged += new System.EventHandler(this.rabOpenGPS_CheckedChanged);
             // 
             // rabCloseGPS
             // 
@@ -514,6 +515,7 @@
             this.rabCloseGPS.TabStop = true;
             this.rabCloseGPS.Text = "关闭GPS";
             this.rabCloseGPS.UseVisualStyleBackColor = true;
+            this.rabCloseGPS.CheckedChanged += new System.EventHandler(this.rabCloseGPS_CheckedChanged);
             // 
             // frmSetting
             // 
@@ -592,7 +594,7 @@
         private System.Windows.Forms.TextBox txtCheckNetPort;
         private System.Windows.Forms.TextBox txtCheckNetIP;
         private System.Windows.Forms.GroupBox groupBox6;
-        private System.Windows.Forms.RadioButton radOpenGPS;
+        private System.Windows.Forms.RadioButton rabOpenGPS;
         private System.Windows.Forms.RadioButton rabCloseGPS;
         private System.Windows.Forms.CheckBox chkEnableCheckNet;
     }

@@ -40,6 +40,9 @@ namespace AutoBatchForProductionLine
         }
 
 
+
+
+
         #endregion
 
 
@@ -47,7 +50,7 @@ namespace AutoBatchForProductionLine
         {
             //this.BackColor = Color.Snow;
             LoadUI();
-            
+
         }
 
 
@@ -110,7 +113,7 @@ namespace AutoBatchForProductionLine
 
                 case "H6":
                     LoginDevice = Vendor.Cammpro;
-                    LoginModel  = Model.H6;
+                    LoginModel = Model.H6;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
                     break;
@@ -203,25 +206,25 @@ namespace AutoBatchForProductionLine
 
         private void LoadConfigByModel(Model _model)
         {
-           p. SyncTime = IniFile.IniReadValue(_model.ToString (), "SyncTime");
-           p.SetWiFi = IniFile.IniReadValue(_model.ToString(), "SetWiFi");
-           p.SetAPN = IniFile.IniReadValue(_model.ToString(), "SetAPN");
-           p.SetCMSV6 = IniFile.IniReadValue(_model.ToString(), "SetCMSV6");
-           p.SetGB28181 = IniFile.IniReadValue(_model.ToString(), "SetGB28181");
-           p.SetCheckNet = IniFile.IniReadValue(_model.ToString(), "SetCheckNet");
-           p.SetGPS = IniFile.IniReadValue(_model.ToString(), "SetGPS");
-           p.SetPowerOff = IniFile.IniReadValue(_model.ToString(), "SetPowerOff");
+            p.SyncTime = IniFile.IniReadValue(_model.ToString(), "SyncTime");
+            p.SetWiFi = IniFile.IniReadValue(_model.ToString(), "SetWiFi");
+            p.SetAPN = IniFile.IniReadValue(_model.ToString(), "SetAPN");
+            p.SetCMSV6 = IniFile.IniReadValue(_model.ToString(), "SetCMSV6");
+            p.SetGB28181 = IniFile.IniReadValue(_model.ToString(), "SetGB28181");
+            p.SetCheckNet = IniFile.IniReadValue(_model.ToString(), "SetCheckNet");
+            p.SetGPS = IniFile.IniReadValue(_model.ToString(), "SetGPS");
+            p.SetPowerOff = IniFile.IniReadValue(_model.ToString(), "SetPowerOff");
 
-           CheckConfigValueAndCheckbox(p.SyncTime, chkSyncTime);
-           CheckConfigValueAndCheckbox(p.SetWiFi, chkSetWiFi);
-           CheckConfigValueAndCheckbox(p.SetAPN, chkSetAPN);
-           CheckConfigValueAndCheckbox(p.SetCMSV6, chkSetCMSV6);
-           CheckConfigValueAndCheckbox(p.SetGB28181, chkSetGB28181);
-           CheckConfigValueAndCheckbox(p.SetCheckNet, chkSetCheckNet);
-           CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
-           CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
+            CheckConfigValueAndCheckbox(p.SyncTime, chkSyncTime);
+            CheckConfigValueAndCheckbox(p.SetWiFi, chkSetWiFi);
+            CheckConfigValueAndCheckbox(p.SetAPN, chkSetAPN);
+            CheckConfigValueAndCheckbox(p.SetCMSV6, chkSetCMSV6);
+            CheckConfigValueAndCheckbox(p.SetGB28181, chkSetGB28181);
+            CheckConfigValueAndCheckbox(p.SetCheckNet, chkSetCheckNet);
+            CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
+            CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
 
-          
+
         }
 
 
@@ -266,7 +269,7 @@ namespace AutoBatchForProductionLine
             }
 
 
-      
+
 
 
         }
@@ -408,7 +411,125 @@ namespace AutoBatchForProductionLine
 
 
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        private p.SetErrorCode CheckSetting()
+        {
+
+            switch (LoginDevice)
+            {
+                case Vendor.Cammpro:
+                    switch (LoginModel)
+	                        {
+                                case Model.H6:
+                                    break;
+                                case Model.H8:
+                                    break;
+                                case Model.G5:
+                                    break;
+                                case Model.G9:
+                                     if (p.SetWiFi == "1")
+                                        {
+                                            if (string.IsNullOrEmpty(p.WiFiSSID))
+                                                return p.SetErrorCode.WIFISSID;
+                                            if (string.IsNullOrEmpty(p.WiFiPwd))
+                                                return p.SetErrorCode.WIFIPWD;
+                                         }
+                                     if (p.SetCMSV6 == "1")
+                                         {
+                                            if (string.IsNullOrEmpty(p.CMSV6IP))
+                                                return p.SetErrorCode.CMSV6IP;
+                                         }
+                                    break;
+                                default:
+                                    break;
+	                        } 
+                    break;
+
+                case Vendor.EasyStorage:
+                    switch (LoginModel)
+	                        {
+                                case Model.H6:
+                                    break;
+                                case Model.H8:
+                                    break;
+                                case Model.G5:
+                                     if (p.SetWiFi == "1")
+                                          {
+                                             if (string.IsNullOrEmpty(p.WiFiSSID))
+                                                   return p.SetErrorCode.WIFISSID ;
+  
+                                             if (string.IsNullOrEmpty(p.WiFiPwd))
+                                                   return p.SetErrorCode.WIFIPWD;
+
+                                            }
+                                            if (p.SetCMSV6 == "1")
+                                            {
+                                                if (string.IsNullOrEmpty(p.CMSV6IP))
+                                                    return p.SetErrorCode.CMSV6IP;
+              
+                                                if (string.IsNullOrEmpty(p.CMSV6ReportTime))
+                                                    return p.SetErrorCode.CMSV6RerpotTime;
+     
+                                            }
+                                            if (p.SetAPN == "1")
+                                            {
+                                                if (string.IsNullOrEmpty (p.APN ))
+                                                    return p.SetErrorCode.APN;
+                                            }
+                                            if (p.SetCheckNet == "1")
+                                            {
+                                                if (string.IsNullOrEmpty(p.NetCheckIP))
+                                                    return p.SetErrorCode.CheckNetIP;
+                                                if (string.IsNullOrEmpty(p.NetCheckPort))
+                                                    return p.SetErrorCode.CheckNetPort;
+                                            }
+
+                                            if (p.SetGB28181 == "1")
+                                            {
+                                                if (string.IsNullOrEmpty (p.GB2_ServIP))
+                                                    return p.SetErrorCode.GB2_IP;
+                                                if (string.IsNullOrEmpty(p.GB2_ServPort))
+                                                    return p.SetErrorCode.GB2_Port;
+                                                if (string.IsNullOrEmpty(p.GB2_DevNo))
+                                                    return p.SetErrorCode.GB2_DevNo;
+                                                if (string.IsNullOrEmpty(p.GB2_ChnNo))
+                                                    return p.SetErrorCode.GB2_ChnNo;
+                                                if (string.IsNullOrEmpty(p.GB2_Passwd))
+                                                    return p.SetErrorCode.GB2_Passwd;
+                                            }
+                                           
+                                    break;
+                                case Model.G9:
+                                    break;
+                                default:
+                                    break;
+	                        }
+                    break;
+                default:
+                    break;
+            }
+
+            return p.SetErrorCode.OK;
+        }
+
+        private void btnOnlyOnce_Click(object sender, EventArgs e)
+        {
+            p.CheckParamErrorCode = CheckSetting();
+            if (p.CheckParamErrorCode == p.SetErrorCode.OK)
+            {
+            }
+            else
+            {
+                MessageBox.Show("参数设置不能为空,请重新设置.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                Form f = new frmSetting();
+                f.ShowDialog();
+            }
 
 
+
+        }
     }
 }

@@ -180,7 +180,75 @@ namespace AutoBatchForProductionLine
                 chkEnableCheckNet.Checked = true;
             else
                 chkEnableCheckNet.Checked = false;
+            //
+            if (p.GPS == "1")
+                rabOpenGPS.Checked = true;
+            else
+                rabCloseGPS.Checked = false;
 
+
+
+            switch (p.CheckParamErrorCode)
+            {
+                case p.SetErrorCode.OK:
+                    break;
+                case p.SetErrorCode.WIFISSID:
+                    txtWiFiSSID.SelectAll();
+                    txtWiFiSSID.Focus();
+                    break;
+                case p.SetErrorCode.WIFIPWD:
+                    txtWiFiPwd.SelectAll();
+                    txtWiFiPwd.Focus();
+                    break;
+                case p.SetErrorCode.CMSV6IP:
+                    txtCMSV6IP.SelectAll();
+                    txtCMSV6IP.Focus();
+                    break;
+                case p.SetErrorCode.CMSV6RerpotTime:
+                    break;
+                case p.SetErrorCode.APN:
+                    break;
+                case p.SetErrorCode.APNUser:
+                    break;
+                case p.SetErrorCode.APNPwd:
+                    break;
+                case p.SetErrorCode.CheckNetIP:
+                    break;
+                case p.SetErrorCode.CheckNetPort:
+                    break;
+                case p.SetErrorCode.GB2_IP:
+                    break;
+                case p.SetErrorCode.GB2_Port:
+                    break;
+                case p.SetErrorCode.GB2_DevNo:
+                    break;
+                case p.SetErrorCode.GB2_ChnNo:
+                    break;
+                case p.SetErrorCode.GB2_SerNo:
+                    break;
+                case p.SetErrorCode.GB2_Passwd:
+                    break;
+                default:
+                    break;
+            }
+
+
+
+        }
+
+        private void rabCloseGPS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rabCloseGPS.Checked)
+                p.GPS = "0";
+            IniFile.IniWriteValue("GPS", "GPS", p.GPS);
+
+        }
+
+        private void rabOpenGPS_CheckedChanged(object sender, EventArgs e)
+        {
+            if (rabOpenGPS.Checked )
+                p.GPS = "1";
+            IniFile.IniWriteValue("GPS", "GPS", p.GPS);
         }
     }
 }
