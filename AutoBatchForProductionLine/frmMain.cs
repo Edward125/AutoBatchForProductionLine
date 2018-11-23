@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Edward;
+using SDK;
 
 namespace AutoBatchForProductionLine
 {
@@ -22,8 +23,11 @@ namespace AutoBatchForProductionLine
         #region 参数定义
 
 
+
         private static Vendor LoginDevice;  //当前设备的方案商
         private static Model LoginModel;//当前设备的型号
+
+        private static IntPtr BCHandle = IntPtr.Zero;
 
         public enum Model
         {
@@ -39,7 +43,16 @@ namespace AutoBatchForProductionLine
             EasyStorage
         }
 
+        /// <summary>
+        /// Only Wifi
+        /// </summary>
+        public class WiFi
+        {
+           // public WiFiModeType WiFiMode { set; get; }
+            public string WiFiSSID { set; get; }
+            public string WiFiPassword { set; get; }
 
+        }
 
 
 
@@ -536,8 +549,95 @@ namespace AutoBatchForProductionLine
                 f.ShowDialog();
             }
 
-
-
         }
+
+
+
+
+        #region Item
+
+        /// <summary>
+        /// 同步时间
+        /// </summary>
+        /// <param name="devicetype"></param>
+        /// <param name="password"></param>
+        /// <returns>true 成功,false 失败</returns>
+        private bool SyncDeviceTime(Vendor logindevice, string password)
+        {
+            int SyncDevTime_iRet = -1;
+            if (LoginDevice == Vendor.Cammpro)
+            {
+                ZFYDLL_API_MC.SyncDevTime(password, ref SyncDevTime_iRet);
+                if (SyncDevTime_iRet == 5)
+                    return true;
+            }
+
+            if (LoginDevice == Vendor.EasyStorage)
+            {
+                SyncDevTime_iRet = BODYCAMDLL_API_YZ.BC_SetDevTime(BCHandle, password);
+                if (SyncDevTime_iRet == 1)
+                    return true;
+            }
+
+
+            return false;
+        }
+
+
+
+
+        /// <summary>
+        /// 设置WiFi信息
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="_wifi"></param>
+        /// <returns></returns>
+        private bool SetWiFiInfo(Vendor  logindevice, string password, WiFi _wifi)
+        {
+            if (logindevice == Vendor.EasyStorage)
+            {
+                //设置WiFi,WiFi是存储在一个wifi list中，故设置时，先删除所有wifi，在添加wifi，再设置wifi
+                int DelApResult = BODYCAMDLL_API_YZ.BC_DelAllAp(BCHandle, password);
+                if (DelApResult == 1)
+                {
+                    byte[] WifiSSID = new byte[32];
+                    WifiSSID = Encoding.Default.GetBytes(_wifi.WiFiSSID.PadRight(32, '\0').ToArray());
+                    byte[] WifiPSW = new byte[32];
+                    WifiPSW = Encoding.Default.GetBytes(_wifi.WiFiPassword.PadRight(32, '\0').ToArray());
+                    int AddApResult = BODYCAMDLL_API_YZ.BC_AddAp(BCHandle, password, WifiSSID, WifiPSW);
+                    if (AddApResult == 1)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
+
+            if (logindevice == Vendor.Cammpro)
+            {
+                byte[] WifiSSID = new byte[50];
+                int iRet_SetWifiSSID = -1;
+                WifiSSID = Encoding.Default.GetBytes(_wifi.WiFiSSID.PadRight(50, '\0').ToArray());
+                ZFYDLL_API_MC.SetWifiSSID(WifiSSID, password, ref iRet_SetWifiSSID);
+
+                byte[] WifiPSW = new byte[50];
+                int iRet_SetWifiPSW = -1;
+                WifiPSW = Encoding.Default.GetBytes(_wifi.WiFiPassword.PadRight(50, '\0').ToArray());
+                ZFYDLL_API_MC.SetWifiPSW(WifiPSW, password, ref iRet_SetWifiPSW);
+                return true;
+            }
+
+            return false;
+        }
+
+
+
+
+
+
+
+        #endregion
     }
 }
