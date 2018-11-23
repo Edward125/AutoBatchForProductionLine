@@ -133,6 +133,31 @@ namespace AutoBatchForProductionLine
         {
             if (!string.IsNullOrEmpty(p.CurrentDevice))
                 comboBodyType.Text = p.CurrentDevice;
+            switch (p.CurrentDevice)
+            {
+                case "H6":
+                    LoginDevice = Vendor.Cammpro;
+                    LoginModel = Model.H6;
+                    break;
+                case "H8":
+                    LoginDevice = Vendor.EasyStorage;
+                    LoginModel = Model.H8;
+                    break;
+                case "G5":
+                    LoginDevice = Vendor.EasyStorage;
+                    LoginModel = Model.G5;
+                    break;
+                case "G9":
+                    LoginDevice = Vendor.Cammpro;
+                    LoginModel = Model.G9;
+                    break;
+                default:
+                    break;
+
+            }
+
+
+
         }
 
         #region combobox
@@ -594,6 +619,29 @@ namespace AutoBatchForProductionLine
             p.CheckParamErrorCode = CheckSetting();
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
+
+                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             }
             else
             {
@@ -604,6 +652,31 @@ namespace AutoBatchForProductionLine
 
         }
 
+
+
+
+        #region 更新信息
+        /// <summary>
+        /// 更新信息到listbox中
+        /// </summary>
+        /// <param name="listbox">listbox name</param>
+        /// <param name="message">message</param>
+        public static void updateMessage(ListBox listbox, string message)
+        {
+            if (listbox.Items.Count > 1000)
+                listbox.Items.RemoveAt(0);
+
+            string item = string.Empty;
+            //listbox.Items.Add("");
+            item = DateTime.Now.ToString("HH:mm:ss") + " " + @message;
+            listbox.Items.Add(item);
+            if (listbox.Items.Count > 1)
+            {
+                listbox.TopIndex = listbox.Items.Count - 1;
+                listbox.SetSelected(listbox.Items.Count - 1, true);
+            }
+        }
+        #endregion
 
 
 
