@@ -282,6 +282,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SyncTime = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SyncTime", State);
 
         }
@@ -294,6 +295,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetWiFi = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetWiFi", State);
         }
 
@@ -305,6 +307,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetCMSV6 = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetCMSV6", State);
         }
 
@@ -316,6 +319,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetAPN = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetAPN", State);
         }
 
@@ -327,6 +331,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetGB28181 = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetGB28181", State);
         }
 
@@ -338,6 +343,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetCheckNet = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetCheckNet", State);
         }
 
@@ -349,6 +355,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetGPS = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetGPS", State);
         }
 
@@ -360,6 +367,7 @@ namespace AutoBatchForProductionLine
                 State = "1";
             else
                 State = "0";
+            p.SetPowerOff = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetPowerOff", State);
         }
 

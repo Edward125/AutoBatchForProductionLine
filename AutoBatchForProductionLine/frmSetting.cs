@@ -205,28 +205,52 @@ namespace AutoBatchForProductionLine
                     txtCMSV6IP.Focus();
                     break;
                 case p.SetErrorCode.CMSV6RerpotTime:
+                    txtCMSV6ReportTime.SelectAll();
+                    txtCMSV6ReportTime.Focus();
                     break;
                 case p.SetErrorCode.APN:
+                    txtAPN.SelectAll();
+                    txtAPN.Focus();
                     break;
                 case p.SetErrorCode.APNUser:
+                    txtAPNUser.SelectAll();
+                    txtAPNUser.Focus();
                     break;
                 case p.SetErrorCode.APNPwd:
+                    txtAPNPwd.SelectAll();
+                    txtAPNPwd.Focus();
                     break;
                 case p.SetErrorCode.CheckNetIP:
+                    txtCheckNetIP.SelectAll();
+                    txtCheckNetIP.Focus();
                     break;
                 case p.SetErrorCode.CheckNetPort:
+                    txtCheckNetPort.SelectAll();
+                    txtCheckNetPort.Focus();
                     break;
                 case p.SetErrorCode.GB2_IP:
+                    txtGB2_IP.SelectAll();
+                    txtGB2_IP.Focus();
                     break;
                 case p.SetErrorCode.GB2_Port:
+                    txtGB2_Port.SelectAll();
+                    txtGB2_Port.Focus();
                     break;
                 case p.SetErrorCode.GB2_DevNo:
+                    txtGB2_DevNo.SelectAll();
+                    txtGB2_DevNo.Focus();
                     break;
                 case p.SetErrorCode.GB2_ChnNo:
+                    txtGB2_ChnNo.SelectAll();
+                    txtGB2_ChnNo.Focus();
                     break;
                 case p.SetErrorCode.GB2_SerNo:
+                    txtGB2_ServNo.SelectAll();
+                    txtGB2_ServNo.Focus();
                     break;
                 case p.SetErrorCode.GB2_Passwd:
+                    txtGB2_Passwd.SelectAll();
+                    txtGB2_Passwd.Focus();
                     break;
                 default:
                     break;

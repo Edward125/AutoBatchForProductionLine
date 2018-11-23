@@ -108,7 +108,7 @@
             this.txtWiFiPwd.Location = new System.Drawing.Point(65, 42);
             this.txtWiFiPwd.Name = "txtWiFiPwd";
             this.txtWiFiPwd.Size = new System.Drawing.Size(108, 21);
-            this.txtWiFiPwd.TabIndex = 4;
+            this.txtWiFiPwd.TabIndex = 2;
             this.txtWiFiPwd.TextChanged += new System.EventHandler(this.txtWiFiPwd_TextChanged);
             // 
             // label1
@@ -125,7 +125,7 @@
             this.txtWiFiSSID.Location = new System.Drawing.Point(65, 15);
             this.txtWiFiSSID.Name = "txtWiFiSSID";
             this.txtWiFiSSID.Size = new System.Drawing.Size(108, 21);
-            this.txtWiFiSSID.TabIndex = 3;
+            this.txtWiFiSSID.TabIndex = 1;
             this.txtWiFiSSID.TextChanged += new System.EventHandler(this.txtWiFiSSID_TextChanged);
             // 
             // groupBox2
@@ -156,7 +156,7 @@
             this.txtAPNUser.Location = new System.Drawing.Point(61, 43);
             this.txtAPNUser.Name = "txtAPNUser";
             this.txtAPNUser.Size = new System.Drawing.Size(171, 21);
-            this.txtAPNUser.TabIndex = 7;
+            this.txtAPNUser.TabIndex = 4;
             this.txtAPNUser.TextChanged += new System.EventHandler(this.txtAPNUser_TextChanged);
             // 
             // label4
@@ -182,7 +182,7 @@
             this.txtAPN.Location = new System.Drawing.Point(61, 16);
             this.txtAPN.Name = "txtAPN";
             this.txtAPN.Size = new System.Drawing.Size(334, 21);
-            this.txtAPN.TabIndex = 5;
+            this.txtAPN.TabIndex = 3;
             this.txtAPN.TextChanged += new System.EventHandler(this.txtAPN_TextChanged);
             // 
             // groupBox3
@@ -250,7 +250,7 @@
             this.txtCMSV6Port.Location = new System.Drawing.Point(87, 45);
             this.txtCMSV6Port.Name = "txtCMSV6Port";
             this.txtCMSV6Port.Size = new System.Drawing.Size(53, 21);
-            this.txtCMSV6Port.TabIndex = 5;
+            this.txtCMSV6Port.TabIndex = 7;
             this.txtCMSV6Port.TextChanged += new System.EventHandler(this.txtCMSV6Port_TextChanged);
             // 
             // txtCMSV6IP
@@ -258,7 +258,7 @@
             this.txtCMSV6IP.Location = new System.Drawing.Point(65, 20);
             this.txtCMSV6IP.Name = "txtCMSV6IP";
             this.txtCMSV6IP.Size = new System.Drawing.Size(108, 21);
-            this.txtCMSV6IP.TabIndex = 5;
+            this.txtCMSV6IP.TabIndex = 6;
             this.txtCMSV6IP.TextChanged += new System.EventHandler(this.txtCMSV6IP_TextChanged);
             // 
             // txtAPNPwd
@@ -266,7 +266,7 @@
             this.txtAPNPwd.Location = new System.Drawing.Point(513, 65);
             this.txtAPNPwd.Name = "txtAPNPwd";
             this.txtAPNPwd.Size = new System.Drawing.Size(103, 21);
-            this.txtAPNPwd.TabIndex = 9;
+            this.txtAPNPwd.TabIndex = 5;
             this.txtAPNPwd.TextChanged += new System.EventHandler(this.txtAPNPwd_TextChanged);
             // 
             // groupBox4
@@ -299,7 +299,7 @@
             this.chkEnableGB28181.Location = new System.Drawing.Point(270, 16);
             this.chkEnableGB28181.Name = "chkEnableGB28181";
             this.chkEnableGB28181.Size = new System.Drawing.Size(48, 16);
-            this.chkEnableGB28181.TabIndex = 18;
+            this.chkEnableGB28181.TabIndex = 11;
             this.chkEnableGB28181.Text = "使能";
             this.chkEnableGB28181.UseVisualStyleBackColor = true;
             this.chkEnableGB28181.CheckedChanged += new System.EventHandler(this.chkEnableGB28181_CheckedChanged);
@@ -309,7 +309,7 @@
             this.txtGB2_ChnName.Location = new System.Drawing.Point(306, 94);
             this.txtGB2_ChnName.Name = "txtGB2_ChnName";
             this.txtGB2_ChnName.Size = new System.Drawing.Size(89, 21);
-            this.txtGB2_ChnName.TabIndex = 17;
+            this.txtGB2_ChnName.TabIndex = 16;
             this.txtGB2_ChnName.TextChanged += new System.EventHandler(this.txtGB2_ChnName_TextChanged);
             // 
             // label16
@@ -335,7 +335,7 @@
             this.txtGB2_ChnNo.Location = new System.Drawing.Point(61, 96);
             this.txtGB2_ChnNo.Name = "txtGB2_ChnNo";
             this.txtGB2_ChnNo.Size = new System.Drawing.Size(182, 21);
-            this.txtGB2_ChnNo.TabIndex = 14;
+            this.txtGB2_ChnNo.TabIndex = 15;
             this.txtGB2_ChnNo.TextChanged += new System.EventHandler(this.txtGB2_ChnNo_TextChanged);
             // 
             // txtGB2_ServNo
@@ -343,7 +343,7 @@
             this.txtGB2_ServNo.Location = new System.Drawing.Point(61, 69);
             this.txtGB2_ServNo.Name = "txtGB2_ServNo";
             this.txtGB2_ServNo.Size = new System.Drawing.Size(182, 21);
-            this.txtGB2_ServNo.TabIndex = 13;
+            this.txtGB2_ServNo.TabIndex = 14;
             this.txtGB2_ServNo.TextChanged += new System.EventHandler(this.txtGB2_ServNo_TextChanged);
             // 
             // label14
@@ -360,7 +360,7 @@
             this.txtGB2_Passwd.Location = new System.Drawing.Point(306, 41);
             this.txtGB2_Passwd.Name = "txtGB2_Passwd";
             this.txtGB2_Passwd.Size = new System.Drawing.Size(89, 21);
-            this.txtGB2_Passwd.TabIndex = 11;
+            this.txtGB2_Passwd.TabIndex = 13;
             this.txtGB2_Passwd.TextChanged += new System.EventHandler(this.txtGB2_Passwd_TextChanged);
             // 
             // label13
@@ -377,7 +377,7 @@
             this.txtGB2_DevNo.Location = new System.Drawing.Point(53, 42);
             this.txtGB2_DevNo.Name = "txtGB2_DevNo";
             this.txtGB2_DevNo.Size = new System.Drawing.Size(190, 21);
-            this.txtGB2_DevNo.TabIndex = 9;
+            this.txtGB2_DevNo.TabIndex = 12;
             this.txtGB2_DevNo.TextChanged += new System.EventHandler(this.txtGB2_DevNo_TextChanged);
             // 
             // label10
@@ -394,7 +394,7 @@
             this.txtGB2_Port.Location = new System.Drawing.Point(201, 16);
             this.txtGB2_Port.Name = "txtGB2_Port";
             this.txtGB2_Port.Size = new System.Drawing.Size(42, 21);
-            this.txtGB2_Port.TabIndex = 7;
+            this.txtGB2_Port.TabIndex = 10;
             this.txtGB2_Port.TextChanged += new System.EventHandler(this.txtGP2_Port_TextChanged);
             // 
             // label11
@@ -420,7 +420,7 @@
             this.txtGB2_IP.Location = new System.Drawing.Point(53, 16);
             this.txtGB2_IP.Name = "txtGB2_IP";
             this.txtGB2_IP.Size = new System.Drawing.Size(107, 21);
-            this.txtGB2_IP.TabIndex = 5;
+            this.txtGB2_IP.TabIndex = 9;
             this.txtGB2_IP.TextChanged += new System.EventHandler(this.txtGB2_IP_TextChanged);
             // 
             // groupBox5
@@ -443,7 +443,7 @@
             this.chkEnableCheckNet.Location = new System.Drawing.Point(331, 22);
             this.chkEnableCheckNet.Name = "chkEnableCheckNet";
             this.chkEnableCheckNet.Size = new System.Drawing.Size(48, 16);
-            this.chkEnableCheckNet.TabIndex = 19;
+            this.chkEnableCheckNet.TabIndex = 21;
             this.chkEnableCheckNet.Text = "使能";
             this.chkEnableCheckNet.UseVisualStyleBackColor = true;
             this.chkEnableCheckNet.CheckedChanged += new System.EventHandler(this.chkEnableCheckNet_CheckedChanged);
@@ -471,7 +471,7 @@
             this.txtCheckNetPort.Location = new System.Drawing.Point(257, 20);
             this.txtCheckNetPort.Name = "txtCheckNetPort";
             this.txtCheckNetPort.Size = new System.Drawing.Size(47, 21);
-            this.txtCheckNetPort.TabIndex = 18;
+            this.txtCheckNetPort.TabIndex = 20;
             this.txtCheckNetPort.TextChanged += new System.EventHandler(this.txtCheckNetPort_TextChanged);
             // 
             // txtCheckNetIP
@@ -479,7 +479,7 @@
             this.txtCheckNetIP.Location = new System.Drawing.Point(61, 20);
             this.txtCheckNetIP.Name = "txtCheckNetIP";
             this.txtCheckNetIP.Size = new System.Drawing.Size(137, 21);
-            this.txtCheckNetIP.TabIndex = 18;
+            this.txtCheckNetIP.TabIndex = 19;
             this.txtCheckNetIP.TextChanged += new System.EventHandler(this.txtCheckNetIP_TextChanged);
             // 
             // groupBox6
@@ -499,7 +499,7 @@
             this.rabOpenGPS.Location = new System.Drawing.Point(18, 19);
             this.rabOpenGPS.Name = "rabOpenGPS";
             this.rabOpenGPS.Size = new System.Drawing.Size(65, 16);
-            this.rabOpenGPS.TabIndex = 12;
+            this.rabOpenGPS.TabIndex = 17;
             this.rabOpenGPS.TabStop = true;
             this.rabOpenGPS.Text = "打开GPS";
             this.rabOpenGPS.UseVisualStyleBackColor = true;
@@ -511,7 +511,7 @@
             this.rabCloseGPS.Location = new System.Drawing.Point(109, 19);
             this.rabCloseGPS.Name = "rabCloseGPS";
             this.rabCloseGPS.Size = new System.Drawing.Size(65, 16);
-            this.rabCloseGPS.TabIndex = 13;
+            this.rabCloseGPS.TabIndex = 18;
             this.rabCloseGPS.TabStop = true;
             this.rabCloseGPS.Text = "关闭GPS";
             this.rabCloseGPS.UseVisualStyleBackColor = true;
