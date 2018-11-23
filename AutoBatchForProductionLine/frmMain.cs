@@ -29,6 +29,7 @@ namespace AutoBatchForProductionLine
 
         private static IntPtr BCHandle = IntPtr.Zero;
         private static string DevicePwd = "000000";
+        public static string IDCode = string.Empty;
 
         public enum Model
         {
@@ -617,15 +618,44 @@ namespace AutoBatchForProductionLine
 
         private void btnOnlyOnce_Click(object sender, EventArgs e)
         {
+           
+
+            int Init_Device_iRet = -1;
+            byte[] _IDCode = new byte[5];
             p.CheckParamErrorCode = CheckSetting();
-            if (LoginDevice == Vendor.Cammpro )
-                DevicePwd = "888888";
-            else 
-                DevicePwd = "000000";
+         
             
+
+
+
+
+
+
 
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
+
+
+                if (LoginDevice == Vendor.Cammpro)
+                {
+                    DevicePwd = "000000";
+                }
+
+                else
+                {
+                    Init_Device_iRet = BODYCAMDLL_API_YZ.BC_ProbeDevEx(out _IDCode[0]);
+                    DevicePwd = "888888";
+                    BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
+                    IDCode = System.Text.Encoding.Default.GetString(_IDCode, 0, _IDCode.Length);
+                    if (BCHandle != IntPtr.Zero)
+                        updateMessage(lstMsg, "检测到设备" + IDCode + ".");
+                    else
+                        return;
+                }
+
+
+
+
 
 
                 //
