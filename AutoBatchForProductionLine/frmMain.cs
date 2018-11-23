@@ -68,6 +68,47 @@ namespace AutoBatchForProductionLine
 
 
 
+        /// <summary>
+        ///  CMCSV6 Server
+        /// </summary>
+        public class CMCSV6Server
+        {
+            public string ServerIP { set; get; }
+            public string ServerPort { set; get; }
+            public int ReportTime { set; get; }
+            public string DevNo { set; get; }
+            public int Enable { set; get; }
+        }
+
+        /// <summary>
+        /// GB28181
+        /// </summary>
+        public class GB28181Server
+        {
+            public string ServerIP { set; get; }
+            public string ServerPort { set; get; }
+            public int Enable { set; get; }
+            public string DeviceID { set; get; }
+            public string ServerPassword { set; get; }
+            public string ChannelName { set; get; }
+            public string ServerID { set; get; }
+            public string ChannelID { set; get; }
+            public string GPSIP { set; get; }
+            public string GPSPort { set; get; }
+        }
+
+
+        /// <summary>
+        /// NetCheckServer
+        /// </summary>
+        public class NetCheckServer
+        {
+            public int Enable { set; get; }
+            public string IP { set; get; }
+            public string Port { set; get; }
+        }
+
+
         #endregion
 
 
@@ -655,7 +696,6 @@ namespace AutoBatchForProductionLine
         /// <returns></returns>
         private bool SetAPNInfo(Vendor logindevice, string password, APN apn)
         {
-
             if (logindevice == Vendor.EasyStorage)
             {
                 int result = -1;
@@ -692,6 +732,117 @@ namespace AutoBatchForProductionLine
         }
 
 
+
+
+        /// <summary>
+        /// 设置CMSV6信息
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="cs6"></param>
+        /// <returns></returns>
+        private bool SetCMSV6Info(Vendor logindevice, string password, CMCSV6Server cs6)
+        {
+
+            if (logindevice == Vendor.Cammpro)
+            {
+                byte[] IP = new byte[50];
+                int iRet_ReadServerIP = -1;
+                IP = Encoding.Default.GetBytes(cs6.ServerIP.PadRight(50, '\0').ToArray());
+                ZFYDLL_API_MC.SetServerIP(IP, password, ref iRet_ReadServerIP);
+
+                byte[] Port = new byte[50];
+                int iRet_SetServerPort = -1;
+                Port = Encoding.Default.GetBytes(cs6.ServerPort.PadRight(50, '\0').ToArray());
+                ZFYDLL_API_MC.SetServerPort(Port, password, ref iRet_SetServerPort);
+                return true;
+            }
+
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                byte[] IP = new byte[50];
+                IP = Encoding.Default.GetBytes(cs6.ServerIP.PadRight(50, '\0').ToArray());
+                byte[] Port = new byte[50];
+                Port = Encoding.Default.GetBytes(cs6.ServerPort.PadRight(50, '\0').ToArray());
+                byte[] DevID = new byte[32];
+                DevID = System.Text.Encoding.Default.GetBytes(cs6.DevNo.PadRight(32, '\0').ToArray());
+                result = BODYCAMDLL_API_YZ.BC_SetCmsv6Cfg(BCHandle, password, cs6.Enable, IP, Port, DevID, cs6.ReportTime);
+                if (result == 1)
+                    return true;
+            }
+
+            return false;
+        }
+
+
+        /// <summary>
+        /// 设置GB28181信息
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="gb2"></param>
+        /// <returns></returns>
+        private bool SetGB28181Info(Vendor  logindevice, string password, GB28181Server gb2)
+        {
+
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                byte[] ServIP = new byte[16];
+                ServIP = Encoding.Default.GetBytes(gb2.ServerIP.PadRight(16, '\0').ToArray());
+                byte[] ServPort = new byte[16];
+                ServPort = Encoding.Default.GetBytes(gb2.ServerPort.PadRight(16, '\0').ToArray());
+                byte[] DevID = new byte[32];
+                DevID = Encoding.Default.GetBytes(gb2.DeviceID.PadRight(32, '\0').ToArray());
+                byte[] ChnNo = new byte[32];
+                ChnNo = Encoding.Default.GetBytes(gb2.ChannelID.PadRight(32, '\0').ToArray());
+                byte[] ChnName = new byte[32];
+                ChnName = Encoding.Default.GetBytes(gb2.ChannelName.PadRight(32, '\0').ToArray());
+                byte[] ServNo = new byte[32];
+                ServNo = Encoding.Default.GetBytes(gb2.ServerID.PadRight(32, '\0').ToArray());
+                byte[] ServPwd = new byte[32];
+                ServPwd = Encoding.Default.GetBytes(gb2.ServerPassword.PadRight(32, '\0').ToArray());
+
+                result = BODYCAMDLL_API_YZ.BC_SetGb28181Cfg(BCHandle, password, gb2.Enable, ServIP,
+                    ServPort, DevID, ChnNo, ChnName, ServNo, ServPwd);
+                if (result == 1)
+                    return true;
+            }
+
+            //cammpro 不支持
+
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// 设置检查网络
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="nc"></param>
+        /// <returns></returns>
+        private bool SetNetCheckServerInfo(Vendor logindevice, string password, NetCheckServer nc)
+        {
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                byte[] ServIP = new byte[16];
+                ServIP = Encoding.Default.GetBytes(nc.IP.PadRight(16, '\0').ToArray());
+                byte[] ServPort = new byte[16];
+                ServPort = Encoding.Default.GetBytes(nc.Port.PadRight(16, '\0').ToArray());
+                result = BODYCAMDLL_API_YZ.BC_SetNetCheckServCfg(BCHandle, password, nc.Enable, ServIP, ServPort);
+                if (result == 1)
+                    return true;
+
+            }
+
+            // cammpro 不支持
+
+            return false;
+        }
 
 
         #endregion
