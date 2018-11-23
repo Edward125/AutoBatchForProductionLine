@@ -28,6 +28,7 @@ namespace AutoBatchForProductionLine
         private static Model LoginModel;//当前设备的型号
 
         private static IntPtr BCHandle = IntPtr.Zero;
+        private static string DevicePwd = "000000";
 
         public enum Model
         {
@@ -617,13 +618,66 @@ namespace AutoBatchForProductionLine
         private void btnOnlyOnce_Click(object sender, EventArgs e)
         {
             p.CheckParamErrorCode = CheckSetting();
+            if (LoginDevice == Vendor.Cammpro )
+                DevicePwd = "888888";
+            else 
+                DevicePwd = "000000";
+            
+
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
 
-                
 
+                //
+                if (p.SyncTime == "1")
+                {
+                    if (SyncDeviceTime(LoginDevice, DevicePwd))
+                        updateMessage(lstMsg, "同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
+                    else
+                        updateMessage(lstMsg, "同步设备时间失败.");
+                }
+                //
+                if (p.SetWiFi == "1")
+                {
+                    WiFi _wifi = new WiFi();
+                    _wifi.WiFiSSID = p.WiFiSSID;
+                    _wifi.WiFiPassword = p.WiFiPwd;
+                    if (SetWiFiInfo(LoginDevice, DevicePwd, _wifi))
+                        updateMessage(lstMsg, "设置执法仪WiFi信息成功.");
+                    else
+                        updateMessage(lstMsg, "设置执法仪WiFi信息失败.");
+                }
+                //
+                if (p.SetCMSV6 == "1")
+                {
+                    CMCSV6Server cs6 = new CMCSV6Server();
+                    cs6.ServerIP = p.CMSV6IP;
+                    cs6.ServerPort = p.CMSV6Port;
+                    cs6.ReportTime = Convert.ToInt16(p.CMSV6ReportTime);
+                    if (SetCMSV6Info(LoginDevice, DevicePwd, cs6))
+                        updateMessage(lstMsg, "设置CMSV6类型服务器信息成功.");
+                }
 
+                //
+                if (p.SetGB28181 == "1")
+                {
+                    GB28181Server gb2 = new GB28181Server();
+                    gb2.ChannelID = p.GB2_ChnNo;
+                    gb2.ChannelName = p.GB2_ChnName;
+                    gb2.ServerIP = p.GB2_ServIP;
+                    gb2.ServerPort = p.GB2_ServPort;
+                    gb2.ServerPassword = p.GB2_Passwd;
+                    gb2.DeviceID = p.GB2_DevNo;
+                    gb2.ServerID = p.GB2_ServNo;
+                    gb2.Enable = Convert.ToInt16(p.GB2_Enable);
+                    if (SetGB28181Info(LoginDevice, DevicePwd , gb2))
+                        updateMessage(lstMsg , "设置GB28181类型服务器信息成功.");
+                }
 
+                if (p.SetGPS == "1")
+                {
+
+                }
 
 
 
