@@ -42,9 +42,12 @@ namespace AutoBatchForProductionLine
         public static string GB2_ChnNo = string.Empty;   //设备通道ID
         public static string GB2_ServNo = string.Empty; //服务器ID
         public static string GB2_Passwd = string.Empty;
+        public static string GB2_ChnName = string.Empty;
+        public static string GB2_Enable = "0";          //使能
         //NetCheck
         public static string NetCheckIP = "127.0.0.1";
         public static string NetCheckPort = "554";
+        public static string NetCheckEnable = "0";
         //GPS
         public static string GPS = "0";
         //PowerOff
@@ -97,9 +100,12 @@ namespace AutoBatchForProductionLine
                 IniFile.IniWriteValue("GB28181", "GB2_ChnNo", GB2_ChnNo);
                 IniFile.IniWriteValue("GB28181", "GB2_ServNo", GB2_ServNo);
                 IniFile.IniWriteValue("GB28181", "GB2_Passwd", GB2_Passwd);
+                IniFile.IniWriteValue("GB28181", "GB2_ChnName", GB2_ChnName);
+                IniFile.IniWriteValue("GB28181", "GB2_Enable", GB2_Enable);
                 //
                 IniFile.IniWriteValue("NetCheck", "NetCheckIP", NetCheckIP);
                 IniFile.IniWriteValue("NetCheck", "NetCheckPort", NetCheckPort);
+                IniFile.IniWriteValue("NetCheck", "NetCheckEnable", NetCheckEnable);
                 //
                 IniFile.IniWriteValue("GPS", "GPS", GPS);
                 //
@@ -142,9 +148,12 @@ namespace AutoBatchForProductionLine
                GB2_ChnNo = IniFile.IniReadValue("GB28181", "GB2_ChnNo");
                GB2_ServNo = IniFile.IniReadValue("GB28181", "GB2_ServNo");
                GB2_Passwd = IniFile.IniReadValue("GB28181", "GB2_Passwd");
+               GB2_ChnName = IniFile.IniReadValue("GB28181", "GB2_ChnName");
+               GB2_Enable = IniFile.IniReadValue("GB28181", "GB2_Enable");
                 //
                NetCheckIP = IniFile.IniReadValue("NetCheck", "NetCheckIP");
                NetCheckPort = IniFile.IniReadValue("NetCheck", "NetCheckPort");
+               NetCheckEnable = IniFile.IniReadValue("NetCheck", "NetCheckEnable");
                //
                GPS = IniFile.IniReadValue("GPS", "GPS");
                //
