@@ -1176,7 +1176,7 @@ namespace SDK
         *************************************************/
         //BODYCAMDLL_API int  BC_SetDevGpsEn(IN BCHandle *dev,IN char *sPwd,IN int bEnable);
         [DllImport("LibBodycam.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int BC_SetDevGpsEn(IntPtr dev,byte sPwd,int bEnable);
+        public static extern int BC_SetDevGpsEn(IntPtr dev,string sPwd,int bEnable);
 
         /*************************************************
         *函数说明:  获取GPS功能开关，对所有的用户生效

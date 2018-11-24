@@ -575,11 +575,11 @@ namespace AutoBatchForProductionLine
                                                     return p.SetErrorCode.CMSV6RerpotTime;
      
                                             }
-                                            if (p.SetAPN == "1")
-                                            {
-                                                if (string.IsNullOrEmpty (p.APN ))
-                                                    return p.SetErrorCode.APN;
-                                            }
+                                            //if (p.SetAPN == "1")                   //允许为空
+                                            //{
+                                            //    if (string.IsNullOrEmpty (p.APN ))
+                                            //        return p.SetErrorCode.APN;
+                                            //}
                                             if (p.SetCheckNet == "1")
                                             {
                                                 if (string.IsNullOrEmpty(p.NetCheckIP))
@@ -653,44 +653,60 @@ namespace AutoBatchForProductionLine
                         return;
                 }
 
-
-
-
-
-
                 //
                 if (p.SyncTime == "1")
                 {
+                    updateMessage(lstMsg, "准备开始同步时间");
                     if (SyncDeviceTime(LoginDevice, DevicePwd))
                         updateMessage(lstMsg, "同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
                     else
                         updateMessage(lstMsg, "同步设备时间失败.");
                 }
-                //
+                //WiFi
                 if (p.SetWiFi == "1")
                 {
+                    updateMessage(lstMsg, "准备开始设置WiFi信息");
                     WiFi _wifi = new WiFi();
                     _wifi.WiFiSSID = p.WiFiSSID;
                     _wifi.WiFiPassword = p.WiFiPwd;
                     if (SetWiFiInfo(LoginDevice, DevicePwd, _wifi))
-                        updateMessage(lstMsg, "设置执法仪WiFi信息成功.");
+                        updateMessage(lstMsg, "设置执法仪WiFi信息成功，SSID:"  + p.WiFiSSID +",Pwd:" + p.WiFiPwd );
                     else
                         updateMessage(lstMsg, "设置执法仪WiFi信息失败.");
                 }
-                //
+                // CMSV6
                 if (p.SetCMSV6 == "1")
                 {
+                    updateMessage(lstMsg, "准备开始设置CMSV6服务器信息");
                     CMCSV6Server cs6 = new CMCSV6Server();
                     cs6.ServerIP = p.CMSV6IP;
                     cs6.ServerPort = p.CMSV6Port;
                     cs6.ReportTime = Convert.ToInt16(p.CMSV6ReportTime);
                     if (SetCMSV6Info(LoginDevice, DevicePwd, cs6))
-                        updateMessage(lstMsg, "设置CMSV6类型服务器信息成功.");
+                        updateMessage(lstMsg, "设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
                 }
 
-                //
+
+                //APN
+                if (p.SetAPN == "1")
+                {
+                    updateMessage(lstMsg, "准备开始设置APN信息");
+                    APN apn = new APN();
+                    apn.ApnName = p.APN;
+                    apn.ApnUser = p.APNUser;
+                    apn.ApnPwd = p.APNPwd;
+                    if (SetAPNInfo(LoginDevice, DevicePwd , apn))
+                        updateMessage(lstMsg, "设置执法仪APN信息成功.");
+                }
+
+
+
+
+
+                //GB28181
                 if (p.SetGB28181 == "1")
                 {
+                    updateMessage(lstMsg, "准备开始设置GB28181服务器信息");
                     GB28181Server gb2 = new GB28181Server();
                     gb2.ChannelID = p.GB2_ChnNo;
                     gb2.ChannelName = p.GB2_ChnName;
@@ -704,26 +720,34 @@ namespace AutoBatchForProductionLine
                         updateMessage(lstMsg , "设置GB28181类型服务器信息成功.");
                 }
 
-                if (p.SetGPS == "1")
-                {
 
+                //CheckNet
+                if (p.SetCheckNet == "1")
+                {
+                    updateMessage(lstMsg, "准备开始设置网络检查服务器信息");
+                    NetCheckServer nc = new NetCheckServer();
+                    nc.IP = p.NetCheckIP;
+                    nc.Port = p.NetCheckPort;
+                    nc.Enable = Convert.ToInt16(p.NetCheckEnable);
+                    if (SetNetCheckServerInfo(LoginDevice, DevicePwd , nc))
+                        updateMessage(lstMsg , "设置NetCheck Server类型服务器信息成功.");
                 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                //SetGPS
+                if (p.SetGPS == "1")
+                {
+                    if (SetGPSInfo(LoginDevice, DevicePwd, p.GPS))
+                    {
+                        if (p.GPS == "1")
+                            updateMessage(lstMsg, "设置GPS状态(打开)成功.");
+                        if (p.GPS == "0")
+                            updateMessage(lstMsg, "设置GPS状态(关闭)成功.");
+                    }
+                }
+                if (LoginDevice ==Vendor .EasyStorage)
+                    BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
+                updateMessage(lstMsg, "已完成配置,请拔出设备");
 
 
             }
@@ -997,6 +1021,28 @@ namespace AutoBatchForProductionLine
             }
 
             // cammpro 不支持
+
+            return false;
+        }
+
+
+
+        /// <summary>
+        /// 设置GPS开关
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="gpsstate"></param>
+        /// <returns></returns>
+        private bool SetGPSInfo(Vendor logindevice, string password, string gpsstate)
+        {
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                result = BODYCAMDLL_API_YZ.BC_SetDevGpsEn(BCHandle, password, Convert.ToInt16(gpsstate));
+                if (result == 1)
+                    return true;
+            }
 
             return false;
         }
