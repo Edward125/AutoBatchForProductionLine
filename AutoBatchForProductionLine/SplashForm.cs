@@ -186,7 +186,7 @@ namespace Edward
                 System.Resources.ResourceManager(PublicResourceFileName, myAssembly);
                 return rm.GetObject(resName);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }

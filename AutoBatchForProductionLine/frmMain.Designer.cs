@@ -325,6 +325,8 @@
             this.chkSetSN.TabIndex = 2;
             this.chkSetSN.Text = "自动填写序列号";
             this.chkSetSN.UseVisualStyleBackColor = false;
+            this.chkSetSN.CheckedChanged += new System.EventHandler(this.chkSetSN_CheckedChanged);
+            this.chkSetSN.EnabledChanged += new System.EventHandler(this.chkSetSN_EnabledChanged);
             // 
             // chkSetFormat
             // 
@@ -338,6 +340,8 @@
             this.chkSetFormat.TabIndex = 9;
             this.chkSetFormat.Text = "自动格式化";
             this.chkSetFormat.UseVisualStyleBackColor = false;
+            this.chkSetFormat.CheckedChanged += new System.EventHandler(this.chkSetFormat_CheckedChanged);
+            this.chkSetFormat.EnabledChanged += new System.EventHandler(this.chkSetFormat_EnabledChanged);
             // 
             // frmMain
             // 

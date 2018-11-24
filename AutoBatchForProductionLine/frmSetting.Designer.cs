@@ -74,12 +74,32 @@
             this.groupBox6 = new System.Windows.Forms.GroupBox();
             this.rabOpenGPS = new System.Windows.Forms.RadioButton();
             this.rabCloseGPS = new System.Windows.Forms.RadioButton();
+            this.groupBox7 = new System.Windows.Forms.GroupBox();
+            this.comboFormat = new System.Windows.Forms.ComboBox();
+            this.label19 = new System.Windows.Forms.Label();
+            this.groupBox8 = new System.Windows.Forms.GroupBox();
+            this.txtStartSN = new System.Windows.Forms.TextBox();
+            this.txtEndSN = new System.Windows.Forms.TextBox();
+            this.label20 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label22 = new System.Windows.Forms.Label();
+            this.txtTotalSN = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.txtSN_userNo = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.txtSN_userName = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.txtSN_unitNo = new System.Windows.Forms.TextBox();
+            this.txtSN_unitName = new System.Windows.Forms.TextBox();
+            this.label26 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox7.SuspendLayout();
+            this.groupBox8.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -136,7 +156,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.txtAPN);
-            this.groupBox2.Location = new System.Drawing.Point(221, 22);
+            this.groupBox2.Location = new System.Drawing.Point(221, 123);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(412, 73);
             this.groupBox2.TabIndex = 1;
@@ -146,7 +166,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(238, 48);
+            this.label5.Location = new System.Drawing.Point(238, 47);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(47, 12);
             this.label5.TabIndex = 8;
@@ -264,7 +284,7 @@
             // 
             // txtAPNPwd
             // 
-            this.txtAPNPwd.Location = new System.Drawing.Point(513, 65);
+            this.txtAPNPwd.Location = new System.Drawing.Point(513, 165);
             this.txtAPNPwd.Name = "txtAPNPwd";
             this.txtAPNPwd.Size = new System.Drawing.Size(103, 21);
             this.txtAPNPwd.TabIndex = 5;
@@ -287,7 +307,7 @@
             this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Controls.Add(this.label12);
             this.groupBox4.Controls.Add(this.txtGB2_IP);
-            this.groupBox4.Location = new System.Drawing.Point(221, 101);
+            this.groupBox4.Location = new System.Drawing.Point(221, 202);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(412, 123);
             this.groupBox4.TabIndex = 9;
@@ -431,7 +451,7 @@
             this.groupBox5.Controls.Add(this.label17);
             this.groupBox5.Controls.Add(this.txtCheckNetPort);
             this.groupBox5.Controls.Add(this.txtCheckNetIP);
-            this.groupBox5.Location = new System.Drawing.Point(221, 230);
+            this.groupBox5.Location = new System.Drawing.Point(221, 331);
             this.groupBox5.Name = "groupBox5";
             this.groupBox5.Size = new System.Drawing.Size(412, 52);
             this.groupBox5.TabIndex = 10;
@@ -518,15 +538,184 @@
             this.rabCloseGPS.UseVisualStyleBackColor = true;
             this.rabCloseGPS.CheckedChanged += new System.EventHandler(this.rabCloseGPS_CheckedChanged);
             // 
+            // groupBox7
+            // 
+            this.groupBox7.Controls.Add(this.label19);
+            this.groupBox7.Controls.Add(this.comboFormat);
+            this.groupBox7.Location = new System.Drawing.Point(26, 255);
+            this.groupBox7.Name = "groupBox7";
+            this.groupBox7.Size = new System.Drawing.Size(189, 49);
+            this.groupBox7.TabIndex = 12;
+            this.groupBox7.TabStop = false;
+            this.groupBox7.Text = "格式化设置";
+            // 
+            // comboFormat
+            // 
+            this.comboFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboFormat.FormattingEnabled = true;
+            this.comboFormat.Items.AddRange(new object[] {
+            "FAT32",
+            "exFAT"});
+            this.comboFormat.Location = new System.Drawing.Point(92, 19);
+            this.comboFormat.Name = "comboFormat";
+            this.comboFormat.Size = new System.Drawing.Size(82, 20);
+            this.comboFormat.TabIndex = 13;
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(10, 23);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(77, 12);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "文件系统类型";
+            // 
+            // groupBox8
+            // 
+            this.groupBox8.Controls.Add(this.label26);
+            this.groupBox8.Controls.Add(this.txtSN_unitName);
+            this.groupBox8.Controls.Add(this.txtSN_unitNo);
+            this.groupBox8.Controls.Add(this.label25);
+            this.groupBox8.Controls.Add(this.txtSN_userName);
+            this.groupBox8.Controls.Add(this.label24);
+            this.groupBox8.Controls.Add(this.txtSN_userNo);
+            this.groupBox8.Controls.Add(this.label23);
+            this.groupBox8.Controls.Add(this.txtTotalSN);
+            this.groupBox8.Controls.Add(this.label22);
+            this.groupBox8.Controls.Add(this.label21);
+            this.groupBox8.Controls.Add(this.label20);
+            this.groupBox8.Controls.Add(this.txtEndSN);
+            this.groupBox8.Controls.Add(this.txtStartSN);
+            this.groupBox8.Location = new System.Drawing.Point(221, 22);
+            this.groupBox8.Name = "groupBox8";
+            this.groupBox8.Size = new System.Drawing.Size(412, 99);
+            this.groupBox8.TabIndex = 13;
+            this.groupBox8.TabStop = false;
+            this.groupBox8.Text = "序列号相关信息设置";
+            // 
+            // txtStartSN
+            // 
+            this.txtStartSN.Location = new System.Drawing.Point(62, 18);
+            this.txtStartSN.Name = "txtStartSN";
+            this.txtStartSN.Size = new System.Drawing.Size(89, 21);
+            this.txtStartSN.TabIndex = 0;
+            // 
+            // txtEndSN
+            // 
+            this.txtEndSN.Location = new System.Drawing.Point(219, 18);
+            this.txtEndSN.Name = "txtEndSN";
+            this.txtEndSN.Size = new System.Drawing.Size(82, 21);
+            this.txtEndSN.TabIndex = 1;
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(14, 22);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(41, 12);
+            this.label20.TabIndex = 2;
+            this.label20.Text = "起始号";
+            // 
+            // label21
+            // 
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(168, 22);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(41, 12);
+            this.label21.TabIndex = 3;
+            this.label21.Text = "截至号";
+            // 
+            // label22
+            // 
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(307, 22);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(41, 12);
+            this.label22.TabIndex = 4;
+            this.label22.Text = "总个数";
+            // 
+            // txtTotalSN
+            // 
+            this.txtTotalSN.Location = new System.Drawing.Point(353, 18);
+            this.txtTotalSN.Name = "txtTotalSN";
+            this.txtTotalSN.Size = new System.Drawing.Size(42, 21);
+            this.txtTotalSN.TabIndex = 5;
+            // 
+            // label23
+            // 
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(8, 47);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(53, 12);
+            this.label23.TabIndex = 6;
+            this.label23.Text = "用户编号";
+            // 
+            // txtSN_userNo
+            // 
+            this.txtSN_userNo.Location = new System.Drawing.Point(62, 44);
+            this.txtSN_userNo.Name = "txtSN_userNo";
+            this.txtSN_userNo.Size = new System.Drawing.Size(89, 21);
+            this.txtSN_userNo.TabIndex = 7;
+            // 
+            // label24
+            // 
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(162, 47);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(53, 12);
+            this.label24.TabIndex = 8;
+            this.label24.Text = "用户名称";
+            // 
+            // txtSN_userName
+            // 
+            this.txtSN_userName.Location = new System.Drawing.Point(219, 42);
+            this.txtSN_userName.Name = "txtSN_userName";
+            this.txtSN_userName.Size = new System.Drawing.Size(176, 21);
+            this.txtSN_userName.TabIndex = 9;
+            // 
+            // label25
+            // 
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(8, 73);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(53, 12);
+            this.label25.TabIndex = 10;
+            this.label25.Text = "单位编号";
+            // 
+            // txtSN_unitNo
+            // 
+            this.txtSN_unitNo.Location = new System.Drawing.Point(62, 70);
+            this.txtSN_unitNo.Name = "txtSN_unitNo";
+            this.txtSN_unitNo.Size = new System.Drawing.Size(89, 21);
+            this.txtSN_unitNo.TabIndex = 11;
+            // 
+            // txtSN_unitName
+            // 
+            this.txtSN_unitName.Location = new System.Drawing.Point(219, 68);
+            this.txtSN_unitName.Name = "txtSN_unitName";
+            this.txtSN_unitName.Size = new System.Drawing.Size(176, 21);
+            this.txtSN_unitName.TabIndex = 12;
+            // 
+            // label26
+            // 
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(162, 73);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(53, 12);
+            this.label26.TabIndex = 13;
+            this.label26.Text = "单位名称";
+            // 
             // frmSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(651, 299);
+            this.ClientSize = new System.Drawing.Size(657, 395);
+            this.Controls.Add(this.groupBox8);
+            this.Controls.Add(this.txtAPNPwd);
+            this.Controls.Add(this.groupBox7);
             this.Controls.Add(this.groupBox6);
             this.Controls.Add(this.groupBox5);
             this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.txtAPNPwd);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -550,6 +739,10 @@
             this.groupBox5.PerformLayout();
             this.groupBox6.ResumeLayout(false);
             this.groupBox6.PerformLayout();
+            this.groupBox7.ResumeLayout(false);
+            this.groupBox7.PerformLayout();
+            this.groupBox8.ResumeLayout(false);
+            this.groupBox8.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -602,5 +795,23 @@
         private System.Windows.Forms.RadioButton rabOpenGPS;
         private System.Windows.Forms.RadioButton rabCloseGPS;
         private System.Windows.Forms.CheckBox chkEnableCheckNet;
+        private System.Windows.Forms.GroupBox groupBox7;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.ComboBox comboFormat;
+        private System.Windows.Forms.GroupBox groupBox8;
+        private System.Windows.Forms.TextBox txtTotalSN;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox txtEndSN;
+        private System.Windows.Forms.TextBox txtStartSN;
+        private System.Windows.Forms.Label label26;
+        private System.Windows.Forms.TextBox txtSN_unitName;
+        private System.Windows.Forms.TextBox txtSN_unitNo;
+        private System.Windows.Forms.Label label25;
+        private System.Windows.Forms.TextBox txtSN_userName;
+        private System.Windows.Forms.Label label24;
+        private System.Windows.Forms.TextBox txtSN_userNo;
+        private System.Windows.Forms.Label label23;
     }
 }

@@ -20,13 +20,16 @@ namespace AutoBatchForProductionLine
         //SysConfig
         public static string CurrentDevice = string.Empty ; //当前选择的执法仪
         public static string SyncTime = "0";
+        public static string SetSN = "0";
         public static string SetWiFi = "0";
         public static string SetAPN = "0";
         public static string SetCMSV6 = "0";
         public static string SetGB28181 = "0";
         public static string SetCheckNet = "0";
         public static string SetGPS = "0";
+        public static string SetFormat = "0";
         public static string SetPowerOff = "0";
+
         //WiFi
         public static string WiFiSSID = string.Empty;
         public static string WiFiPwd = string.Empty;
@@ -119,12 +122,14 @@ namespace AutoBatchForProductionLine
                 IniFile.IniWriteValue("SysConfig", "Version", Application.ProductVersion);
                 IniFile.IniWriteValue("SysConfig", "CurrentDevice", CurrentDevice);
                 IniFile.IniWriteValue("SysConfig", "SyncTime", SyncTime);
+                IniFile.IniWriteValue("SysConfig", "SetSN", p.SetSN);
                 IniFile.IniWriteValue("SysConfig", "SetWiFi", SetWiFi);
                 IniFile.IniWriteValue("SysConfig", "SetAPN", SetAPN);
                 IniFile.IniWriteValue("SysConfig", "SetCMSV6", SetCMSV6);
                 IniFile.IniWriteValue("SysConfig", "SetGB28181", SetGB28181);
                 IniFile.IniWriteValue("SysConfig", "SetCheckNet",SetCheckNet);
                 IniFile.IniWriteValue("SysConfig", "SetGPS", SetGPS);
+                IniFile.IniWriteValue("SysConfig", "SetFormat", p.SetFormat);
                 IniFile.IniWriteValue("SysConfig", "SetPowerOff", SetPowerOff);
                 //
                 IniFile.IniWriteValue("WiFi", "WiFiSSID", WiFiSSID);
@@ -167,12 +172,14 @@ namespace AutoBatchForProductionLine
             {
                 CurrentDevice = IniFile.IniReadValue("SysConfig", "CurrentDevice");
                 SyncTime = IniFile.IniReadValue("SysConfig", "SyncTime");
+                SetSN = IniFile.IniReadValue("SysConfig", "SetSN");
                 SetWiFi = IniFile.IniReadValue("SysConfig", "SetWiFi");
                 SetAPN = IniFile.IniReadValue("SysConfig", "SetAPN");
                 SetCMSV6 = IniFile.IniReadValue("SysConfig", "SetCMSV6");
                 SetGB28181 = IniFile.IniReadValue("SysConfig", "SetGB28181");
                 SetCheckNet = IniFile.IniReadValue("SysConfig", "SetCheckNet");
                 SetGPS = IniFile.IniReadValue("SysConfig", "SetGPS");
+                SetFormat = IniFile.IniReadValue("SysConfig", "SetFormat");
                 SetPowerOff = IniFile.IniReadValue("SysConfig", "SetPowerOff");
                 //
                 WiFiSSID = IniFile.IniReadValue("WiFi", "WiFiSSID");

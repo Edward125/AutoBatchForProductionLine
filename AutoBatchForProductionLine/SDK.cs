@@ -59,17 +59,17 @@ namespace SDK
 
 
 
-        public struct DEVLIST_INFO
-        {
-            IntPtr dev;  // 设备操作句柄
-            int ListIndex; //设备在列表中的索引值
-            int bUDisk; //是否已经形成U盘.1-已经形成U盘,0-未形成U盘
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            byte[] sn; //设备ID,设备唯一性ID，不可更改,16位
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            byte[] IDCode; //设备识别码。设备类型编码，不可更改.8位
+        //public struct DEVLIST_INFO
+        //{
+        //    IntPtr dev;  // 设备操作句柄
+        //    int ListIndex; //设备在列表中的索引值
+        //    int bUDisk; //是否已经形成U盘.1-已经形成U盘,0-未形成U盘
+        //    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        //    byte[] sn; //设备ID,设备唯一性ID，不可更改,16位
+        //    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        //    byte[] IDCode; //设备识别码。设备类型编码，不可更改.8位
 
-        }
+        //}
 
 
         public enum FSTYPE_E

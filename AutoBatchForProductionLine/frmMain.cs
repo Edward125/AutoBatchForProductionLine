@@ -21,6 +21,11 @@ namespace AutoBatchForProductionLine
 
 
 
+        //SN:H6:6;H8:7;G5:5;G9:9,R3:3
+        
+
+
+
         #region 参数定义
 
         USBWatcher.USB ezUSB = new USBWatcher.USB();
@@ -315,42 +320,50 @@ namespace AutoBatchForProductionLine
             {
                 case Model.H6:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = true;
                     chkSetAPN.Enabled = false;
                     chkSetCMSV6.Enabled = false;
                     chkSetGB28181.Enabled = false;
                     chkSetWiFi.Enabled = false;
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 case Model.H8:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = false;
                     chkSetAPN.Enabled = false;
                     chkSetCMSV6.Enabled = false;
                     chkSetGB28181.Enabled = false;
                     chkSetWiFi.Enabled = false;
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 case Model.G5:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = false;
                     chkSetAPN.Enabled = true;
                     chkSetCMSV6.Enabled = true;
                     chkSetGB28181.Enabled = true;
                     chkSetWiFi.Enabled = true;
                     chkSetGPS.Enabled = true;
                     chkSetCheckNet.Enabled = true;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = true;
                     break;
                 case Model.G9:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = true;
                     chkSetAPN.Enabled = false;
                     chkSetCMSV6.Enabled = true;
                     chkSetGB28181.Enabled = false;
                     chkSetWiFi.Enabled = true;
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 default:
@@ -366,21 +379,25 @@ namespace AutoBatchForProductionLine
         private void LoadConfigByModel(Model _model)
         {
             p.SyncTime = IniFile.IniReadValue(_model.ToString(), "SyncTime");
+            p.SetSN = IniFile.IniReadValue(_model.ToString(), "SetSN");
             p.SetWiFi = IniFile.IniReadValue(_model.ToString(), "SetWiFi");
             p.SetAPN = IniFile.IniReadValue(_model.ToString(), "SetAPN");
             p.SetCMSV6 = IniFile.IniReadValue(_model.ToString(), "SetCMSV6");
             p.SetGB28181 = IniFile.IniReadValue(_model.ToString(), "SetGB28181");
             p.SetCheckNet = IniFile.IniReadValue(_model.ToString(), "SetCheckNet");
             p.SetGPS = IniFile.IniReadValue(_model.ToString(), "SetGPS");
+            p.SetFormat = IniFile.IniReadValue( _model.ToString(), "SetFormat");
             p.SetPowerOff = IniFile.IniReadValue(_model.ToString(), "SetPowerOff");
 
             CheckConfigValueAndCheckbox(p.SyncTime, chkSyncTime);
+            CheckConfigValueAndCheckbox(p.SetSN, chkSetSN);
             CheckConfigValueAndCheckbox(p.SetWiFi, chkSetWiFi);
             CheckConfigValueAndCheckbox(p.SetAPN, chkSetAPN);
             CheckConfigValueAndCheckbox(p.SetCMSV6, chkSetCMSV6);
             CheckConfigValueAndCheckbox(p.SetGB28181, chkSetGB28181);
             CheckConfigValueAndCheckbox(p.SetCheckNet, chkSetCheckNet);
             CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
+            CheckConfigValueAndCheckbox(p.SetFormat, chkSetFormat);
             CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
 
 
@@ -1315,6 +1332,40 @@ namespace AutoBatchForProductionLine
         private void btnClearInfo_Click(object sender, EventArgs e)
         {
             lstMsg.Items.Clear();
+        }
+
+        private void chkSetSN_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetSN);
+            string State = string.Empty;
+            if (chkSyncTime.Checked)
+                State = "1";
+            else
+                State = "0";
+            p.SetSN  = State;
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetSN", State);
+        }
+
+        private void chkSetFormat_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetFormat );
+            string State = string.Empty;
+            if (chkSyncTime.Checked)
+                State = "1";
+            else
+                State = "0";
+            p.SetFormat = State;
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetFormat", State);
+        }
+
+        private void chkSetSN_EnabledChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetSN);
+        }
+
+        private void chkSetFormat_EnabledChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetFormat);
         }
     }
 }
