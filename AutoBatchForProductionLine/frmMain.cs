@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Edward;
 using SDK;
+using System.Management;
 
 namespace AutoBatchForProductionLine
 {
@@ -22,7 +23,7 @@ namespace AutoBatchForProductionLine
 
         #region 参数定义
 
-
+        USBWatcher.USB ezUSB = new USBWatcher.USB();
 
         private static Vendor LoginDevice;  //当前设备的方案商
         private static Model LoginModel;//当前设备的型号
@@ -31,6 +32,8 @@ namespace AutoBatchForProductionLine
         private static string DevicePwd = "000000";
         public static string IDCode = string.Empty;
         public static bool bRestart = false;
+        public static USBState CurrentUSB;
+        public static bool SetItemState = false; //程序未运行
 
         public enum Model
         {
@@ -46,6 +49,12 @@ namespace AutoBatchForProductionLine
             EasyStorage
         }
 
+
+        public enum USBState
+        {
+            NO,
+            YES 
+        }
 
         /// <summary>
         /// APN
@@ -132,6 +141,7 @@ namespace AutoBatchForProductionLine
         private void frmMain_Load(object sender, EventArgs e)
         {
             //this.BackColor = Color.Snow;
+            
             LoadUI();
 
         }
@@ -139,11 +149,50 @@ namespace AutoBatchForProductionLine
 
         private void LoadUI()
         {
+            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             p.CreateFolder();
             p.CreateIni();
             p.ReadIni();
             LoadData();
         }
+
+
+        private void USBEventHandler(Object sender, EventArrivedEventArgs e)
+        {
+            if (e.NewEvent.ClassPath.ClassName == "__InstanceCreationEvent")
+            {
+               // this.SetText("USB插入时间：" + DateTime.Now + "\r\n");
+
+                this.Invoke((EventHandler)(delegate
+                {
+                    CurrentUSB = USBState.YES;
+                    updateMessage(lstMsg, "侦测到USB插入.");
+                    p.WriteLog("侦测到USB插入.");              
+                }));
+           
+            }
+            else if (e.NewEvent.ClassPath.ClassName == "__InstanceDeletionEvent")
+            {
+               // this.SetText("USB拔出时间：" + DateTime.Now + "\r\n");
+                this.Invoke((EventHandler)(delegate
+                {
+                    CurrentUSB = USBState.NO;
+                    SetItemState = false;
+                    updateMessage(lstMsg, "侦测到USB拔出.");
+                    p.WriteLog("侦测到USB拔出.");
+                }));
+               
+            }
+
+            foreach (USBWatcher.USBControllerDevice Device in USBWatcher.USB.WhoUSBControllerDevice(e))
+            {
+                // this.SetText("\tAntecedent：" + Device.Antecedent + "\r\n");
+                // this.SetText("\tDependent：" + Device.Dependent + "\r\n");
+                p.WriteLog("Antecedent：" + Device.Antecedent);
+                p.WriteLog("Dependent：" + Device.Dependent);
+            }
+        }
+
 
 
         private void LoadData()
@@ -635,13 +684,21 @@ namespace AutoBatchForProductionLine
 
         private void btnOnlyOnce_Click(object sender, EventArgs e)
         {
-           
 
+            RunSetItem();
+
+
+        }
+
+
+        private void RunSetItem()
+        {
+            StartLockUI();
             int Init_Device_iRet = -1;
             byte[] _IDCode = new byte[5];
-             DeviceInfo DI = new DeviceInfo();
+            DeviceInfo DI = new DeviceInfo();
             p.CheckParamErrorCode = CheckSetting();
-         
+
 
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
@@ -659,10 +716,10 @@ namespace AutoBatchForProductionLine
                     IDCode = System.Text.Encoding.Default.GetString(_IDCode, 0, _IDCode.Length);
                     if (BCHandle != IntPtr.Zero)
                     {
-                       
+
                         GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                         updateMessage(lstMsg, "检测到设备" + IDCode + ",SN:" + DI.cSerial);
-                        p.WriteLog ("检测到设备" + IDCode + ",SN:" + DI.cSerial);   
+                        p.WriteLog("检测到设备" + IDCode + ",SN:" + DI.cSerial);
                     }
                     else
                         return;
@@ -671,7 +728,7 @@ namespace AutoBatchForProductionLine
                 //
                 if (p.SyncTime == "1")
                 {
-                    updateMessage(lstMsg,DI.cSerial + ":准备开始同步时间");
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始同步时间");
                     p.WriteLog(DI.cSerial + ":准备开始同步时间");
                     if (SyncDeviceTime(LoginDevice, DevicePwd))
                     {
@@ -687,7 +744,7 @@ namespace AutoBatchForProductionLine
                 //WiFi
                 if (p.SetWiFi == "1")
                 {
-                    updateMessage(lstMsg,DI.cSerial + ":准备开始设置WiFi信息");
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置WiFi信息");
                     p.WriteLog(DI.cSerial + ":准备开始设置WiFi信息");
                     WiFi _wifi = new WiFi();
                     _wifi.WiFiSSID = p.WiFiSSID;
@@ -699,14 +756,14 @@ namespace AutoBatchForProductionLine
                     }
                     else
                     {
-                        updateMessage(lstMsg,DI.cSerial + ":设置执法仪WiFi信息失败.");
+                        updateMessage(lstMsg, DI.cSerial + ":设置执法仪WiFi信息失败.");
                         p.WriteLog(DI.cSerial + ":设置执法仪WiFi信息失败.");
                     }
                 }
                 // CMSV6
                 if (p.SetCMSV6 == "1")
                 {
-                    updateMessage(lstMsg, DI.cSerial +":准备开始设置CMSV6服务器信息");
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置CMSV6服务器信息");
                     p.WriteLog(DI.cSerial + ":准备开始设置CMSV6服务器信息");
                     CMCSV6Server cs6 = new CMCSV6Server();
                     cs6.ServerIP = p.CMSV6IP;
@@ -714,7 +771,7 @@ namespace AutoBatchForProductionLine
                     cs6.ReportTime = Convert.ToInt16(p.CMSV6ReportTime);
                     if (SetCMSV6Info(LoginDevice, DevicePwd, cs6))
                     {
-                        updateMessage(lstMsg,DI.cSerial + ":设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
+                        updateMessage(lstMsg, DI.cSerial + ":设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
                         p.WriteLog(DI.cSerial + ":设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
                     }
                 }
@@ -723,7 +780,7 @@ namespace AutoBatchForProductionLine
                 //APN
                 if (p.SetAPN == "1")
                 {
-                    updateMessage(lstMsg, DI.cSerial +":准备开始设置APN信息");
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置APN信息");
                     p.WriteLog(DI.cSerial + ":准备开始设置APN信息");
                     APN apn = new APN();
                     apn.ApnName = p.APN;
@@ -731,7 +788,7 @@ namespace AutoBatchForProductionLine
                     apn.ApnPwd = p.APNPwd;
                     if (SetAPNInfo(LoginDevice, DevicePwd, apn))
                     {
-                        updateMessage(lstMsg,DI.cSerial + ":设置执法仪APN信息成功.");
+                        updateMessage(lstMsg, DI.cSerial + ":设置执法仪APN信息成功.");
                         p.WriteLog(DI.cSerial + ":设置执法仪APN信息成功.");
                     }
                 }
@@ -743,7 +800,7 @@ namespace AutoBatchForProductionLine
                 //GB28181
                 if (p.SetGB28181 == "1")
                 {
-                    updateMessage(lstMsg, DI.cSerial +":准备开始设置GB28181服务器信息");
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置GB28181服务器信息");
                     p.WriteLog(DI.cSerial + ":准备开始设置GB28181服务器信息");
                     GB28181Server gb2 = new GB28181Server();
                     gb2.ChannelID = p.GB2_ChnNo;
@@ -756,7 +813,7 @@ namespace AutoBatchForProductionLine
                     gb2.Enable = Convert.ToInt16(p.GB2_Enable);
                     if (SetGB28181Info(LoginDevice, DevicePwd, gb2))
                     {
-                        updateMessage(lstMsg,DI.cSerial+ ":设置GB28181类型服务器信息成功.");
+                        updateMessage(lstMsg, DI.cSerial + ":设置GB28181类型服务器信息成功.");
                         p.WriteLog(DI.cSerial + ":设置GB28181类型服务器信息成功.");
                     }
                 }
@@ -765,7 +822,7 @@ namespace AutoBatchForProductionLine
                 //CheckNet
                 if (p.SetCheckNet == "1")
                 {
-                    updateMessage(lstMsg, DI.cSerial +":准备开始设置网络检查服务器信息");
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置网络检查服务器信息");
                     p.WriteLog(DI.cSerial + ":准备开始设置网络检查服务器信息");
                     NetCheckServer nc = new NetCheckServer();
                     nc.IP = p.NetCheckIP;
@@ -773,7 +830,7 @@ namespace AutoBatchForProductionLine
                     nc.Enable = Convert.ToInt16(p.NetCheckEnable);
                     if (SetNetCheckServerInfo(LoginDevice, DevicePwd, nc))
                     {
-                        updateMessage(lstMsg, DI.cSerial +":设置NetCheck Server类型服务器信息成功.");
+                        updateMessage(lstMsg, DI.cSerial + ":设置NetCheck Server类型服务器信息成功.");
                         p.WriteLog(DI.cSerial + ":设置NetCheck Server类型服务器信息成功.");
                     }
                 }
@@ -786,12 +843,12 @@ namespace AutoBatchForProductionLine
                     {
                         if (p.GPS == "1")
                         {
-                            updateMessage(lstMsg,DI.cSerial + ":设置GPS状态(打开)成功.");
+                            updateMessage(lstMsg, DI.cSerial + ":设置GPS状态(打开)成功.");
                             p.WriteLog(DI.cSerial + ":设置GPS状态(打开)成功.");
                         }
                         if (p.GPS == "0")
                         {
-                            updateMessage(lstMsg, DI.cSerial +":设置GPS状态(关闭)成功.");
+                            updateMessage(lstMsg, DI.cSerial + ":设置GPS状态(关闭)成功.");
                             p.WriteLog(DI.cSerial + ":设置GPS状态(关闭)成功.");
                         }
                     }
@@ -800,19 +857,20 @@ namespace AutoBatchForProductionLine
                 //shutdown
                 if (p.SetPowerOff == "1")
                 {
-                   if ( BODYCAMDLL_API_YZ.BC_CtrlPowerOff(BCHandle, DevicePwd) ==1)
-                   {
-                       updateMessage(lstMsg, DI.cSerial + ":设备已关机");
-                       p.WriteLog(DI.cSerial + ":设备已关机");
-                   };
+                    if (BODYCAMDLL_API_YZ.BC_CtrlPowerOff(BCHandle, DevicePwd) == 1)
+                    {
+                        updateMessage(lstMsg, DI.cSerial + ":设备已关机");
+                        p.WriteLog(DI.cSerial + ":设备已关机");
+                    };
                 }
 
 
-                if (LoginDevice ==Vendor .EasyStorage)
+                if (LoginDevice == Vendor.EasyStorage)
                     BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
-                updateMessage(lstMsg,DI.cSerial + ":已完成配置,请拔出设备");
+                updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
                 p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
-                
+
+
 
 
             }
@@ -823,8 +881,34 @@ namespace AutoBatchForProductionLine
                 f.ShowDialog();
             }
 
+            SetItemState = true;
+            EndUnLockUI();
+
         }
 
+
+        private void StartLockUI()
+        {
+            comboBodyType.Enabled = false;
+           // grbItem.Enabled = false;
+            btnRestart.Enabled = false;
+            //btnAutoRun.Enabled = false;
+            btnOnlyOnce.Enabled = false;
+            btnSetting.Enabled = false;
+            btnClearInfo.Enabled = false;
+        }
+
+        private void EndUnLockUI()
+        {
+            comboBodyType.Enabled = true;
+           // grbItem.Enabled = true;
+            btnRestart.Enabled = true;
+           // btnAutoRun.Enabled = true;
+            btnOnlyOnce.Enabled = true;
+            btnSetting.Enabled = true;
+            btnClearInfo.Enabled = true;
+
+        }
 
 
 
@@ -842,12 +926,24 @@ namespace AutoBatchForProductionLine
             string item = string.Empty;
             //listbox.Items.Add("");
             item = DateTime.Now.ToString("HH:mm:ss") + " " + @message;
-            listbox.Items.Add(item);
+            if (listbox.InvokeRequired)
+            {
+                listbox.BeginInvoke(new Action<string>((msg) =>
+                    {
+                        listbox.Items.Add(msg);
+                    }), item);
+     
+            }
+            else
+            {
+                listbox.Items.Add(item);
+            }
             if (listbox.Items.Count > 1)
             {
                 listbox.TopIndex = listbox.Items.Count - 1;
                 listbox.SetSelected(listbox.Items.Count - 1, true);
             }
+        
         }
         #endregion
 
@@ -1182,7 +1278,8 @@ namespace AutoBatchForProductionLine
                 DialogResult dr = MessageBox.Show("是否确认退出软件,退出点击是(Y),不退出点击否(N)?", "Exit?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                 if (dr == DialogResult.Yes)
                 {
-                   // ezUSB.RemoveUSBEventWatcher();
+                    ezUSB.RemoveUSBEventWatcher();
+                    timer1.Stop();
                     Environment.Exit(0);
                 }
                 else
@@ -1196,10 +1293,28 @@ namespace AutoBatchForProductionLine
             if (dr == DialogResult.Yes)
             {
                 bRestart = true;
-               // ezUSB.RemoveUSBEventWatcher();
+                ezUSB.RemoveUSBEventWatcher();
+                timer1.Stop();
                 Application.Restart();
 
             }
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            if (CurrentUSB == USBState.YES && !SetItemState )
+            {
+
+                RunSetItem();
+            }
+            timer1.Start();
+
+        }
+
+        private void btnClearInfo_Click(object sender, EventArgs e)
+        {
+            lstMsg.Items.Clear();
         }
     }
 }

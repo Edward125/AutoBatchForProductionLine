@@ -31,9 +31,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>System_preferences_tool_tools_128px_581754_easyicon.net.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,6 +61,7 @@
       <DependentUpon>frmSetting.cs</DependentUpon>
     </Compile>
     <Compile Include="IniFile.cs" />
+    <Compile Include="ManagementEventWatcher.cs" />
     <Compile Include="Other.cs" />
     <Compile Include="p.cs" />
     <Compile Include="Program.cs" />
@@ -65,6 +70,7 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SDK.cs" />
+    <Compile Include="USBWatcher.cs" />
     <Compile Include="WaterTextBox.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -108,6 +114,7 @@
     <Content Include="logo.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="System_preferences_tool_tools_128px_581754_easyicon.net.ico" />
     <Content Include="zfyMC.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

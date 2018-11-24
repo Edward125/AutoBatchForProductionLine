@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.comboBodyType = new System.Windows.Forms.ComboBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.grbItem = new System.Windows.Forms.GroupBox();
             this.btnSetting = new System.Windows.Forms.Button();
             this.chkSetPoweOff = new System.Windows.Forms.CheckBox();
             this.chkSetGPS = new System.Windows.Forms.CheckBox();
@@ -42,14 +44,14 @@
             this.chkSetWiFi = new System.Windows.Forms.CheckBox();
             this.chkSyncTime = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.lstInfo = new System.Windows.Forms.ListView();
             this.lstMsg = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
-            this.btnAutoRun = new System.Windows.Forms.Button();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.btnClearInfo = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -89,23 +91,23 @@
             this.comboBodyType.TabIndex = 2;
             this.comboBodyType.SelectedIndexChanged += new System.EventHandler(this.cmboBodyType_SelectedIndexChanged);
             // 
-            // groupBox1
+            // grbItem
             // 
-            this.groupBox1.Controls.Add(this.btnSetting);
-            this.groupBox1.Controls.Add(this.chkSetPoweOff);
-            this.groupBox1.Controls.Add(this.chkSetGPS);
-            this.groupBox1.Controls.Add(this.chkSetAPN);
-            this.groupBox1.Controls.Add(this.chkSetCheckNet);
-            this.groupBox1.Controls.Add(this.chkSetGB28181);
-            this.groupBox1.Controls.Add(this.chkSetCMSV6);
-            this.groupBox1.Controls.Add(this.chkSetWiFi);
-            this.groupBox1.Controls.Add(this.chkSyncTime);
-            this.groupBox1.Location = new System.Drawing.Point(12, 74);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(145, 230);
-            this.groupBox1.TabIndex = 2;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "项目设置";
+            this.grbItem.Controls.Add(this.btnSetting);
+            this.grbItem.Controls.Add(this.chkSetPoweOff);
+            this.grbItem.Controls.Add(this.chkSetGPS);
+            this.grbItem.Controls.Add(this.chkSetAPN);
+            this.grbItem.Controls.Add(this.chkSetCheckNet);
+            this.grbItem.Controls.Add(this.chkSetGB28181);
+            this.grbItem.Controls.Add(this.chkSetCMSV6);
+            this.grbItem.Controls.Add(this.chkSetWiFi);
+            this.grbItem.Controls.Add(this.chkSyncTime);
+            this.grbItem.Location = new System.Drawing.Point(12, 74);
+            this.grbItem.Name = "grbItem";
+            this.grbItem.Size = new System.Drawing.Size(145, 230);
+            this.grbItem.TabIndex = 2;
+            this.grbItem.TabStop = false;
+            this.grbItem.Text = "项目设置";
             // 
             // btnSetting
             // 
@@ -240,23 +242,13 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.lstInfo);
             this.groupBox3.Controls.Add(this.lstMsg);
             this.groupBox3.Location = new System.Drawing.Point(163, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(804, 408);
+            this.groupBox3.Size = new System.Drawing.Size(682, 408);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "信息列表";
-            // 
-            // lstInfo
-            // 
-            this.lstInfo.Location = new System.Drawing.Point(483, 19);
-            this.lstInfo.Name = "lstInfo";
-            this.lstInfo.Size = new System.Drawing.Size(315, 377);
-            this.lstInfo.TabIndex = 1;
-            this.lstInfo.UseCompatibleStateImageBehavior = false;
-            this.lstInfo.View = System.Windows.Forms.View.Details;
             // 
             // lstMsg
             // 
@@ -264,14 +256,14 @@
             this.lstMsg.ItemHeight = 12;
             this.lstMsg.Location = new System.Drawing.Point(15, 20);
             this.lstMsg.Name = "lstMsg";
-            this.lstMsg.Size = new System.Drawing.Size(462, 376);
+            this.lstMsg.Size = new System.Drawing.Size(659, 376);
             this.lstMsg.TabIndex = 0;
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.btnClearInfo);
             this.groupBox4.Controls.Add(this.btnRestart);
             this.groupBox4.Controls.Add(this.btnOnlyOnce);
-            this.groupBox4.Controls.Add(this.btnAutoRun);
             this.groupBox4.Location = new System.Drawing.Point(12, 310);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(145, 125);
@@ -281,7 +273,7 @@
             // btnRestart
             // 
             this.btnRestart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnRestart.Location = new System.Drawing.Point(19, 85);
+            this.btnRestart.Location = new System.Drawing.Point(19, 51);
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(102, 30);
             this.btnRestart.TabIndex = 2;
@@ -292,7 +284,7 @@
             // btnOnlyOnce
             // 
             this.btnOnlyOnce.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnOnlyOnce.Location = new System.Drawing.Point(19, 50);
+            this.btnOnlyOnce.Location = new System.Drawing.Point(19, 16);
             this.btnOnlyOnce.Name = "btnOnlyOnce";
             this.btnOnlyOnce.Size = new System.Drawing.Size(102, 30);
             this.btnOnlyOnce.TabIndex = 1;
@@ -300,27 +292,36 @@
             this.btnOnlyOnce.UseVisualStyleBackColor = true;
             this.btnOnlyOnce.Click += new System.EventHandler(this.btnOnlyOnce_Click);
             // 
-            // btnAutoRun
+            // timer1
             // 
-            this.btnAutoRun.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnAutoRun.Location = new System.Drawing.Point(19, 15);
-            this.btnAutoRun.Name = "btnAutoRun";
-            this.btnAutoRun.Size = new System.Drawing.Size(102, 30);
-            this.btnAutoRun.TabIndex = 0;
-            this.btnAutoRun.Text = "自动侦测运行";
-            this.btnAutoRun.UseVisualStyleBackColor = true;
+            this.timer1.Enabled = true;
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // btnClearInfo
+            // 
+            this.btnClearInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnClearInfo.Location = new System.Drawing.Point(19, 87);
+            this.btnClearInfo.Name = "btnClearInfo";
+            this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
+            this.btnClearInfo.TabIndex = 3;
+            this.btnClearInfo.Text = "清楚信息列表";
+            this.btnClearInfo.UseVisualStyleBackColor = true;
+            this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(983, 454);
+            this.ClientSize = new System.Drawing.Size(856, 446);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
-            this.Controls.Add(this.groupBox1);
+            this.Controls.Add(this.grbItem);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "frmMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Form1";
@@ -328,8 +329,8 @@
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.grbItem.ResumeLayout(false);
+            this.grbItem.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -341,7 +342,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox comboBodyType;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox grbItem;
         private System.Windows.Forms.CheckBox chkSetPoweOff;
         private System.Windows.Forms.CheckBox chkSetGPS;
         private System.Windows.Forms.CheckBox chkSetCheckNet;
@@ -353,11 +354,11 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnOnlyOnce;
-        private System.Windows.Forms.Button btnAutoRun;
         private System.Windows.Forms.Button btnRestart;
-        private System.Windows.Forms.ListView lstInfo;
         private System.Windows.Forms.ListBox lstMsg;
         private System.Windows.Forms.Button btnSetting;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button btnClearInfo;
     }
 }
 
