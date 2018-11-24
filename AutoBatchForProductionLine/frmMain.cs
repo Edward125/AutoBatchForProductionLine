@@ -271,6 +271,7 @@ namespace AutoBatchForProductionLine
 
         private void cmboBodyType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            p.CurrentDevice = comboBodyType.Text;
             IniFile.IniWriteValue("SysConfig", "CurrentDevice", comboBodyType.Text);
             switch (comboBodyType.Text)
             {
@@ -710,6 +711,16 @@ namespace AutoBatchForProductionLine
 
         private void RunSetItem()
         {
+
+            if (string.IsNullOrEmpty(p.CurrentDevice))
+            {
+                MessageBox.Show("请选选择执法仪型号", "未选择执法仪型号", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                comboBodyType.Focus();
+                SetItemState = true;
+                return;
+            }
+
+
             StartLockUI();
             int Init_Device_iRet = -1;
             byte[] _IDCode = new byte[5];
