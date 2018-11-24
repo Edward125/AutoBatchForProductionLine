@@ -150,6 +150,7 @@ namespace AutoBatchForProductionLine
 
         private void LoadData()
         {
+            this.Text = "详细参数设置,Ver:" + Application.ProductVersion;
             //
             txtWiFiSSID.Text = p.WiFiSSID;
             txtWiFiPwd.Text = p.WiFiPwd;

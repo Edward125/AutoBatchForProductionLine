@@ -30,6 +30,7 @@ namespace AutoBatchForProductionLine
         private static IntPtr BCHandle = IntPtr.Zero;
         private static string DevicePwd = "000000";
         public static string IDCode = string.Empty;
+        public static bool bRestart = false;
 
         public enum Model
         {
@@ -133,6 +134,8 @@ namespace AutoBatchForProductionLine
 
         private void LoadData()
         {
+            this.Text = "自动设置执法仪信息工具,Ver:" + Application.ProductVersion;
+            bRestart = false;
             if (!string.IsNullOrEmpty(p.CurrentDevice))
                 comboBodyType.Text = p.CurrentDevice;
             switch (p.CurrentDevice)
@@ -624,17 +627,9 @@ namespace AutoBatchForProductionLine
             byte[] _IDCode = new byte[5];
             p.CheckParamErrorCode = CheckSetting();
          
-            
-
-
-
-
-
-
 
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
-
 
                 if (LoginDevice == Vendor.Cammpro)
                 {
@@ -745,6 +740,15 @@ namespace AutoBatchForProductionLine
                             updateMessage(lstMsg, "设置GPS状态(关闭)成功.");
                     }
                 }
+
+                //shutdown
+                if (p.SetPowerOff == "1")
+                {
+                   if ( BODYCAMDLL_API_YZ.BC_CtrlPowerOff(BCHandle, DevicePwd) ==1)
+                       updateMessage(lstMsg, "设备已关机");
+                }
+
+
                 if (LoginDevice ==Vendor .EasyStorage)
                     BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
                 updateMessage(lstMsg, "已完成配置,请拔出设备");
@@ -1049,5 +1053,37 @@ namespace AutoBatchForProductionLine
 
 
         #endregion
+
+        private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (bRestart)
+            {
+                //ezUSB.RemoveUSBEventWatcher();
+                //Environment.Exit(0);
+            }
+            else
+            {
+                DialogResult dr = MessageBox.Show("是否确认退出软件,退出点击是(Y),不退出点击否(N)?", "Exit?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (dr == DialogResult.Yes)
+                {
+                   // ezUSB.RemoveUSBEventWatcher();
+                    Environment.Exit(0);
+                }
+                else
+                    e.Cancel = true;
+            }
+        }
+
+        private void btnRestart_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("是否确认重启软件,退出点击是(Y),不退出点击否(N)?", "Restart?", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (dr == DialogResult.Yes)
+            {
+                bRestart = true;
+               // ezUSB.RemoveUSBEventWatcher();
+                Application.Restart();
+
+            }
+        }
     }
 }

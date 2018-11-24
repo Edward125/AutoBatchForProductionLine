@@ -1224,7 +1224,7 @@ namespace SDK
         *************************************************/
         //BODYCAMDLL_API int  BC_CtrlPowerOff(IN BCHandle *dev,IN char *sPwd);
         [DllImport("LibBodycam.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int BC_CtrlPowerOff(IntPtr dev, byte sPwd);
+        public static extern int BC_CtrlPowerOff(IntPtr dev, string sPwd);
 
 
         /*************************************************
