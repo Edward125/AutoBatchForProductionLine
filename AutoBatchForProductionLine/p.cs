@@ -30,6 +30,16 @@ namespace AutoBatchForProductionLine
         public static string SetFormat = "0";
         public static string SetPowerOff = "0";
 
+
+
+        //SN
+        public static string StartSN = string.Empty;
+        public static string EndSN = string.Empty;
+        public static string SN_userNo = "000000";
+        public static string SN_userName = string.Empty;
+        public static string SN_unitNo = string.Empty;
+        public static string SN_unitName = string.Empty;
+
         //WiFi
         public static string WiFiSSID = string.Empty;
         public static string WiFiPwd = string.Empty;
@@ -54,6 +64,7 @@ namespace AutoBatchForProductionLine
         public static string NetCheckIP = "127.0.0.1";
         public static string NetCheckPort = "554";
         public static string NetCheckEnable = "0";
+
         //GPS
         public static string GPS = "0";
         //PowerOff
@@ -79,8 +90,6 @@ namespace AutoBatchForProductionLine
             GB2_ChnNo,
             GB2_SerNo,
             GB2_Passwd
-
-
         }
 
 

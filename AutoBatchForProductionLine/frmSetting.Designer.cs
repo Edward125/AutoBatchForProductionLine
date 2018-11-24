@@ -238,6 +238,7 @@
             this.txtCMSV6ReportTime.Size = new System.Drawing.Size(53, 21);
             this.txtCMSV6ReportTime.TabIndex = 8;
             this.txtCMSV6ReportTime.TextChanged += new System.EventHandler(this.txtCMSV6ReportTime_TextChanged);
+            this.txtCMSV6ReportTime.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCMSV6ReportTime_KeyPress);
             // 
             // label8
             // 
@@ -273,6 +274,7 @@
             this.txtCMSV6Port.Size = new System.Drawing.Size(53, 21);
             this.txtCMSV6Port.TabIndex = 7;
             this.txtCMSV6Port.TextChanged += new System.EventHandler(this.txtCMSV6Port_TextChanged);
+            this.txtCMSV6Port.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCMSV6Port_KeyPress);
             // 
             // txtCMSV6IP
             // 
@@ -417,6 +419,7 @@
             this.txtGB2_Port.Size = new System.Drawing.Size(42, 21);
             this.txtGB2_Port.TabIndex = 10;
             this.txtGB2_Port.TextChanged += new System.EventHandler(this.txtGP2_Port_TextChanged);
+            this.txtGB2_Port.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtGB2_Port_KeyPress);
             // 
             // label11
             // 
@@ -494,6 +497,7 @@
             this.txtCheckNetPort.Size = new System.Drawing.Size(47, 21);
             this.txtCheckNetPort.TabIndex = 20;
             this.txtCheckNetPort.TextChanged += new System.EventHandler(this.txtCheckNetPort_TextChanged);
+            this.txtCheckNetPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCheckNetPort_KeyPress);
             // 
             // txtCheckNetIP
             // 
@@ -596,16 +600,22 @@
             // txtStartSN
             // 
             this.txtStartSN.Location = new System.Drawing.Point(62, 18);
+            this.txtStartSN.MaxLength = 7;
             this.txtStartSN.Name = "txtStartSN";
             this.txtStartSN.Size = new System.Drawing.Size(89, 21);
             this.txtStartSN.TabIndex = 0;
+            this.txtStartSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtStartSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtStartSN_KeyPress);
             // 
             // txtEndSN
             // 
             this.txtEndSN.Location = new System.Drawing.Point(219, 18);
+            this.txtEndSN.MaxLength = 7;
             this.txtEndSN.Name = "txtEndSN";
             this.txtEndSN.Size = new System.Drawing.Size(82, 21);
             this.txtEndSN.TabIndex = 1;
+            this.txtEndSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtEndSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtEndSN_KeyPress);
             // 
             // label20
             // 
@@ -640,6 +650,8 @@
             this.txtTotalSN.Name = "txtTotalSN";
             this.txtTotalSN.Size = new System.Drawing.Size(42, 21);
             this.txtTotalSN.TabIndex = 5;
+            this.txtTotalSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtTotalSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTotalSN_KeyPress);
             // 
             // label23
             // 
@@ -653,9 +665,12 @@
             // txtSN_userNo
             // 
             this.txtSN_userNo.Location = new System.Drawing.Point(62, 44);
+            this.txtSN_userNo.MaxLength = 6;
             this.txtSN_userNo.Name = "txtSN_userNo";
             this.txtSN_userNo.Size = new System.Drawing.Size(89, 21);
             this.txtSN_userNo.TabIndex = 7;
+            this.txtSN_userNo.Text = "000000";
+            this.txtSN_userNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label24
             // 
@@ -669,9 +684,11 @@
             // txtSN_userName
             // 
             this.txtSN_userName.Location = new System.Drawing.Point(219, 42);
+            this.txtSN_userName.MaxLength = 12;
             this.txtSN_userName.Name = "txtSN_userName";
             this.txtSN_userName.Size = new System.Drawing.Size(176, 21);
             this.txtSN_userName.TabIndex = 9;
+            this.txtSN_userName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label25
             // 
@@ -688,13 +705,16 @@
             this.txtSN_unitNo.Name = "txtSN_unitNo";
             this.txtSN_unitNo.Size = new System.Drawing.Size(89, 21);
             this.txtSN_unitNo.TabIndex = 11;
+            this.txtSN_unitNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // txtSN_unitName
             // 
             this.txtSN_unitName.Location = new System.Drawing.Point(219, 68);
+            this.txtSN_unitName.MaxLength = 32;
             this.txtSN_unitName.Name = "txtSN_unitName";
             this.txtSN_unitName.Size = new System.Drawing.Size(176, 21);
             this.txtSN_unitName.TabIndex = 12;
+            this.txtSN_unitName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label26
             // 
