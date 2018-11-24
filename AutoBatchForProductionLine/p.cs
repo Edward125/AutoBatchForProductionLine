@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using Edward;
 
+
 namespace AutoBatchForProductionLine
 {
     class p
@@ -13,6 +14,7 @@ namespace AutoBatchForProductionLine
 
 
         public static string AppFolder = Application.StartupPath +@"\自动生产工具";
+        public static string LogFolder = AppFolder  + @"\Log";
         public static string IniPath = AppFolder + @"\SysConfig.ini";
         
         //SysConfig
@@ -54,7 +56,6 @@ namespace AutoBatchForProductionLine
         //PowerOff
         public static string PowerOff = "0";
 
-
         public static SetErrorCode CheckParamErrorCode;
 
         public   enum SetErrorCode
@@ -87,8 +88,26 @@ namespace AutoBatchForProductionLine
         {
             if (!Directory.Exists(AppFolder))
                 Directory.CreateDirectory(AppFolder);
+            if (!Directory.Exists(LogFolder))
+                Directory.CreateDirectory(LogFolder);
 
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log"></param>
+        public static void WriteLog(string log)
+        {
+            string logfile = LogFolder + @"\" + DateTime.Now.ToString("yyyyMMdd") + ".log";
+            StreamWriter sw = new StreamWriter(logfile, true);
+            log = DateTime .Now.ToString ("hh:mm:ss") +"->" +log;
+            sw.WriteLine(log);
+            sw.Close();
+
+        }
+
+
 
         public static void CreateIni()
         {

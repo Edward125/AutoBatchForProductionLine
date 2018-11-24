@@ -112,6 +112,20 @@ namespace AutoBatchForProductionLine
         }
 
 
+        /// <summary>
+        /// 设备的信息(序列号等等)
+        /// </summary>
+        public class DeviceInfo
+        {
+            public string cSerial { get; set; }
+            public string userNo { get; set; }
+            public string userName { get; set; }
+            public string unitNo { get; set; }
+            public string unitName { get; set; }
+
+        }
+
+
         #endregion
 
 
@@ -625,6 +639,7 @@ namespace AutoBatchForProductionLine
 
             int Init_Device_iRet = -1;
             byte[] _IDCode = new byte[5];
+             DeviceInfo DI = new DeviceInfo();
             p.CheckParamErrorCode = CheckSetting();
          
 
@@ -643,7 +658,12 @@ namespace AutoBatchForProductionLine
                     BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
                     IDCode = System.Text.Encoding.Default.GetString(_IDCode, 0, _IDCode.Length);
                     if (BCHandle != IntPtr.Zero)
-                        updateMessage(lstMsg, "检测到设备" + IDCode + ".");
+                    {
+                       
+                        GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                        updateMessage(lstMsg, "检测到设备" + IDCode + ",SN:" + DI.cSerial);
+                        p.WriteLog ("检测到设备" + IDCode + ",SN:" + DI.cSerial);   
+                    }
                     else
                         return;
                 }
@@ -651,47 +671,69 @@ namespace AutoBatchForProductionLine
                 //
                 if (p.SyncTime == "1")
                 {
-                    updateMessage(lstMsg, "准备开始同步时间");
+                    updateMessage(lstMsg,DI.cSerial + ":准备开始同步时间");
+                    p.WriteLog(DI.cSerial + ":准备开始同步时间");
                     if (SyncDeviceTime(LoginDevice, DevicePwd))
-                        updateMessage(lstMsg, "同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
+                    {
+                        updateMessage(lstMsg, DI.cSerial + ":同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
+                        p.WriteLog(DI.cSerial + ":同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
+                    }
                     else
-                        updateMessage(lstMsg, "同步设备时间失败.");
+                    {
+                        updateMessage(lstMsg, DI.cSerial + ":同步设备时间失败.");
+                        p.WriteLog(DI.cSerial + ":同步设备时间失败.");
+                    }
                 }
                 //WiFi
                 if (p.SetWiFi == "1")
                 {
-                    updateMessage(lstMsg, "准备开始设置WiFi信息");
+                    updateMessage(lstMsg,DI.cSerial + ":准备开始设置WiFi信息");
+                    p.WriteLog(DI.cSerial + ":准备开始设置WiFi信息");
                     WiFi _wifi = new WiFi();
                     _wifi.WiFiSSID = p.WiFiSSID;
                     _wifi.WiFiPassword = p.WiFiPwd;
                     if (SetWiFiInfo(LoginDevice, DevicePwd, _wifi))
-                        updateMessage(lstMsg, "设置执法仪WiFi信息成功，SSID:"  + p.WiFiSSID +",Pwd:" + p.WiFiPwd );
+                    {
+                        updateMessage(lstMsg, DI.cSerial + ":设置执法仪WiFi信息成功，SSID:" + p.WiFiSSID + ",Pwd:" + p.WiFiPwd);
+                        p.WriteLog(DI.cSerial + ":设置执法仪WiFi信息成功，SSID:" + p.WiFiSSID + ",Pwd:" + p.WiFiPwd);
+                    }
                     else
-                        updateMessage(lstMsg, "设置执法仪WiFi信息失败.");
+                    {
+                        updateMessage(lstMsg,DI.cSerial + ":设置执法仪WiFi信息失败.");
+                        p.WriteLog(DI.cSerial + ":设置执法仪WiFi信息失败.");
+                    }
                 }
                 // CMSV6
                 if (p.SetCMSV6 == "1")
                 {
-                    updateMessage(lstMsg, "准备开始设置CMSV6服务器信息");
+                    updateMessage(lstMsg, DI.cSerial +":准备开始设置CMSV6服务器信息");
+                    p.WriteLog(DI.cSerial + ":准备开始设置CMSV6服务器信息");
                     CMCSV6Server cs6 = new CMCSV6Server();
                     cs6.ServerIP = p.CMSV6IP;
                     cs6.ServerPort = p.CMSV6Port;
                     cs6.ReportTime = Convert.ToInt16(p.CMSV6ReportTime);
                     if (SetCMSV6Info(LoginDevice, DevicePwd, cs6))
-                        updateMessage(lstMsg, "设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
+                    {
+                        updateMessage(lstMsg,DI.cSerial + ":设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
+                        p.WriteLog(DI.cSerial + ":设置CMSV6类型服务器信息成功,IP:" + p.CMSV6IP + ",Port:" + p.CMSV6Port);
+                    }
                 }
 
 
                 //APN
                 if (p.SetAPN == "1")
                 {
-                    updateMessage(lstMsg, "准备开始设置APN信息");
+                    updateMessage(lstMsg, DI.cSerial +":准备开始设置APN信息");
+                    p.WriteLog(DI.cSerial + ":准备开始设置APN信息");
                     APN apn = new APN();
                     apn.ApnName = p.APN;
                     apn.ApnUser = p.APNUser;
                     apn.ApnPwd = p.APNPwd;
-                    if (SetAPNInfo(LoginDevice, DevicePwd , apn))
-                        updateMessage(lstMsg, "设置执法仪APN信息成功.");
+                    if (SetAPNInfo(LoginDevice, DevicePwd, apn))
+                    {
+                        updateMessage(lstMsg,DI.cSerial + ":设置执法仪APN信息成功.");
+                        p.WriteLog(DI.cSerial + ":设置执法仪APN信息成功.");
+                    }
                 }
 
 
@@ -701,7 +743,8 @@ namespace AutoBatchForProductionLine
                 //GB28181
                 if (p.SetGB28181 == "1")
                 {
-                    updateMessage(lstMsg, "准备开始设置GB28181服务器信息");
+                    updateMessage(lstMsg, DI.cSerial +":准备开始设置GB28181服务器信息");
+                    p.WriteLog(DI.cSerial + ":准备开始设置GB28181服务器信息");
                     GB28181Server gb2 = new GB28181Server();
                     gb2.ChannelID = p.GB2_ChnNo;
                     gb2.ChannelName = p.GB2_ChnName;
@@ -711,21 +754,28 @@ namespace AutoBatchForProductionLine
                     gb2.DeviceID = p.GB2_DevNo;
                     gb2.ServerID = p.GB2_ServNo;
                     gb2.Enable = Convert.ToInt16(p.GB2_Enable);
-                    if (SetGB28181Info(LoginDevice, DevicePwd , gb2))
-                        updateMessage(lstMsg , "设置GB28181类型服务器信息成功.");
+                    if (SetGB28181Info(LoginDevice, DevicePwd, gb2))
+                    {
+                        updateMessage(lstMsg,DI.cSerial+ ":设置GB28181类型服务器信息成功.");
+                        p.WriteLog(DI.cSerial + ":设置GB28181类型服务器信息成功.");
+                    }
                 }
 
 
                 //CheckNet
                 if (p.SetCheckNet == "1")
                 {
-                    updateMessage(lstMsg, "准备开始设置网络检查服务器信息");
+                    updateMessage(lstMsg, DI.cSerial +":准备开始设置网络检查服务器信息");
+                    p.WriteLog(DI.cSerial + ":准备开始设置网络检查服务器信息");
                     NetCheckServer nc = new NetCheckServer();
                     nc.IP = p.NetCheckIP;
                     nc.Port = p.NetCheckPort;
                     nc.Enable = Convert.ToInt16(p.NetCheckEnable);
-                    if (SetNetCheckServerInfo(LoginDevice, DevicePwd , nc))
-                        updateMessage(lstMsg , "设置NetCheck Server类型服务器信息成功.");
+                    if (SetNetCheckServerInfo(LoginDevice, DevicePwd, nc))
+                    {
+                        updateMessage(lstMsg, DI.cSerial +":设置NetCheck Server类型服务器信息成功.");
+                        p.WriteLog(DI.cSerial + ":设置NetCheck Server类型服务器信息成功.");
+                    }
                 }
 
 
@@ -735,9 +785,15 @@ namespace AutoBatchForProductionLine
                     if (SetGPSInfo(LoginDevice, DevicePwd, p.GPS))
                     {
                         if (p.GPS == "1")
-                            updateMessage(lstMsg, "设置GPS状态(打开)成功.");
+                        {
+                            updateMessage(lstMsg,DI.cSerial + ":设置GPS状态(打开)成功.");
+                            p.WriteLog(DI.cSerial + ":设置GPS状态(打开)成功.");
+                        }
                         if (p.GPS == "0")
-                            updateMessage(lstMsg, "设置GPS状态(关闭)成功.");
+                        {
+                            updateMessage(lstMsg, DI.cSerial +":设置GPS状态(关闭)成功.");
+                            p.WriteLog(DI.cSerial + ":设置GPS状态(关闭)成功.");
+                        }
                     }
                 }
 
@@ -745,13 +801,18 @@ namespace AutoBatchForProductionLine
                 if (p.SetPowerOff == "1")
                 {
                    if ( BODYCAMDLL_API_YZ.BC_CtrlPowerOff(BCHandle, DevicePwd) ==1)
-                       updateMessage(lstMsg, "设备已关机");
+                   {
+                       updateMessage(lstMsg, DI.cSerial + ":设备已关机");
+                       p.WriteLog(DI.cSerial + ":设备已关机");
+                   };
                 }
 
 
                 if (LoginDevice ==Vendor .EasyStorage)
                     BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
-                updateMessage(lstMsg, "已完成配置,请拔出设备");
+                updateMessage(lstMsg,DI.cSerial + ":已完成配置,请拔出设备");
+                p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
+                
 
 
             }
@@ -1050,6 +1111,61 @@ namespace AutoBatchForProductionLine
 
             return false;
         }
+
+
+
+        /// <summary>
+        /// 获取设备硬件信息,序列号等
+        /// </summary>
+        /// <param name="devicetype"></param>
+        /// <param name="password"></param>
+        /// <param name="deviceinfo"></param>
+        /// <returns>true 成功,false 不成功</returns>
+        private bool GetDeviceInfo(Vendor devicetype, string password, out DeviceInfo deviceinfo)
+        {
+
+            deviceinfo = new DeviceInfo();
+            int GetZFYInfo_iRet = -1;
+            if (LoginDevice == Vendor.Cammpro)
+            {
+                ZFYDLL_API_MC.ZFY_INFO uuDevice = new ZFYDLL_API_MC.ZFY_INFO();//执法仪结构信息定义
+                ZFYDLL_API_MC.GetZFYInfo(ref uuDevice, password, ref GetZFYInfo_iRet);
+                if (GetZFYInfo_iRet == 1)
+                {
+
+                    deviceinfo.cSerial = System.Text.Encoding.Default.GetString(uuDevice.cSerial);
+                    deviceinfo.userNo = System.Text.Encoding.Default.GetString(uuDevice.userNo);
+                    deviceinfo.userName = System.Text.Encoding.Default.GetString(uuDevice.userName);
+                    deviceinfo.unitNo = System.Text.Encoding.Default.GetString(uuDevice.unitNo);
+                    deviceinfo.unitName = System.Text.Encoding.Default.GetString(uuDevice.unitName);
+                    return true;
+                }
+                else
+                    return false;
+            }
+            if (LoginDevice == Vendor .EasyStorage)
+            {
+                //BODYCAMDLL_API_YZ.ZFY_INFO uuDevice = new BODYCAMDLL_API_YZ.ZFY_INFO();//执法仪结构信息定义
+                BODYCAMDLL_API_YZ.ZFY_INFO_N uuDevice = new BODYCAMDLL_API_YZ.ZFY_INFO_N();
+                GetZFYInfo_iRet = BODYCAMDLL_API_YZ.BC_GetDevInfo(BCHandle, password, out uuDevice);
+                // BODYCAMDLL_API_YZ.GetZFYInfo(ref uuDevice, password, ref GetZFYInfo_iRet);
+                if (GetZFYInfo_iRet == 1)
+                {
+
+                    deviceinfo.cSerial = uuDevice.cSerial;
+                    deviceinfo.userNo = uuDevice.userNo;
+                    deviceinfo.userName = uuDevice.userName;
+                    deviceinfo.unitNo = uuDevice.unitNo;
+                    deviceinfo.unitName = uuDevice.unitName;
+                    return true;
+                }
+                else
+                    return false;
+            }
+            return false;
+
+        }
+
 
 
         #endregion

@@ -185,9 +185,7 @@ namespace AutoBatchForProductionLine
             if (p.GPS == "1")
                 rabOpenGPS.Checked = true;
             else
-                rabCloseGPS.Checked = false;
-
-
+                rabCloseGPS.Checked = true;
 
             switch (p.CheckParamErrorCode)
             {
