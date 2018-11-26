@@ -33,8 +33,8 @@ namespace AutoBatchForProductionLine
 
 
         //SN
-        public static string StartSN = string.Empty;
-        public static string EndSN = string.Empty;
+        public static string StartSN = "0000000";
+        public static string EndSN = "0000000";
         public static string SN_userNo = "000000";
         public static string SN_userName = string.Empty;
         public static string SN_unitNo = string.Empty;
@@ -64,11 +64,18 @@ namespace AutoBatchForProductionLine
         public static string NetCheckIP = "127.0.0.1";
         public static string NetCheckPort = "554";
         public static string NetCheckEnable = "0";
+        //
+        public static string Format = "FAT32";
 
         //GPS
         public static string GPS = "0";
         //PowerOff
         public static string PowerOff = "0";
+
+        public static FSTYPE_E FsType = FSTYPE_E.FS_FAT32;
+
+
+        
 
         public static SetErrorCode CheckParamErrorCode;
 
@@ -84,6 +91,10 @@ namespace AutoBatchForProductionLine
             APNPwd,
             CheckNetIP,
             CheckNetPort,
+            StartSNEmpty,
+            EndSNEmpty,
+            StartSNStartNotMatch,
+            EndSNStartNotMacth,
             GB2_IP,
             GB2_Port,
             GB2_DevNo,
@@ -91,6 +102,14 @@ namespace AutoBatchForProductionLine
             GB2_SerNo,
             GB2_Passwd
         }
+
+        public enum FSTYPE_E
+        {
+            FS_FAT32 = 1,
+            FS_EXFAT
+        }
+
+       
 
 
         /// <summary>
@@ -141,6 +160,9 @@ namespace AutoBatchForProductionLine
                 IniFile.IniWriteValue("SysConfig", "SetFormat", p.SetFormat);
                 IniFile.IniWriteValue("SysConfig", "SetPowerOff", SetPowerOff);
                 //
+                IniFile.IniWriteValue("SN", "StartSN", StartSN);
+                IniFile.IniWriteValue("SN", "EndSN", EndSN);
+                //
                 IniFile.IniWriteValue("WiFi", "WiFiSSID", WiFiSSID);
                 IniFile.IniWriteValue("WiFi", "WiFiSSID", WiFiPwd);
                 //
@@ -164,6 +186,8 @@ namespace AutoBatchForProductionLine
                 IniFile.IniWriteValue("NetCheck", "NetCheckIP", NetCheckIP);
                 IniFile.IniWriteValue("NetCheck", "NetCheckPort", NetCheckPort);
                 IniFile.IniWriteValue("NetCheck", "NetCheckEnable", NetCheckEnable);
+                //
+                IniFile.IniWriteValue("Format", "Format", Format);
                 //
                 IniFile.IniWriteValue("GPS", "GPS", GPS);
                 //

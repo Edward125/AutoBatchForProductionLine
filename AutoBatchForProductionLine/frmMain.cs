@@ -609,6 +609,18 @@ namespace AutoBatchForProductionLine
                     switch (LoginModel)
 	                        {
                                 case Model.H6:
+                                    if (p.SetSN == "1")
+                                    {
+                                        if (string.IsNullOrEmpty(p.StartSN))
+                                            return p.SetErrorCode.StartSNEmpty;
+                                        if (string.IsNullOrEmpty(p.EndSN))
+                                            return p.SetErrorCode.EndSNEmpty;
+                                        if (!p.StartSN.StartsWith("6"))
+                                            return p.SetErrorCode.StartSNStartNotMatch;
+                                        if (!p.EndSN.StartsWith("6"))
+                                            return p.SetErrorCode.EndSNStartNotMacth;
+                                    }
+
                                     break;
                                 case Model.H8:
                                     break;
@@ -622,6 +634,19 @@ namespace AutoBatchForProductionLine
                                             if (string.IsNullOrEmpty(p.WiFiPwd))
                                                 return p.SetErrorCode.WIFIPWD;
                                          }
+
+                                     if (p.SetSN == "1")
+                                     {
+                                         if (string.IsNullOrEmpty(p.StartSN))
+                                             return p.SetErrorCode.StartSNEmpty;
+                                         if (string.IsNullOrEmpty(p.EndSN))
+                                             return p.SetErrorCode.EndSNEmpty;
+                                         if (!p.StartSN.StartsWith("6"))
+                                             return p.SetErrorCode.StartSNStartNotMatch;
+                                         if (!p.EndSN.StartsWith("6"))
+                                             return p.SetErrorCode.EndSNStartNotMacth;
+                                     }
+
                                      if (p.SetCMSV6 == "1")
                                          {
                                             if (string.IsNullOrEmpty(p.CMSV6IP))
@@ -694,6 +719,13 @@ namespace AutoBatchForProductionLine
 	                        }
                     break;
                 default:
+                    if (p.SetSN == "1")
+                    {
+                        if (string.IsNullOrEmpty(p.StartSN))
+                            return p.SetErrorCode.StartSNEmpty;
+                        if (string.IsNullOrEmpty(p.EndSN))
+                            return p.SetErrorCode.EndSNEmpty;
+                    }
                     break;
             }
 

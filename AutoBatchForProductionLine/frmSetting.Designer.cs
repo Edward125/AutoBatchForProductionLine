@@ -75,23 +75,23 @@
             this.rabOpenGPS = new System.Windows.Forms.RadioButton();
             this.rabCloseGPS = new System.Windows.Forms.RadioButton();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.comboFormat = new System.Windows.Forms.ComboBox();
             this.label19 = new System.Windows.Forms.Label();
+            this.comboFormat = new System.Windows.Forms.ComboBox();
             this.groupBox8 = new System.Windows.Forms.GroupBox();
-            this.txtStartSN = new System.Windows.Forms.TextBox();
-            this.txtEndSN = new System.Windows.Forms.TextBox();
-            this.label20 = new System.Windows.Forms.Label();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
-            this.txtTotalSN = new System.Windows.Forms.TextBox();
-            this.label23 = new System.Windows.Forms.Label();
-            this.txtSN_userNo = new System.Windows.Forms.TextBox();
-            this.label24 = new System.Windows.Forms.Label();
-            this.txtSN_userName = new System.Windows.Forms.TextBox();
-            this.label25 = new System.Windows.Forms.Label();
-            this.txtSN_unitNo = new System.Windows.Forms.TextBox();
-            this.txtSN_unitName = new System.Windows.Forms.TextBox();
             this.label26 = new System.Windows.Forms.Label();
+            this.txtSN_unitName = new System.Windows.Forms.TextBox();
+            this.txtSN_unitNo = new System.Windows.Forms.TextBox();
+            this.label25 = new System.Windows.Forms.Label();
+            this.txtSN_userName = new System.Windows.Forms.TextBox();
+            this.label24 = new System.Windows.Forms.Label();
+            this.txtSN_userNo = new System.Windows.Forms.TextBox();
+            this.label23 = new System.Windows.Forms.Label();
+            this.txtTotalSN = new System.Windows.Forms.TextBox();
+            this.label22 = new System.Windows.Forms.Label();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.txtEndSN = new System.Windows.Forms.TextBox();
+            this.txtStartSN = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -553,6 +553,15 @@
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "格式化设置";
             // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(10, 23);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(77, 12);
+            this.label19.TabIndex = 13;
+            this.label19.Text = "文件系统类型";
+            // 
             // comboFormat
             // 
             this.comboFormat.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -564,15 +573,7 @@
             this.comboFormat.Name = "comboFormat";
             this.comboFormat.Size = new System.Drawing.Size(82, 20);
             this.comboFormat.TabIndex = 13;
-            // 
-            // label19
-            // 
-            this.label19.AutoSize = true;
-            this.label19.Location = new System.Drawing.Point(10, 23);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(77, 12);
-            this.label19.TabIndex = 13;
-            this.label19.Text = "文件系统类型";
+            this.comboFormat.SelectedIndexChanged += new System.EventHandler(this.comboFormat_SelectedIndexChanged);
             // 
             // groupBox8
             // 
@@ -597,70 +598,58 @@
             this.groupBox8.TabStop = false;
             this.groupBox8.Text = "序列号相关信息设置";
             // 
-            // txtStartSN
+            // label26
             // 
-            this.txtStartSN.Location = new System.Drawing.Point(62, 18);
-            this.txtStartSN.MaxLength = 7;
-            this.txtStartSN.Name = "txtStartSN";
-            this.txtStartSN.Size = new System.Drawing.Size(89, 21);
-            this.txtStartSN.TabIndex = 0;
-            this.txtStartSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtStartSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtStartSN_KeyPress);
+            this.label26.AutoSize = true;
+            this.label26.Location = new System.Drawing.Point(162, 73);
+            this.label26.Name = "label26";
+            this.label26.Size = new System.Drawing.Size(53, 12);
+            this.label26.TabIndex = 13;
+            this.label26.Text = "单位名称";
             // 
-            // txtEndSN
+            // txtSN_unitName
             // 
-            this.txtEndSN.Location = new System.Drawing.Point(219, 18);
-            this.txtEndSN.MaxLength = 7;
-            this.txtEndSN.Name = "txtEndSN";
-            this.txtEndSN.Size = new System.Drawing.Size(82, 21);
-            this.txtEndSN.TabIndex = 1;
-            this.txtEndSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtEndSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtEndSN_KeyPress);
+            this.txtSN_unitName.Location = new System.Drawing.Point(219, 68);
+            this.txtSN_unitName.MaxLength = 32;
+            this.txtSN_unitName.Name = "txtSN_unitName";
+            this.txtSN_unitName.Size = new System.Drawing.Size(176, 21);
+            this.txtSN_unitName.TabIndex = 12;
+            this.txtSN_unitName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label20
+            // txtSN_unitNo
             // 
-            this.label20.AutoSize = true;
-            this.label20.Location = new System.Drawing.Point(14, 22);
-            this.label20.Name = "label20";
-            this.label20.Size = new System.Drawing.Size(41, 12);
-            this.label20.TabIndex = 2;
-            this.label20.Text = "起始号";
+            this.txtSN_unitNo.Location = new System.Drawing.Point(62, 70);
+            this.txtSN_unitNo.Name = "txtSN_unitNo";
+            this.txtSN_unitNo.Size = new System.Drawing.Size(89, 21);
+            this.txtSN_unitNo.TabIndex = 11;
+            this.txtSN_unitNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label21
+            // label25
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(168, 22);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(41, 12);
-            this.label21.TabIndex = 3;
-            this.label21.Text = "截至号";
+            this.label25.AutoSize = true;
+            this.label25.Location = new System.Drawing.Point(8, 73);
+            this.label25.Name = "label25";
+            this.label25.Size = new System.Drawing.Size(53, 12);
+            this.label25.TabIndex = 10;
+            this.label25.Text = "单位编号";
             // 
-            // label22
+            // txtSN_userName
             // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(307, 22);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(41, 12);
-            this.label22.TabIndex = 4;
-            this.label22.Text = "总个数";
+            this.txtSN_userName.Location = new System.Drawing.Point(219, 42);
+            this.txtSN_userName.MaxLength = 12;
+            this.txtSN_userName.Name = "txtSN_userName";
+            this.txtSN_userName.Size = new System.Drawing.Size(176, 21);
+            this.txtSN_userName.TabIndex = 9;
+            this.txtSN_userName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // txtTotalSN
+            // label24
             // 
-            this.txtTotalSN.Location = new System.Drawing.Point(353, 18);
-            this.txtTotalSN.Name = "txtTotalSN";
-            this.txtTotalSN.Size = new System.Drawing.Size(42, 21);
-            this.txtTotalSN.TabIndex = 5;
-            this.txtTotalSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtTotalSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTotalSN_KeyPress);
-            // 
-            // label23
-            // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(8, 47);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(53, 12);
-            this.label23.TabIndex = 6;
-            this.label23.Text = "用户编号";
+            this.label24.AutoSize = true;
+            this.label24.Location = new System.Drawing.Point(162, 47);
+            this.label24.Name = "label24";
+            this.label24.Size = new System.Drawing.Size(53, 12);
+            this.label24.TabIndex = 8;
+            this.label24.Text = "用户名称";
             // 
             // txtSN_userNo
             // 
@@ -672,58 +661,74 @@
             this.txtSN_userNo.Text = "000000";
             this.txtSN_userNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // label24
+            // label23
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(162, 47);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(53, 12);
-            this.label24.TabIndex = 8;
-            this.label24.Text = "用户名称";
+            this.label23.AutoSize = true;
+            this.label23.Location = new System.Drawing.Point(8, 47);
+            this.label23.Name = "label23";
+            this.label23.Size = new System.Drawing.Size(53, 12);
+            this.label23.TabIndex = 6;
+            this.label23.Text = "用户编号";
             // 
-            // txtSN_userName
+            // txtTotalSN
             // 
-            this.txtSN_userName.Location = new System.Drawing.Point(219, 42);
-            this.txtSN_userName.MaxLength = 12;
-            this.txtSN_userName.Name = "txtSN_userName";
-            this.txtSN_userName.Size = new System.Drawing.Size(176, 21);
-            this.txtSN_userName.TabIndex = 9;
-            this.txtSN_userName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtTotalSN.Location = new System.Drawing.Point(353, 18);
+            this.txtTotalSN.Name = "txtTotalSN";
+            this.txtTotalSN.ReadOnly = true;
+            this.txtTotalSN.Size = new System.Drawing.Size(42, 21);
+            this.txtTotalSN.TabIndex = 5;
+            this.txtTotalSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtTotalSN.TextChanged += new System.EventHandler(this.txtTotalSN_TextChanged);
+            this.txtTotalSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTotalSN_KeyPress);
             // 
-            // label25
+            // label22
             // 
-            this.label25.AutoSize = true;
-            this.label25.Location = new System.Drawing.Point(8, 73);
-            this.label25.Name = "label25";
-            this.label25.Size = new System.Drawing.Size(53, 12);
-            this.label25.TabIndex = 10;
-            this.label25.Text = "单位编号";
+            this.label22.AutoSize = true;
+            this.label22.Location = new System.Drawing.Point(307, 22);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(41, 12);
+            this.label22.TabIndex = 4;
+            this.label22.Text = "总个数";
             // 
-            // txtSN_unitNo
+            // label21
             // 
-            this.txtSN_unitNo.Location = new System.Drawing.Point(62, 70);
-            this.txtSN_unitNo.Name = "txtSN_unitNo";
-            this.txtSN_unitNo.Size = new System.Drawing.Size(89, 21);
-            this.txtSN_unitNo.TabIndex = 11;
-            this.txtSN_unitNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.label21.AutoSize = true;
+            this.label21.Location = new System.Drawing.Point(168, 22);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(41, 12);
+            this.label21.TabIndex = 3;
+            this.label21.Text = "截至号";
             // 
-            // txtSN_unitName
+            // label20
             // 
-            this.txtSN_unitName.Location = new System.Drawing.Point(219, 68);
-            this.txtSN_unitName.MaxLength = 32;
-            this.txtSN_unitName.Name = "txtSN_unitName";
-            this.txtSN_unitName.Size = new System.Drawing.Size(176, 21);
-            this.txtSN_unitName.TabIndex = 12;
-            this.txtSN_unitName.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(14, 22);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(41, 12);
+            this.label20.TabIndex = 2;
+            this.label20.Text = "起始号";
             // 
-            // label26
+            // txtEndSN
             // 
-            this.label26.AutoSize = true;
-            this.label26.Location = new System.Drawing.Point(162, 73);
-            this.label26.Name = "label26";
-            this.label26.Size = new System.Drawing.Size(53, 12);
-            this.label26.TabIndex = 13;
-            this.label26.Text = "单位名称";
+            this.txtEndSN.Location = new System.Drawing.Point(219, 18);
+            this.txtEndSN.MaxLength = 7;
+            this.txtEndSN.Name = "txtEndSN";
+            this.txtEndSN.Size = new System.Drawing.Size(82, 21);
+            this.txtEndSN.TabIndex = 1;
+            this.txtEndSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtEndSN.TextChanged += new System.EventHandler(this.txtEndSN_TextChanged);
+            this.txtEndSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtEndSN_KeyPress);
+            // 
+            // txtStartSN
+            // 
+            this.txtStartSN.Location = new System.Drawing.Point(62, 18);
+            this.txtStartSN.MaxLength = 7;
+            this.txtStartSN.Name = "txtStartSN";
+            this.txtStartSN.Size = new System.Drawing.Size(89, 21);
+            this.txtStartSN.TabIndex = 0;
+            this.txtStartSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtStartSN.TextChanged += new System.EventHandler(this.txtStartSN_TextChanged);
+            this.txtStartSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtStartSN_KeyPress);
             // 
             // frmSetting
             // 
@@ -746,6 +751,7 @@
             this.Name = "frmSetting";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "frmSetting";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmSetting_FormClosing);
             this.Load += new System.EventHandler(this.frmSetting_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
