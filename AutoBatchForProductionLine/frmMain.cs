@@ -31,7 +31,7 @@ namespace AutoBatchForProductionLine
         USBWatcher.USB ezUSB = new USBWatcher.USB();
 
         private static Vendor LoginDevice;  //当前设备的方案商
-        private static Model LoginModel;//当前设备的型号
+        public  static Model LoginModel;//当前设备的型号
 
         private static IntPtr BCHandle = IntPtr.Zero;
         private static string DevicePwd = "000000";
@@ -172,7 +172,8 @@ namespace AutoBatchForProductionLine
                 {
                     CurrentUSB = USBState.YES;
                     updateMessage(lstMsg, "侦测到USB插入.");
-                    p.WriteLog("侦测到USB插入.");              
+                    p.WriteLog("侦测到USB插入.");
+                    timer1.Enabled = true;
                 }));
            
             }
@@ -1381,7 +1382,7 @@ namespace AutoBatchForProductionLine
         {
             CheckCheckboxCheckState(chkSetSN);
             string State = string.Empty;
-            if (chkSyncTime.Checked)
+            if (chkSetSN.Checked)
                 State = "1";
             else
                 State = "0";
@@ -1393,7 +1394,7 @@ namespace AutoBatchForProductionLine
         {
             CheckCheckboxCheckState(chkSetFormat );
             string State = string.Empty;
-            if (chkSyncTime.Checked)
+            if (chkSetFormat.Checked)
                 State = "1";
             else
                 State = "0";

@@ -34,6 +34,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBodyType = new System.Windows.Forms.ComboBox();
             this.grbItem = new System.Windows.Forms.GroupBox();
+            this.chkSetFormat = new System.Windows.Forms.CheckBox();
+            this.chkSetSN = new System.Windows.Forms.CheckBox();
             this.btnSetting = new System.Windows.Forms.Button();
             this.chkSetPoweOff = new System.Windows.Forms.CheckBox();
             this.chkSetGPS = new System.Windows.Forms.CheckBox();
@@ -46,12 +48,10 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lstMsg = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnClearInfo = new System.Windows.Forms.Button();
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnClearInfo = new System.Windows.Forms.Button();
-            this.chkSetSN = new System.Windows.Forms.CheckBox();
-            this.chkSetFormat = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -112,6 +112,36 @@
             this.grbItem.TabIndex = 2;
             this.grbItem.TabStop = false;
             this.grbItem.Text = "项目设置";
+            // 
+            // chkSetFormat
+            // 
+            this.chkSetFormat.AutoSize = true;
+            this.chkSetFormat.BackColor = System.Drawing.SystemColors.Control;
+            this.chkSetFormat.Enabled = false;
+            this.chkSetFormat.ForeColor = System.Drawing.Color.Black;
+            this.chkSetFormat.Location = new System.Drawing.Point(13, 187);
+            this.chkSetFormat.Name = "chkSetFormat";
+            this.chkSetFormat.Size = new System.Drawing.Size(84, 16);
+            this.chkSetFormat.TabIndex = 9;
+            this.chkSetFormat.Text = "自动格式化";
+            this.chkSetFormat.UseVisualStyleBackColor = false;
+            this.chkSetFormat.CheckedChanged += new System.EventHandler(this.chkSetFormat_CheckedChanged);
+            this.chkSetFormat.EnabledChanged += new System.EventHandler(this.chkSetFormat_EnabledChanged);
+            // 
+            // chkSetSN
+            // 
+            this.chkSetSN.AutoSize = true;
+            this.chkSetSN.BackColor = System.Drawing.SystemColors.Control;
+            this.chkSetSN.Enabled = false;
+            this.chkSetSN.ForeColor = System.Drawing.Color.Black;
+            this.chkSetSN.Location = new System.Drawing.Point(13, 38);
+            this.chkSetSN.Name = "chkSetSN";
+            this.chkSetSN.Size = new System.Drawing.Size(108, 16);
+            this.chkSetSN.TabIndex = 2;
+            this.chkSetSN.Text = "自动填写序列号";
+            this.chkSetSN.UseVisualStyleBackColor = false;
+            this.chkSetSN.CheckedChanged += new System.EventHandler(this.chkSetSN_CheckedChanged);
+            this.chkSetSN.EnabledChanged += new System.EventHandler(this.chkSetSN_EnabledChanged);
             // 
             // btnSetting
             // 
@@ -274,6 +304,17 @@
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             // 
+            // btnClearInfo
+            // 
+            this.btnClearInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnClearInfo.Location = new System.Drawing.Point(19, 87);
+            this.btnClearInfo.Name = "btnClearInfo";
+            this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
+            this.btnClearInfo.TabIndex = 14;
+            this.btnClearInfo.Text = "清楚信息列表";
+            this.btnClearInfo.UseVisualStyleBackColor = true;
+            this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
+            // 
             // btnRestart
             // 
             this.btnRestart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -298,50 +339,8 @@
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // btnClearInfo
-            // 
-            this.btnClearInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnClearInfo.Location = new System.Drawing.Point(19, 87);
-            this.btnClearInfo.Name = "btnClearInfo";
-            this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
-            this.btnClearInfo.TabIndex = 14;
-            this.btnClearInfo.Text = "清楚信息列表";
-            this.btnClearInfo.UseVisualStyleBackColor = true;
-            this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
-            // 
-            // chkSetSN
-            // 
-            this.chkSetSN.AutoSize = true;
-            this.chkSetSN.BackColor = System.Drawing.SystemColors.Control;
-            this.chkSetSN.Enabled = false;
-            this.chkSetSN.ForeColor = System.Drawing.Color.Black;
-            this.chkSetSN.Location = new System.Drawing.Point(13, 38);
-            this.chkSetSN.Name = "chkSetSN";
-            this.chkSetSN.Size = new System.Drawing.Size(108, 16);
-            this.chkSetSN.TabIndex = 2;
-            this.chkSetSN.Text = "自动填写序列号";
-            this.chkSetSN.UseVisualStyleBackColor = false;
-            this.chkSetSN.CheckedChanged += new System.EventHandler(this.chkSetSN_CheckedChanged);
-            this.chkSetSN.EnabledChanged += new System.EventHandler(this.chkSetSN_EnabledChanged);
-            // 
-            // chkSetFormat
-            // 
-            this.chkSetFormat.AutoSize = true;
-            this.chkSetFormat.BackColor = System.Drawing.SystemColors.Control;
-            this.chkSetFormat.Enabled = false;
-            this.chkSetFormat.ForeColor = System.Drawing.Color.Black;
-            this.chkSetFormat.Location = new System.Drawing.Point(13, 187);
-            this.chkSetFormat.Name = "chkSetFormat";
-            this.chkSetFormat.Size = new System.Drawing.Size(84, 16);
-            this.chkSetFormat.TabIndex = 9;
-            this.chkSetFormat.Text = "自动格式化";
-            this.chkSetFormat.UseVisualStyleBackColor = false;
-            this.chkSetFormat.CheckedChanged += new System.EventHandler(this.chkSetFormat_CheckedChanged);
-            this.chkSetFormat.EnabledChanged += new System.EventHandler(this.chkSetFormat_EnabledChanged);
             // 
             // frmMain
             // 

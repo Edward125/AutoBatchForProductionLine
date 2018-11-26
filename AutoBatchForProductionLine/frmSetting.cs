@@ -452,8 +452,70 @@ namespace AutoBatchForProductionLine
 
         }
 
+
+        private bool  CheckParam()
+        {
+            switch (frmMain.LoginModel)
+            {
+                case frmMain.Model.H6:
+                    if (p.SetSN == "1")
+                    {
+                        if (!txtStartSN.Text.StartsWith("6"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtStartSN.SelectAll();
+                            txtStartSN.Focus();
+                            return false;
+                        }
+                        if (!txtEndSN.Text.StartsWith("6"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtEndSN.SelectAll();
+                            txtEndSN.Focus();
+                            return false;
+                        }
+                    }
+                   
+
+                    break;
+                case frmMain.Model.H8:
+                    break;
+                case frmMain.Model.G5:
+                    break;
+                case frmMain.Model.G9:
+                    if (p.SetSN == "1")
+                    {
+                        if (!txtStartSN.Text.StartsWith("6"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtStartSN.SelectAll();
+                            txtStartSN.Focus();
+                            return false;
+                        }
+                        if (!txtEndSN.Text.StartsWith("6"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtEndSN.SelectAll();
+                            txtEndSN.Focus();
+                            return false;
+                        }
+                    }
+                   
+                    break;
+                default:
+                    break;
+            }
+
+
+
+
+            return true;
+        }
+
         private void frmSetting_FormClosing(object sender, FormClosingEventArgs e)
         {
+            if (!CheckParam())
+                e.Cancel = true;
 
         }
     }
