@@ -403,5 +403,47 @@ remark varchar(255) NULL
             return true;
         }
 
+
+
+        /// <summary>
+        /// update data to sqlite
+        /// </summary>
+        /// <param name="sql">sql</param>
+        /// <returns>success,return true;fail,return false</returns>
+        public static bool queryDatafromDB(string sql,string key,out string result)
+        {
+            result = string.Empty;
+            SQLiteConnection conn = new SQLiteConnection(dbConnectionString);
+
+            try
+            {
+                conn.Open();
+                SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+                SQLiteDataReader reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        result = reader[key].ToString();
+                    }
+                    conn.Close();
+                }
+                else
+                {
+                    conn.Close();
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+                conn.Close();
+                MessageBox.Show("Execute sql: " + sql + " fail," + ex.Message);
+                WriteLog("Execute sql: " + sql + " fail," + ex.Message);
+                return false;
+            }
+            return true;
+        }
+
+
     }
 }

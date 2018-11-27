@@ -375,7 +375,7 @@ namespace AutoBatchForProductionLine
 
           
             if (end >= start )
-                txtTotalSN.Text = (  end - start).ToString();
+                txtTotalSN.Text = (  end - start+1).ToString();
         }
 
 

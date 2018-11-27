@@ -787,11 +787,8 @@ namespace AutoBatchForProductionLine
 
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
-
-
                 if (LoginDevice == Vendor.Cammpro)
                 {
-
                     iUSBInsert = 3;
                     DevicePwd = "000000";
                     ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
@@ -800,8 +797,10 @@ namespace AutoBatchForProductionLine
                         GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                         updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
                         p.WriteLog("检测到设备,SN:" + DI.cSerial);
-                        if (DI.cSerial.Length == 8)
-                            DI.cSerial = DI.cSerial.Substring(0, 7);
+                        DI.cSerial = DI.cSerial.TrimEnd('\0');
+                        //if (DI.cSerial.Contains ("\0"))
+                        //    DI.cSerial .Replace ("\0","");
+         
                     }
                     else
                     {
@@ -861,6 +860,8 @@ namespace AutoBatchForProductionLine
                     {
                         updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
                         p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
+                        UpdateSN(ref DI);
+                       
                     }
                     else
                     {
@@ -873,27 +874,21 @@ namespace AutoBatchForProductionLine
                         {
                             updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
                             p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
+                            UpdateSN(ref DI);
                         }
        
                     }
 
-
-
-                    //Int32 start = Convert.ToInt32(p.StartSN);
-                    //Int32 end = Convert.ToInt32(p.EndSN);
+                  
 
 
 
-                    //DeviceInfo di = new DeviceInfo();
+                
                     ////di.cSerial = this.tb_DevID.Text;
-                    //di.userNo = p.SN_userNo;
-                    //di.userName = p.SN_userName;
-                    //di.unitNo = p.SN_unitNo;
-                    //di.unitName = p.SN_unitName ;
+        
 
 
-                    //WriteDeviceInfo(LoginDevice, DevicePwd, di);
-                       // updateMessage(, "向执法仪写入信息成功.");
+
 
 
                 }
@@ -1135,6 +1130,58 @@ namespace AutoBatchForProductionLine
 
 
         #region Item
+
+
+
+        private void UpdateSN(ref DeviceInfo dii)
+        {
+            Int32 start = Convert.ToInt32(p.StartSN);
+            Int32 end = Convert.ToInt32(p.EndSN);
+            string result = string.Empty;
+          
+
+            string sql = "";
+
+            for (int i = start; i <= end; i++)
+            {
+                sql = "select usedtime from " + comboBodyType.Text + "sn where sn = '" + i.ToString() + "'";
+                p.queryDatafromDB(sql, "usedtime", out result);
+
+                if (string.IsNullOrEmpty(result))
+                {
+                    DeviceInfo di = new DeviceInfo();
+                    updateMessage(lstMsg, i + "还未使用,将写入当前设备.");
+                    p.WriteLog(i + "还未使用,将写入当前设备.");
+                    di.cSerial = i.ToString();
+                    di.userNo = p.SN_userNo;
+                    di.userName = p.SN_userName;
+                    di.unitNo = p.SN_unitNo;
+                    di.unitName = p.SN_unitName;
+                    if (WriteDeviceInfo(LoginDevice, DevicePwd, di))
+                    {
+                        dii.cSerial = di.cSerial;
+                        sql = "insert into " + comboBodyType.Text +"sn (sn,usedtime,remark) values ('" + i +"','" + DateTime.Now.ToString ("yyyyMMddhhmmss") +"','')";
+                        p.updateData2DB(sql);
+                        updateMessage(lstMsg, "向执法仪写入SN:" + i + "成功.");
+                        p.WriteLog("向执法仪写入SN:" + i + "成功.");
+                        break;
+                    }
+                    else
+                    {
+                        updateMessage(lstMsg, "向执法仪写入SN:" + i + "失败.");
+                        p.WriteLog("向执法仪写入SN:" + i + "失败.");
+                    }
+
+
+                }
+                else
+                {
+                    updateMessage(lstMsg, i + "该条码已经使用,使用时间:" + result);
+                    p.WriteLog(i + "该条码已经使用,使用时间:" + result);
+                }
+            }
+        }
+
 
         /// <summary>
         /// 同步时间
