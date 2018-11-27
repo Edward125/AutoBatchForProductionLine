@@ -311,7 +311,7 @@
             this.btnClearInfo.Name = "btnClearInfo";
             this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
             this.btnClearInfo.TabIndex = 14;
-            this.btnClearInfo.Text = "清楚信息列表";
+            this.btnClearInfo.Text = "清除信息列表";
             this.btnClearInfo.UseVisualStyleBackColor = true;
             this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
             // 

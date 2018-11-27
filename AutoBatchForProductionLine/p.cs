@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using Edward;
 using SDK;
+using System.Data.SQLite;
 
 
 namespace AutoBatchForProductionLine
@@ -75,7 +76,10 @@ namespace AutoBatchForProductionLine
 
         public static BODYCAMDLL_API_YZ.FSTYPE_E FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
 
+        //DB
 
+        public static string dbFile = AppFolder + @"\sn.sqlite";
+        public static string dbConnectionString = "Data Source=" + @dbFile;
         
 
         public static SetErrorCode CheckParamErrorCode;
@@ -118,6 +122,8 @@ namespace AutoBatchForProductionLine
                 Directory.CreateDirectory(AppFolder);
             if (!Directory.Exists(LogFolder))
                 Directory.CreateDirectory(LogFolder);
+
+            checkDB(dbFile);
 
         }
 
@@ -212,6 +218,9 @@ namespace AutoBatchForProductionLine
                 SetFormat = IniFile.IniReadValue("SysConfig", "SetFormat");
                 SetPowerOff = IniFile.IniReadValue("SysConfig", "SetPowerOff");
                 //
+                StartSN = IniFile.IniReadValue("SN", "StartSN");
+                EndSN = IniFile.IniReadValue("SN", "EndSN");
+                //
                 WiFiSSID = IniFile.IniReadValue("WiFi", "WiFiSSID");
                 WiFiPwd = IniFile.IniReadValue("WiFi", "WiFiPwd");
                 //
@@ -244,6 +253,155 @@ namespace AutoBatchForProductionLine
 
         }
 
+
+
+        /// <summary>
+        /// check db file ,if not exits,create it
+        /// </summary>
+        /// <param name="_dbfile">db file path</param>
+        /// <returns></returns>
+        public static bool checkDB(string _dbfile)
+        {
+            if (!File.Exists(_dbfile))
+            {
+                try
+                {
+                    SQLiteConnection.CreateFile(_dbfile);
+
+                    if (!p.createAllTable())
+                        Environment.Exit(0);
+                  //  p.writeDefaultData();
+
+
+                    return true;
+
+                }
+                catch (Exception ex)
+                {
+
+                    MessageBox.Show("Create DB Fail." + ex.Message, "Create DB Fail", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    WriteLog("Create DB Fail." + ex.Message);
+                    return false;
+                }
+
+
+            }
+            return true;
+        }
+
+
+
+
+        /// <summary>
+        /// create all defaul tables
+        /// </summary>
+        public static bool createAllTable()
+        {
+            string sql = @"CREATE TABLE IF NOT EXISTS h6sn(
+sn varchar(7) PRIMARY KEY NOT NULL,
+usedtime varchar(14) NOT NULL,
+remark varchar(255) NULL)";
+            if (!p.createTable(sql))
+                return false;
+
+//            sql = @"CREATE TABLE IF NOT EXISTS h8sn(
+//sn varchar(7) PRIMARY KEY NOT NULL,
+//usedtime varchar(14) NOT NULL,
+//remark varchar(255) NULL,
+//)";
+//            if (!p.createTable(sql))
+//                return false;
+
+//            sql = @"CREATE TABLE IF NOT EXISTS g5sn(
+//sn varchar(7) PRIMARY KEY NOT NULL,
+//usedtime varchar(14) NOT NULL,
+//remark varchar(255) NULL,
+//)";
+//            if (!p.createTable(sql))
+//                return false;
+
+            sql = @"CREATE TABLE IF NOT EXISTS g9sn(
+sn varchar(7) PRIMARY KEY NOT NULL,
+usedtime varchar(14) NOT NULL,
+remark varchar(255) NULL
+)";
+            if (!p.createTable(sql))
+                return false;
+
+
+            return true;
+
+
+        }
+
+        // string sql = "create table highscores (name varchar(20), score int)";
+        /// <summary>
+        /// create table 
+        /// </summary>
+        /// <param name="sql">sql</param>
+        /// <returns>create ok,return true;create ng,return false</returns>
+        public static bool createTable(string sql)
+        {
+            SQLiteConnection conn = new SQLiteConnection(dbConnectionString);
+            try
+            {
+                conn.Open();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show("Connect to database fail," + ex.Message);
+                WriteLog("Connect to database fail," + ex.Message);
+                return false;
+            }
+
+            try
+            {
+                SQLiteCommand command = new SQLiteCommand(sql, conn);
+                command.ExecuteNonQuery();
+                conn.Close();
+            }
+            catch (Exception ex)
+            {
+
+                MessageBox.Show("Create TABLE fail," + ex.Message);
+                WriteLog("Create TABLE fail," + ex.Message);
+                conn.Close();
+                return false;
+
+            }
+
+            return true;
+        }
+
+
+        /// <summary>
+        /// update data to sqlite
+        /// </summary>
+        /// <param name="sql">sql</param>
+        /// <returns>success,return true;fail,return false</returns>
+        public static bool updateData2DB(string sql)
+        {
+            SQLiteConnection conn = new SQLiteConnection(dbConnectionString);
+
+            try
+            {
+                conn.Open();
+                SQLiteCommand cmd = new SQLiteCommand(sql, conn);
+                //cmd.CommandText = sql;
+                cmd.ExecuteNonQuery();
+                conn.Close();
+
+            }
+            catch (Exception ex)
+            {
+                conn.Close();
+                MessageBox.Show("Execute sql: " + sql + " fail," + ex.Message);
+                WriteLog("Execute sql: " + sql + " fail," + ex.Message);
+                return false;
+            }
+            return true;
+        }
 
     }
 }

@@ -666,9 +666,9 @@ namespace AutoBatchForProductionLine
                                              return p.SetErrorCode.StartSNEmpty;
                                          if (string.IsNullOrEmpty(p.EndSN))
                                              return p.SetErrorCode.EndSNEmpty;
-                                         if (!p.StartSN.StartsWith("6"))
+                                         if (!p.StartSN.StartsWith("9"))
                                              return p.SetErrorCode.StartSNStartNotMatch;
-                                         if (!p.EndSN.StartsWith("6"))
+                                         if (!p.EndSN.StartsWith("9"))
                                              return p.SetErrorCode.EndSNStartNotMacth;
                                      }
 
@@ -853,6 +853,52 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":同步设备时间失败.");
                     }
                 }
+
+                if (p.SetSN == "1")
+                {
+
+                    if (DI.cSerial == "000000")
+                    {
+                        updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
+                        p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
+                    }
+                    else
+                    {
+                        if (CheckBodySN(DI.cSerial, LoginModel))
+                        {
+                            updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
+                            p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
+                        }
+                        else
+                        {
+                            updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
+                            p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
+                        }
+       
+                    }
+
+
+
+                    //Int32 start = Convert.ToInt32(p.StartSN);
+                    //Int32 end = Convert.ToInt32(p.EndSN);
+
+
+
+                    //DeviceInfo di = new DeviceInfo();
+                    ////di.cSerial = this.tb_DevID.Text;
+                    //di.userNo = p.SN_userNo;
+                    //di.userName = p.SN_userName;
+                    //di.unitNo = p.SN_unitNo;
+                    //di.unitName = p.SN_unitName ;
+
+
+                    //WriteDeviceInfo(LoginDevice, DevicePwd, di);
+                       // updateMessage(, "向执法仪写入信息成功.");
+
+
+                }
+
+
                 //WiFi
                 if (p.SetWiFi == "1")
                 {
@@ -1402,6 +1448,51 @@ namespace AutoBatchForProductionLine
         }
 
 
+        /// <summary>
+        /// 向执法仪写入信息
+        /// </summary>
+        /// <param name="devicetype"></param>
+        /// <param name="password"></param>
+        /// <param name="deviceinfo"></param>
+        /// <returns>true,成功,false失败</returns>
+        private bool WriteDeviceInfo(Vendor devicetype, string password, DeviceInfo deviceinfo)
+        {
+            int WriteZFYInfo_iRet = -1;
+            if (LoginDevice == Vendor.Cammpro)
+            {
+                ZFYDLL_API_MC.ZFY_INFO info = new ZFYDLL_API_MC.ZFY_INFO();
+                info.cSerial = Encoding.Default.GetBytes(deviceinfo.cSerial.PadRight(7, '\0').ToArray());
+                info.userNo = Encoding.Default.GetBytes(deviceinfo.userNo.PadRight(6, '\0').ToArray());
+                info.userName = Encoding.Default.GetBytes(deviceinfo.userName.PadRight(33, '\0').ToArray());
+                info.unitNo = Encoding.Default.GetBytes(deviceinfo.unitNo.PadRight(13, '\0').ToArray());
+                info.unitName = Encoding.Default.GetBytes(deviceinfo.unitName.PadRight(33, '\0').ToArray());
+                ZFYDLL_API_MC.WriteZFYInfo(ref info, password, ref WriteZFYInfo_iRet);
+            }
+            //if (LoginDevice == Vendor.EasyStorage) /// debug
+            //{
+            //    BODYCAMDLL_API_YZ.ZFY_INFO info = new BODYCAMDLL_API_YZ.ZFY_INFO();
+
+            //    info.cSerial = Encoding.Default.GetBytes(deviceinfo.cSerial.PadRight(8, '\0').ToArray());
+            //    info.userNo = Encoding.Default.GetBytes(deviceinfo.userNo.PadRight(7, '\0').ToArray());
+            //    info.userName = Encoding.Default.GetBytes(deviceinfo.userName.PadRight(33, '\0').ToArray());
+            //    info.unitNo = Encoding.Default.GetBytes(deviceinfo.unitNo.PadRight(13, '\0').ToArray());
+            //    info.unitName = Encoding.Default.GetBytes(deviceinfo.unitName.PadRight(33, '\0').ToArray());
+            //    BODYCAMDLL_API_YZ.WriteZFYInfo(ref info, password, ref WriteZFYInfo_iRet);
+            //    //byte[] _psw = Encoding.Default.GetBytes(password);
+            //    //BODYCAMDLL_API_YZ.ZFY_INFO_N info = new BODYCAMDLL_API_YZ.ZFY_INFO_N();
+            //    //info.cSerial = deviceinfo.cSerial;
+            //    //info.userNo = deviceinfo.userNo;
+            //    //info.userName = deviceinfo.userName;
+            //    //info.unitNo = deviceinfo.unitNo;
+            //    //info.unitName = deviceinfo.unitName;
+            //    WriteZFYInfo_iRet = BODYCAMDLL_API_YZ.BC_SetDevInfo(BCHandle, password, ref info);
+
+            //}
+            if (WriteZFYInfo_iRet == 1)
+                return true;
+            return false;
+
+        }
 
 
         /// <summary>
@@ -1531,6 +1622,36 @@ namespace AutoBatchForProductionLine
 
         }
 
+
+
+
+        private bool CheckBodySN(string sn, Model loginmodel)
+        {
+            switch (loginmodel)
+            {
+                case Model.H6:
+                    if (sn.StartsWith("6"))
+                        return true;
+                    break;
+                case Model.H8:
+                    if (sn.StartsWith("7"))
+                        return true;
+                    break;
+                case Model.G5:
+                    if (sn.StartsWith("5"))
+                        return true;
+                    break;
+                case Model.G9:
+                    if (sn.StartsWith("9"))
+                        return true;
+                    break;
+                default:
+                    break;
+            }
+
+
+            return false;
+        }
         private void chkSetSN_EnabledChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetSN);
