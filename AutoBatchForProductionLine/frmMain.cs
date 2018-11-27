@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using Edward;
 using SDK;
 using System.Management;
+using System.Diagnostics;
+using System.IO;
 
 namespace AutoBatchForProductionLine
 {
@@ -40,6 +42,7 @@ namespace AutoBatchForProductionLine
         public static USBState CurrentUSB;
         public static bool SetItemState = false; //程序未运行
         public static int iUSBInsert = 3; //Campro 执法仪插入计数
+        public static string BodyUDisk = string.Empty;
 
         public enum Model
         {
@@ -141,7 +144,92 @@ namespace AutoBatchForProductionLine
         }
 
 
+
+
+        public const int WM_DEVICECHANGE = 0x219;
+        public const int DBT_DEVICEARRIVAL = 0x8000;
+        public const int DBT_CONFIGCHANGECANCELED = 0x0019;
+        public const int DBT_CONFIGCHANGED = 0x0018;
+        public const int DBT_CUSTOMEVENT = 0x8006;
+        public const int DBT_DEVICEQUERYREMOVE = 0x8001;
+        public const int DBT_DEVICEQUERYREMOVEFAILED = 0x8002;
+        public const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
+        public const int DBT_DEVICEREMOVEPENDING = 0x8003;
+        public const int DBT_DEVICETYPESPECIFIC = 0x8005;
+        public const int DBT_DEVNODES_CHANGED = 0x0007;
+        public const int DBT_QUERYCHANGECONFIG = 0x0017;
+        public const int DBT_USERDEFINED = 0xFFFF;
+
+
+
+
+
         #endregion
+
+
+
+
+        protected override void WndProc(ref Message m)
+        {
+            try
+            {
+                if (m.Msg == WM_DEVICECHANGE)
+                {
+                    switch (m.WParam.ToInt32())
+                    {
+                        case WM_DEVICECHANGE:
+                            break;
+                        case DBT_DEVICEARRIVAL://U盘插入
+
+                            DriveInfo[] s = DriveInfo.GetDrives();
+                            foreach (DriveInfo drive in s)
+                            {
+                                if (drive.DriveType == DriveType.Removable)
+                                {
+                                    BodyUDisk = drive.Name;
+                                    break;
+                                }
+                            }
+                            break;
+                        case DBT_CONFIGCHANGECANCELED:
+                            break;
+                        case DBT_CONFIGCHANGED:
+                            break;
+                        case DBT_CUSTOMEVENT:
+                            break;
+                        case DBT_DEVICEQUERYREMOVE:
+                            break;
+                        case DBT_DEVICEQUERYREMOVEFAILED:
+                            break;
+                        case DBT_DEVICEREMOVECOMPLETE: //U盘卸载
+                            //updateMessage(lb_StateInfo, "U盘已卸载！");
+    
+                            //isCopy = false;
+                            //isCopyEnd = false;
+                            break;
+                        case DBT_DEVICEREMOVEPENDING:
+                            break;
+                        case DBT_DEVICETYPESPECIFIC:
+                            break;
+                        case DBT_DEVNODES_CHANGED:
+                            break;
+                        case DBT_QUERYCHANGECONFIG:
+                            break;
+                        case DBT_USERDEFINED:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+               // updateMessage(lb_StateInfo, "Error:" + ex.Message);
+
+            }
+            base.WndProc(ref m);
+        }
+
 
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -155,7 +243,7 @@ namespace AutoBatchForProductionLine
 
         private void LoadUI()
         {
-            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+          //  ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             p.CreateFolder();
             p.CreateIni();
             p.ReadIni();
@@ -852,7 +940,7 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":同步设备时间失败.");
                     }
                 }
-
+                //
                 if (p.SetSN == "1")
                 {
 
@@ -1022,6 +1110,13 @@ namespace AutoBatchForProductionLine
                             MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                             ezUSB.RemoveUSBEventWatcher();
                             
+                        }
+                        if (LoginDevice == Vendor.Cammpro)
+                        {
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功.");
+                            //MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                           // ezUSB.RemoveUSBEventWatcher();
                         }
                     }
                     else
@@ -1563,16 +1658,114 @@ namespace AutoBatchForProductionLine
 
             if (logindevice == Vendor.Cammpro)
             {
+
+                if (SetDeviceMSDC(logindevice, DevicePwd))
+                {
+                    Delay(2000);
+                    string IDTXTFile = BodyUDisk + "ID.txt";
+                    //if (File.Exists(@IDTXTFile))
+                    //{
+                        FortMat(BodyUDisk.Replace("\\", ""), p.Format);
+                        return true;
+                    //}
+                    //else
+                    //    return false;
+                }
+
             }
+            return false;
+        }
 
 
 
+
+
+
+        public void FortMat(string Path,string format)
+        {
+            //string strInput ="format F: /FS:FAT32 /Q /A:32k /Y";
+            string strInput = "format " + Path + " /FS:" + format +" /Q /A:32k /Y";
+            // MessageBox.Show(strInput);
+            Process p = new Process();
+            //设置要启动的应用程序
+            p.StartInfo.FileName = "cmd.exe";
+            //是否使用操作系统shell启动
+            p.StartInfo.UseShellExecute = false;
+            // 接受来自调用程序的输入信息
+            p.StartInfo.RedirectStandardInput = true;
+            //输出信息
+            p.StartInfo.RedirectStandardOutput = true;
+            // 输出错误
+            p.StartInfo.RedirectStandardError = true;
+            //不显示程序窗口
+            //p.StartInfo.CreateNoWindow = true;
+            p.StartInfo.CreateNoWindow = true;
+            //启动程序
+            p.Start();
+
+            //向cmd窗口发送输入信息
+            p.StandardInput.WriteLine(strInput + "&exit");
+            // p.StandardInput.WriteLine(strInput + "&exit");
+            p.StandardInput.AutoFlush = true;
+
+            //获取输出信息
+            string strOuput = p.StandardOutput.ReadToEnd();
+            //等待程序执行完退出进程
+            p.WaitForExit();
+            p.Close();
+
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        private bool SetDeviceMSDC(Vendor  logindevice, string password)
+        {
+            int iRet_SetMSDC = -1;
+            if (logindevice == Vendor.EasyStorage)
+            {
+                //BODYCAMDLL_API_YZ.SetMSDC(password, ref iRet_SetMSDC);
+                iRet_SetMSDC = BODYCAMDLL_API_YZ.BC_EnterDiskMode(BCHandle, password);
+                if (iRet_SetMSDC == 1)
+                    return true;
+                else
+                    return false;
+            }
+            if (logindevice == Vendor.Cammpro)
+            {
+                ZFYDLL_API_MC.SetMSDC(password, ref iRet_SetMSDC);
+                if (iRet_SetMSDC == 7)
+                    return true;
+                else
+                    return false;
+            }
 
             return false;
         }
 
 
         #endregion
+
+
+        /// <summary>
+        /// 延時子程序
+        /// </summary>
+        /// <param name="interval">延時的時間，单位毫秒</param>
+        private void Delay(double interval)
+        {
+            DateTime time = DateTime.Now;
+            double span = interval * 10000;
+            while (DateTime.Now.Ticks - time.Ticks < span)
+            {
+                Application.DoEvents();
+            }
+
+        }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
