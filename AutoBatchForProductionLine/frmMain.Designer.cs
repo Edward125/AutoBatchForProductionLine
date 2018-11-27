@@ -46,10 +46,10 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.lstMsg = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.btnClearInfo = new System.Windows.Forms.Button();
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.btnClearInfo = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -270,6 +270,17 @@
             this.groupBox4.TabIndex = 0;
             this.groupBox4.TabStop = false;
             // 
+            // btnClearInfo
+            // 
+            this.btnClearInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnClearInfo.Location = new System.Drawing.Point(19, 87);
+            this.btnClearInfo.Name = "btnClearInfo";
+            this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
+            this.btnClearInfo.TabIndex = 3;
+            this.btnClearInfo.Text = "清楚信息列表";
+            this.btnClearInfo.UseVisualStyleBackColor = true;
+            this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
+            // 
             // btnRestart
             // 
             this.btnRestart.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -297,17 +308,6 @@
             this.timer1.Enabled = true;
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-            // 
-            // btnClearInfo
-            // 
-            this.btnClearInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnClearInfo.Location = new System.Drawing.Point(19, 87);
-            this.btnClearInfo.Name = "btnClearInfo";
-            this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
-            this.btnClearInfo.TabIndex = 3;
-            this.btnClearInfo.Text = "清楚信息列表";
-            this.btnClearInfo.UseVisualStyleBackColor = true;
-            this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
             // 
             // frmMain
             // 

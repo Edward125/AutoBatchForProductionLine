@@ -34,6 +34,7 @@ namespace AutoBatchForProductionLine
         public static bool bRestart = false;
         public static USBState CurrentUSB;
         public static bool SetItemState = false; //程序未运行
+        public static int iUSBInsert = 3; //cammpro 插入计数,为0时开始执行程序
 
         public enum Model
         {
@@ -161,13 +162,20 @@ namespace AutoBatchForProductionLine
         {
             if (e.NewEvent.ClassPath.ClassName == "__InstanceCreationEvent")
             {
-               // this.SetText("USB插入时间：" + DateTime.Now + "\r\n");
-
                 this.Invoke((EventHandler)(delegate
                 {
-                    CurrentUSB = USBState.YES;
                     updateMessage(lstMsg, "侦测到USB插入.");
-                    p.WriteLog("侦测到USB插入.");              
+                    p.WriteLog("侦测到USB插入.");
+                    if (LoginDevice == Vendor.EasyStorage )
+                        CurrentUSB = USBState.YES;
+
+                    if (LoginModel == Model.G9)
+                    {
+                        iUSBInsert--;
+                        if (iUSBInsert ==0)
+                            CurrentUSB = USBState.YES;
+                    }
+
                 }));
            
             }
@@ -188,8 +196,15 @@ namespace AutoBatchForProductionLine
             {
                 // this.SetText("\tAntecedent：" + Device.Antecedent + "\r\n");
                 // this.SetText("\tDependent：" + Device.Dependent + "\r\n");
-                p.WriteLog("Antecedent：" + Device.Antecedent);
-                p.WriteLog("Dependent：" + Device.Dependent);
+                this.Invoke((EventHandler)(delegate
+                {
+        
+                    //updateMessage(lstMsg, "Antecedent：" + Device.Antecedent);
+                    updateMessage(lstMsg, "Dependent：" + Device.Dependent);
+                    p.WriteLog("Antecedent：" + Device.Antecedent);
+                    p.WriteLog("Dependent：" + Device.Dependent);
+                }));
+
             }
         }
 
@@ -696,6 +711,7 @@ namespace AutoBatchForProductionLine
             StartLockUI();
             int Init_Device_iRet = -1;
             byte[] _IDCode = new byte[5];
+
             DeviceInfo DI = new DeviceInfo();
             p.CheckParamErrorCode = CheckSetting();
 
@@ -705,7 +721,20 @@ namespace AutoBatchForProductionLine
 
                 if (LoginDevice == Vendor.Cammpro)
                 {
+                    iUSBInsert = 3;
                     DevicePwd = "000000";
+                    //
+
+                    ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
+                    if (Init_Device_iRet == 1)
+                    {
+                        GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                        updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
+                        if (DI.cSerial.Length == 8)
+                            DI.cSerial = DI.cSerial.Substring(0, 7);
+                    }
+
+
                 }
 
                 else
@@ -728,10 +757,12 @@ namespace AutoBatchForProductionLine
                 //
                 if (p.SyncTime == "1")
                 {
-                    updateMessage(lstMsg, DI.cSerial + ":准备开始同步时间");
+                    //updateMessage(lstMsg, DI.cSerial.Trim () + ":准备开始同步时间");
                     p.WriteLog(DI.cSerial + ":准备开始同步时间");
                     if (SyncDeviceTime(LoginDevice, DevicePwd))
                     {
+
+                  
                         updateMessage(lstMsg, DI.cSerial + ":同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
                         p.WriteLog(DI.cSerial + ":同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
                     }
@@ -866,9 +897,11 @@ namespace AutoBatchForProductionLine
 
 
                 if (LoginDevice == Vendor.EasyStorage)
+                {
                     BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
-                updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
-                p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
+                    updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
+                    p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
+                }
 
 
 
