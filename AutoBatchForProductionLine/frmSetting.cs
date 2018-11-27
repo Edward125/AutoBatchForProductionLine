@@ -485,14 +485,14 @@ namespace AutoBatchForProductionLine
                 case frmMain.Model.G9:
                     if (p.SetSN == "1")
                     {
-                        if (!txtStartSN.Text.StartsWith("6"))
+                        if (!txtStartSN.Text.StartsWith("9"))
                         {
                             MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                             txtStartSN.SelectAll();
                             txtStartSN.Focus();
                             return false;
                         }
-                        if (!txtEndSN.Text.StartsWith("6"))
+                        if (!txtEndSN.Text.StartsWith("9"))
                         {
                             MessageBox.Show("执法仪设备序列号设置不满足执法仪要求G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
                             txtEndSN.SelectAll();

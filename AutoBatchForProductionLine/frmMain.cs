@@ -39,6 +39,7 @@ namespace AutoBatchForProductionLine
         public static bool bRestart = false;
         public static USBState CurrentUSB;
         public static bool SetItemState = false; //程序未运行
+        public static int iUSBInsert = 3; //Campro 执法仪插入计数
 
         public enum Model
         {
@@ -170,11 +171,19 @@ namespace AutoBatchForProductionLine
 
                 this.Invoke((EventHandler)(delegate
                 {
-                    CurrentUSB = USBState.YES;
                     updateMessage(lstMsg, "侦测到USB插入.");
                     p.WriteLog("侦测到USB插入.");
-                    timer1.Enabled = true;
-                }));
+                    if (LoginDevice == Vendor.EasyStorage)
+                        CurrentUSB = USBState.YES;
+
+                    if (LoginModel == Model.G9)
+                    {
+                        iUSBInsert--;
+                        if (iUSBInsert == 0)
+                            CurrentUSB = USBState.YES;
+                    }
+
+                })); 
            
             }
             else if (e.NewEvent.ClassPath.ClassName == "__InstanceDeletionEvent")
@@ -764,9 +773,20 @@ namespace AutoBatchForProductionLine
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
 
+
                 if (LoginDevice == Vendor.Cammpro)
                 {
+
+                    iUSBInsert = 3;
                     DevicePwd = "000000";
+                    ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
+                    if (Init_Device_iRet == 1)
+                    {
+                        GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                        updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
+                        if (DI.cSerial.Length == 8)
+                            DI.cSerial = DI.cSerial.Substring(0, 7);
+                    }
                 }
 
                 else

@@ -17,9 +17,9 @@ namespace SDK
         [StructLayout(LayoutKind.Sequential, Pack = 1,CharSet = CharSet.Ansi )]
         public struct ZFY_INFO
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            public byte[] cSerial;               /*执法记录仪产品序号，不可为空*/
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
+            public byte[] cSerial;               /*执法记录仪产品序号，不可为空*/
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
             public byte[] userNo;                /*执法记录仪使用者警号，不可为空*/
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
             public byte[] userName;              /*执法记录仪使用者姓名，管理系统使用警号关联时可为空*/
