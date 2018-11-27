@@ -497,7 +497,7 @@ namespace SDK
         *************************************************/
         //BODYCAMDLL_API int  BC_FormatUdisk(IN BCHandle *dev,IN char *sPwd,IN FSTYPE_E fstype);
         [DllImport("LibBodycam.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int BC_FormatUdisk(IntPtr dev, byte sPwd, FSTYPE_E fstype);
+        public static extern int BC_FormatUdisk(IntPtr dev, string sPwd, FSTYPE_E fstype);
 
         /*************************************************
         *函数说明:   获取主码流信息，对所有的用户生效

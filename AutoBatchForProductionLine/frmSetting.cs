@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Edward;
+using SDK;
 
 namespace AutoBatchForProductionLine
 {
@@ -194,13 +195,13 @@ namespace AutoBatchForProductionLine
             //
             if (p.Format == "FAT32")
             {
-                p.FsType = p.FSTYPE_E.FS_FAT32;
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_FAT32;
                 comboFormat.SelectedIndex = 0;
             }
 
             if (p.Format == "exFAT")
             {
-                p.FsType = p.FSTYPE_E.FS_EXFAT;
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
                 comboFormat.SelectedIndex = 1;
             }
 
@@ -445,9 +446,9 @@ namespace AutoBatchForProductionLine
             if (comboFormat.SelectedIndex != -1)
                 p.Format = comboFormat.Text;
             if (comboFormat.SelectedIndex == 0)
-                p.FsType = p.FSTYPE_E.FS_FAT32;
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_FAT32;
             if (comboFormat.SelectedIndex == 1)
-                p.FsType = p.FSTYPE_E.FS_EXFAT;
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
             IniFile.IniWriteValue("Format", "Format", p.Format);
 
         }

@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using Edward;
+using SDK;
 
 
 namespace AutoBatchForProductionLine
@@ -65,14 +66,14 @@ namespace AutoBatchForProductionLine
         public static string NetCheckPort = "554";
         public static string NetCheckEnable = "0";
         //
-        public static string Format = "FAT32";
+        public static string Format = "exFAT";
 
         //GPS
         public static string GPS = "0";
         //PowerOff
         public static string PowerOff = "0";
 
-        public static FSTYPE_E FsType = FSTYPE_E.FS_FAT32;
+        public static BODYCAMDLL_API_YZ.FSTYPE_E FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
 
 
         
@@ -103,11 +104,7 @@ namespace AutoBatchForProductionLine
             GB2_Passwd
         }
 
-        public enum FSTYPE_E
-        {
-            FS_FAT32 = 1,
-            FS_EXFAT
-        }
+
 
        
 
@@ -242,11 +239,7 @@ namespace AutoBatchForProductionLine
                GPS = IniFile.IniReadValue("GPS", "GPS");
                //
                PowerOff = IniFile.IniReadValue("PowerOff", "PowerOff");
-            
-            
-            
-            
-            
+           
             }
 
         }

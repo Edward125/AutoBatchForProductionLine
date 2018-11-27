@@ -174,13 +174,20 @@ namespace AutoBatchForProductionLine
                     updateMessage(lstMsg, "侦测到USB插入.");
                     p.WriteLog("侦测到USB插入.");
                     if (LoginDevice == Vendor.EasyStorage)
+                    {
                         CurrentUSB = USBState.YES;
+                        timer1.Enabled = true;
+                    }
 
                     if (LoginModel == Model.G9)
                     {
                         iUSBInsert--;
+                        updateMessage(lstMsg, iUSBInsert.ToString());
                         if (iUSBInsert == 0)
+                        {
                             CurrentUSB = USBState.YES;
+                            timer1.Enabled = true;
+                        }
                     }
 
                 })); 
@@ -410,6 +417,14 @@ namespace AutoBatchForProductionLine
             CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
             CheckConfigValueAndCheckbox(p.SetFormat, chkSetFormat);
             CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
+            if (LoginModel == Model.H8 || LoginModel == Model.G5)
+            {
+                if (chkSetFormat.Checked)
+                {
+                    chkSetPoweOff.Checked = false;
+                    chkSetPoweOff.Enabled = false;
+                }
+            }
 
 
         }
@@ -784,8 +799,17 @@ namespace AutoBatchForProductionLine
                     {
                         GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                         updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
+                        p.WriteLog("检测到设备,SN:" + DI.cSerial);
                         if (DI.cSerial.Length == 8)
                             DI.cSerial = DI.cSerial.Substring(0, 7);
+                    }
+                    else
+                    {
+                        updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
+                        p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
+                        SetItemState = true;
+                        EndUnLockUI();
+                        return;
                     }
                 }
 
@@ -803,7 +827,14 @@ namespace AutoBatchForProductionLine
                         p.WriteLog("检测到设备" + IDCode + ",SN:" + DI.cSerial);
                     }
                     else
+                    {
+
+                        updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
+                        p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
+                        SetItemState = true;
+                        EndUnLockUI();
                         return;
+                    }
                 }
 
                 //
@@ -934,6 +965,33 @@ namespace AutoBatchForProductionLine
                         }
                     }
                 }
+
+
+                if (p.SetFormat == "1")
+                {
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置格式化,文件系统格式:" + p.Format);
+                    p.WriteLog(DI.cSerial + ":准备开始设置格式化,文件系统格式:" + p.Format);
+                    if (FormatDisk(LoginDevice, DevicePwd, p.Format))
+                    {
+                        if (LoginDevice == Vendor.EasyStorage)
+                        {
+                            ezUSB.RemoveUSBEventWatcher();
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
+                            MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            ezUSB.RemoveUSBEventWatcher();
+                            
+                        }
+                    }
+                    else
+                    {
+                        updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "失败.");
+                        p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "失败.");
+                    }
+
+                }
+
+
 
                 //shutdown
                 if (p.SetPowerOff == "1")
@@ -1345,6 +1403,37 @@ namespace AutoBatchForProductionLine
 
 
 
+
+        /// <summary>
+        /// 格式化设备
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        private bool FormatDisk(Vendor logindevice, string password, string format)
+        {
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                result = BODYCAMDLL_API_YZ.BC_FormatUdisk(BCHandle, password, p.FsType);
+                if (result == 0)
+                    return true;
+                else
+                    return false;
+            }
+
+            if (logindevice == Vendor.Cammpro)
+            {
+            }
+
+
+
+
+            return false;
+        }
+
+
         #endregion
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
@@ -1420,6 +1509,26 @@ namespace AutoBatchForProductionLine
                 State = "0";
             p.SetFormat = State;
             IniFile.IniWriteValue(LoginModel.ToString(), "SetFormat", State);
+
+            if (chkSetFormat.Checked)
+            {
+                chkSetPoweOff.Enabled = false;
+                chkSetPoweOff.Checked = false;
+
+            }
+            else
+            {
+                if (LoginModel == Model.G5 || LoginModel == Model.H8 )
+                    chkSetPoweOff.Enabled = true;
+
+
+              
+               // chkSetPoweOff.Checked = true;
+            }
+
+
+
+
         }
 
         private void chkSetSN_EnabledChanged(object sender, EventArgs e)
