@@ -976,6 +976,23 @@ namespace AutoBatchForProductionLine
                         {
                             updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
                             p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
+                            string sql = "select usedtime from " + comboBodyType.Text + "sn where sn = '" + DI.cSerial  + "'";
+                            string result = "";
+                            p.queryDatafromDB(sql, "usedtime", out result);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                updateMessage(lstMsg, DI.cSerial + "被使用的时间为:" + result);
+                                p.WriteLog(DI.cSerial + "被使用的时间为:" + result);
+                            }
+                            else
+                            {
+                                sql = "insert into " + comboBodyType.Text + "sn (sn,usedtime,remark) values ('" + DI.cSerial  + "','" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','SN not in the DB,auto insert')";
+                                p.updateData2DB(sql);
+                                updateMessage(lstMsg, DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
+                                p.WriteLog(DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
+                            }
+              
+           
                         }
                         else
                         {
