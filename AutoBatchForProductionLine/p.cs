@@ -134,10 +134,19 @@ namespace AutoBatchForProductionLine
         public static void WriteLog(string log)
         {
             string logfile = LogFolder + @"\" + DateTime.Now.ToString("yyyyMMdd") + ".log";
-            StreamWriter sw = new StreamWriter(logfile, true);
-            log = DateTime .Now.ToString ("hh:mm:ss") +"->" +log;
-            sw.WriteLine(log);
-            sw.Close();
+            try
+            {
+                StreamWriter sw = new StreamWriter(logfile, true);
+                log = DateTime.Now.ToString("hh:mm:ss") + "->" + log;
+                sw.WriteLine(log);
+                sw.Close();
+            }
+            catch (Exception)
+            {
+                
+                //throw;
+            }
+
 
         }
 

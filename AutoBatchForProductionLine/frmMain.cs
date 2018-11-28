@@ -45,6 +45,7 @@ namespace AutoBatchForProductionLine
         public static string BodyUDisk = string.Empty;
         public static bool CammUSB = false;// cammpro 形成U盘
         public static bool CammFormat = false; // 还没有执行
+        public static bool ClickOnce = false;//手动点击单词运行
 
         public enum Model
         {
@@ -206,7 +207,7 @@ namespace AutoBatchForProductionLine
                             break;
                         case DBT_DEVICEREMOVECOMPLETE: //U盘卸载
                             //updateMessage(lb_StateInfo, "U盘已卸载！");
-    
+
                             //isCopy = false;
                             //isCopyEnd = false;
                             break;
@@ -225,9 +226,9 @@ namespace AutoBatchForProductionLine
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception )
             {
-               // updateMessage(lb_StateInfo, "Error:" + ex.Message);
+                // updateMessage(lb_StateInfo, "Error:" + ex.Message);
 
             }
             base.WndProc(ref m);
@@ -246,7 +247,7 @@ namespace AutoBatchForProductionLine
 
         private void LoadUI()
         {
-           // ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             p.CreateFolder();
             p.CreateIni();
             p.ReadIni();
@@ -264,22 +265,16 @@ namespace AutoBatchForProductionLine
                 {
                     updateMessage(lstMsg, "侦测到USB插入.");
                     p.WriteLog("侦测到USB插入.");
-                    if (LoginDevice == Vendor.EasyStorage)
-                    {
+                    //if (LoginDevice == Vendor.EasyStorage)
+                    //{
                         CurrentUSB = USBState.YES;
                         timer1.Enabled = true;
-                    }
+                    //}
+                        ezUSB.RemoveUSBEventWatcher();
 
-                    if (LoginModel == Model.G9)
-                    {
-                        iUSBInsert--;
-                        updateMessage(lstMsg, iUSBInsert.ToString());
-                        if (iUSBInsert == 0)
-                        {
-                            CurrentUSB = USBState.YES;
-                            timer1.Enabled = true;
-                        }
-                    }
+
+
+
 
                 })); 
            
@@ -299,21 +294,9 @@ namespace AutoBatchForProductionLine
 
             foreach (USBWatcher.USBControllerDevice Device in USBWatcher.USB.WhoUSBControllerDevice(e))
             {
-                // this.SetText("\tAntecedent：" + Device.Antecedent + "\r\n");
-                // this.SetText("\tDependent：" + Device.Dependent + "\r\n");
                 p.WriteLog("Antecedent：" + Device.Antecedent);
                 p.WriteLog("Dependent：" + Device.Dependent);
-                if (LoginDevice == Vendor.Cammpro)
-                {
-                    if (Device.Dependent.ToUpper().StartsWith("USBSTOR"))
-                    {
-                        CammUSB = true;
-                        timerFormat.Enabled = true;
-                    }
-                    
-                   
-                }
-                //i
+
             }
         }
 
@@ -400,24 +383,39 @@ namespace AutoBatchForProductionLine
                     LoginModel = Model.H6;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
+                  //  ezUSB.RemoveUSBEventWatcher();
+                   // updateMessage(lstMsg, "H6不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                    //p.WriteLog("H6不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+            
                     break;
                 case "H8":
                     LoginDevice = Vendor.EasyStorage;
                     LoginModel = Model.H8;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
+                    //ezUSB.RemoveUSBEventWatcher();
+                   //// updateMessage(lstMsg, "H8不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                   // p.WriteLog("H8不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
                     break;
                 case "G5":
                     LoginDevice = Vendor.EasyStorage;
                     LoginModel = Model.G5;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
+                   // ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+                    //updateMessage(lstMsg, "G5支持插入设备自动运行,也可以插入设备后点击'手动单次运行'");
+                    //p.WriteLog("G5支持插入设备自动运行,也可以插入设备后点击'手动单次运行'");
+                   
                     break;
                 case "G9":
                     LoginDevice = Vendor.Cammpro;
                     LoginModel = Model.G9;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
+                  //  updateMessage(lstMsg, "G9不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                  //  p.WriteLog("G9不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                   // ezUSB.RemoveUSBEventWatcher();
+
                     break;
                 default:
                     break;
@@ -460,7 +458,7 @@ namespace AutoBatchForProductionLine
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
                     chkSetFormat.Enabled = true;
-                    chkSetPoweOff.Enabled = false;
+                    chkSetPoweOff.Enabled = true;
                     break;
                 case Model.G5:
                     chkSyncTime.Enabled = true;
@@ -519,7 +517,7 @@ namespace AutoBatchForProductionLine
             CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
             CheckConfigValueAndCheckbox(p.SetFormat, chkSetFormat);
             CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
-            if (LoginModel == Model.H8 || LoginModel == Model.G5)
+            if (LoginModel == Model.H8 | LoginModel == Model.G5)
             {
                 if (chkSetFormat.Checked)
                 {
@@ -861,9 +859,9 @@ namespace AutoBatchForProductionLine
 
         private void btnOnlyOnce_Click(object sender, EventArgs e)
         {
-
+            ClickOnce = true;
             RunSetItem();
-
+            ClickOnce = false;
 
         }
 
@@ -893,16 +891,15 @@ namespace AutoBatchForProductionLine
                 {
                     iUSBInsert = 3;
                     DevicePwd = "000000";
+                    if (!ClickOnce )
+                        Delay(7000);
                     ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
                     if (Init_Device_iRet == 1)
                     {
                         GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                         updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
                         p.WriteLog("检测到设备,SN:" + DI.cSerial);
-                        DI.cSerial = DI.cSerial.TrimEnd('\0');
-                        //if (DI.cSerial.Contains ("\0"))
-                        //    DI.cSerial .Replace ("\0","");
-         
+                        DI.cSerial = DI.cSerial.TrimEnd('\0');        
                     }
                     else
                     {
@@ -916,6 +913,14 @@ namespace AutoBatchForProductionLine
 
                 else
                 {
+                    if (!ClickOnce)
+                    {
+                        if (LoginModel == Model.G5)
+                            Delay(2000);
+                        if (LoginModel == Model.H8)
+                            Delay(3000);
+                        
+                    }
                     Init_Device_iRet = BODYCAMDLL_API_YZ.BC_ProbeDevEx(out _IDCode[0]);
                     DevicePwd = "888888";
                     BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
@@ -938,7 +943,7 @@ namespace AutoBatchForProductionLine
                     }
                 }
 
-                //
+                // 自动同步时间
                 if (p.SyncTime == "1")
                 {
                     updateMessage(lstMsg, DI.cSerial + ":准备开始同步时间");
@@ -954,7 +959,7 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":同步设备时间失败.");
                     }
                 }
-                //
+                // 自动写SN
                 if (p.SetSN == "1")
                 {
 
@@ -980,7 +985,6 @@ namespace AutoBatchForProductionLine
                         }
                     }
                 }
-
 
                 //WiFi
                 if (p.SetWiFi == "1")
@@ -1033,10 +1037,6 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":设置执法仪APN信息成功.");
                     }
                 }
-
-
-
-
 
                 //GB28181
                 if (p.SetGB28181 == "1")
@@ -1163,7 +1163,9 @@ namespace AutoBatchForProductionLine
                 f.ShowDialog();
             }
 
+            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             SetItemState = true;
+
             EndUnLockUI();
 
         }
@@ -1870,7 +1872,7 @@ namespace AutoBatchForProductionLine
             timer1.Stop();
             if (CurrentUSB == USBState.YES && !SetItemState )
             {
-
+                //Delay(2000);
                 RunSetItem();
             }
             timer1.Start();
@@ -1966,20 +1968,13 @@ namespace AutoBatchForProductionLine
             CheckCheckboxCheckState(chkSetFormat);
         }
 
-        private void timerFormat_Tick(object sender, EventArgs e)
-        {
-            if (!CammFormat && !CammFormat)
-            {
-                if (FortMat(BodyUDisk.Replace("\\", ""), p.Format))
-                    updateMessage(lstMsg, "格式化成功");
-                else
-                    updateMessage(lstMsg, "格式化失败");
-            }
-        }
+
 
         private void lstMsg_DoubleClick(object sender, EventArgs e)
         {
             Clipboard.SetText(lstMsg.SelectedItem.ToString());
         }
+
+   
     }
 }

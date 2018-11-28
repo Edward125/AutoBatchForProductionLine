@@ -52,7 +52,6 @@
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.timerFormat = new System.Windows.Forms.Timer(this.components);
             this.groupBox2.SuspendLayout();
             this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -280,7 +279,7 @@
             this.groupBox3.Controls.Add(this.lstMsg);
             this.groupBox3.Location = new System.Drawing.Point(163, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(682, 447);
+            this.groupBox3.Size = new System.Drawing.Size(600, 447);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "信息列表";
@@ -291,7 +290,7 @@
             this.lstMsg.ItemHeight = 12;
             this.lstMsg.Location = new System.Drawing.Point(15, 20);
             this.lstMsg.Name = "lstMsg";
-            this.lstMsg.Size = new System.Drawing.Size(659, 412);
+            this.lstMsg.Size = new System.Drawing.Size(577, 412);
             this.lstMsg.TabIndex = 0;
             this.lstMsg.DoubleClick += new System.EventHandler(this.lstMsg_DoubleClick);
             // 
@@ -344,17 +343,12 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // timerFormat
-            // 
-            this.timerFormat.Interval = 500;
-            this.timerFormat.Tick += new System.EventHandler(this.timerFormat_Tick);
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(851, 481);
+            this.ClientSize = new System.Drawing.Size(775, 481);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -401,7 +395,6 @@
         private System.Windows.Forms.Button btnClearInfo;
         private System.Windows.Forms.CheckBox chkSetFormat;
         private System.Windows.Forms.CheckBox chkSetSN;
-        private System.Windows.Forms.Timer timerFormat;
     }
 }
 
