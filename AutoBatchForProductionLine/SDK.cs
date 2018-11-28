@@ -17,9 +17,9 @@ namespace SDK
         [StructLayout(LayoutKind.Sequential, Pack = 1,CharSet = CharSet.Ansi )]
         public struct ZFY_INFO
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            public byte[] cSerial;               /*执法记录仪产品序号，不可为空*/
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
+            public byte[] cSerial;               /*执法记录仪产品序号，不可为空*/
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
             public byte[] userNo;                /*执法记录仪使用者警号，不可为空*/
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
             public byte[] userName;              /*执法记录仪使用者姓名，管理系统使用警号关联时可为空*/
@@ -59,17 +59,17 @@ namespace SDK
 
 
 
-        public struct DEVLIST_INFO
-        {
-            IntPtr dev;  // 设备操作句柄
-            int ListIndex; //设备在列表中的索引值
-            int bUDisk; //是否已经形成U盘.1-已经形成U盘,0-未形成U盘
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-            byte[] sn; //设备ID,设备唯一性ID，不可更改,16位
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-            byte[] IDCode; //设备识别码。设备类型编码，不可更改.8位
+        //public struct DEVLIST_INFO
+        //{
+        //    IntPtr dev;  // 设备操作句柄
+        //    int ListIndex; //设备在列表中的索引值
+        //    int bUDisk; //是否已经形成U盘.1-已经形成U盘,0-未形成U盘
+        //    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+        //    byte[] sn; //设备ID,设备唯一性ID，不可更改,16位
+        //    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
+        //    byte[] IDCode; //设备识别码。设备类型编码，不可更改.8位
 
-        }
+        //}
 
 
         public enum FSTYPE_E
@@ -497,7 +497,7 @@ namespace SDK
         *************************************************/
         //BODYCAMDLL_API int  BC_FormatUdisk(IN BCHandle *dev,IN char *sPwd,IN FSTYPE_E fstype);
         [DllImport("LibBodycam.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-        public static extern int BC_FormatUdisk(IntPtr dev, byte sPwd, FSTYPE_E fstype);
+        public static extern int BC_FormatUdisk(IntPtr dev, string sPwd, FSTYPE_E fstype);
 
         /*************************************************
         *函数说明:   获取主码流信息，对所有的用户生效
@@ -1289,9 +1289,9 @@ namespace SDK
         [StructLayout(LayoutKind.Sequential,CharSet =CharSet.Ansi, Pack = 1)]
         public struct ZFY_INFO
         {
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst =8)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst =7)]
             public byte[] cSerial;               //执法记录仪产品序号，不可为空
-            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
             public byte[] userNo;                //执法记录仪使用者警号，不可为空
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 33)]
             public byte[] userName;              //执法记录仪使用者姓名，管理系统使用警号关联时可为空

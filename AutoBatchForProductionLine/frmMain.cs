@@ -9,6 +9,8 @@ using System.Windows.Forms;
 using Edward;
 using SDK;
 using System.Management;
+using System.Diagnostics;
+using System.IO;
 
 namespace AutoBatchForProductionLine
 {
@@ -21,12 +23,17 @@ namespace AutoBatchForProductionLine
 
 
 
+        //SN:H6:6;H8:7;G5:5;G9:9,R3:3
+        
+
+
+
         #region 参数定义
 
         USBWatcher.USB ezUSB = new USBWatcher.USB();
 
         private static Vendor LoginDevice;  //当前设备的方案商
-        private static Model LoginModel;//当前设备的型号
+        public  static Model LoginModel;//当前设备的型号
 
         private static IntPtr BCHandle = IntPtr.Zero;
         private static string DevicePwd = "000000";
@@ -34,7 +41,12 @@ namespace AutoBatchForProductionLine
         public static bool bRestart = false;
         public static USBState CurrentUSB;
         public static bool SetItemState = false; //程序未运行
-        public static int iUSBInsert = 3; //cammpro 插入计数,为0时开始执行程序
+        public static int iUSBInsert = 3; //Campro 执法仪插入计数
+        public static string BodyUDisk = string.Empty;
+        public static bool CammUSB = false;// cammpro 形成U盘
+        public static bool CammFormat = false; // 还没有执行
+        public static bool ClickOnce = false;//手动点击单词运行
+
 
         public enum Model
         {
@@ -136,7 +148,93 @@ namespace AutoBatchForProductionLine
         }
 
 
+
+
+        public const int WM_DEVICECHANGE = 0x219;
+        public const int DBT_DEVICEARRIVAL = 0x8000;
+        public const int DBT_CONFIGCHANGECANCELED = 0x0019;
+        public const int DBT_CONFIGCHANGED = 0x0018;
+        public const int DBT_CUSTOMEVENT = 0x8006;
+        public const int DBT_DEVICEQUERYREMOVE = 0x8001;
+        public const int DBT_DEVICEQUERYREMOVEFAILED = 0x8002;
+        public const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
+        public const int DBT_DEVICEREMOVEPENDING = 0x8003;
+        public const int DBT_DEVICETYPESPECIFIC = 0x8005;
+        public const int DBT_DEVNODES_CHANGED = 0x0007;
+        public const int DBT_QUERYCHANGECONFIG = 0x0017;
+        public const int DBT_USERDEFINED = 0xFFFF;
+
+
+
+
+
         #endregion
+
+
+
+
+        protected override void WndProc(ref Message m)
+        {
+            try
+            {
+                if (m.Msg == WM_DEVICECHANGE)
+                {
+                    switch (m.WParam.ToInt32())
+                    {
+                        case WM_DEVICECHANGE:
+                            break;
+                        case DBT_DEVICEARRIVAL://U盘插入
+
+                            DriveInfo[] s = DriveInfo.GetDrives();
+                            foreach (DriveInfo drive in s)
+                            {
+                                if (drive.DriveType == DriveType.Removable)
+                                {
+                                    BodyUDisk = drive.Name;
+                                    CammUSB = true;
+                                    break;
+                                }
+                            }
+                            break;
+                        case DBT_CONFIGCHANGECANCELED:
+                            break;
+                        case DBT_CONFIGCHANGED:
+                            break;
+                        case DBT_CUSTOMEVENT:
+                            break;
+                        case DBT_DEVICEQUERYREMOVE:
+                            break;
+                        case DBT_DEVICEQUERYREMOVEFAILED:
+                            break;
+                        case DBT_DEVICEREMOVECOMPLETE: //U盘卸载
+                            //updateMessage(lb_StateInfo, "U盘已卸载！");
+
+                            //isCopy = false;
+                            //isCopyEnd = false;
+                            break;
+                        case DBT_DEVICEREMOVEPENDING:
+                            break;
+                        case DBT_DEVICETYPESPECIFIC:
+                            break;
+                        case DBT_DEVNODES_CHANGED:
+                            break;
+                        case DBT_QUERYCHANGECONFIG:
+                            break;
+                        case DBT_USERDEFINED:
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            catch (Exception )
+            {
+                // updateMessage(lb_StateInfo, "Error:" + ex.Message);
+
+            }
+            base.WndProc(ref m);
+        }
+
 
 
         private void frmMain_Load(object sender, EventArgs e)
@@ -166,17 +264,17 @@ namespace AutoBatchForProductionLine
                 {
                     updateMessage(lstMsg, "侦测到USB插入.");
                     p.WriteLog("侦测到USB插入.");
-                    if (LoginDevice == Vendor.EasyStorage )
+
+                    //if (LoginDevice == Vendor.EasyStorage)
+                    //{
                         CurrentUSB = USBState.YES;
+                        timer1.Enabled = true;
+                    //}
+                        ezUSB.RemoveUSBEventWatcher();
 
-                    if (LoginModel == Model.G9)
-                    {
-                        iUSBInsert--;
-                        if (iUSBInsert ==0)
-                            CurrentUSB = USBState.YES;
-                    }
 
-                }));
+                })); 
+
            
             }
             else if (e.NewEvent.ClassPath.ClassName == "__InstanceDeletionEvent")
@@ -194,16 +292,10 @@ namespace AutoBatchForProductionLine
 
             foreach (USBWatcher.USBControllerDevice Device in USBWatcher.USB.WhoUSBControllerDevice(e))
             {
-                // this.SetText("\tAntecedent：" + Device.Antecedent + "\r\n");
-                // this.SetText("\tDependent：" + Device.Dependent + "\r\n");
-                this.Invoke((EventHandler)(delegate
-                {
-        
-                    //updateMessage(lstMsg, "Antecedent：" + Device.Antecedent);
-                    updateMessage(lstMsg, "Dependent：" + Device.Dependent);
-                    p.WriteLog("Antecedent：" + Device.Antecedent);
-                    p.WriteLog("Dependent：" + Device.Dependent);
-                }));
+
+                p.WriteLog("Antecedent：" + Device.Antecedent);
+                p.WriteLog("Dependent：" + Device.Dependent);
+
 
             }
         }
@@ -279,44 +371,6 @@ namespace AutoBatchForProductionLine
 
         #endregion
 
-        private void cmboBodyType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            IniFile.IniWriteValue("SysConfig", "CurrentDevice", comboBodyType.Text);
-            switch (comboBodyType.Text)
-            {
-
-                case "H6":
-                    LoginDevice = Vendor.Cammpro;
-                    LoginModel = Model.H6;
-                    LoadUIByModel(LoginModel);
-                    LoadConfigByModel(LoginModel);
-                    break;
-                case "H8":
-                    LoginDevice = Vendor.EasyStorage;
-                    LoginModel = Model.H8;
-                    LoadUIByModel(LoginModel);
-                    LoadConfigByModel(LoginModel);
-                    break;
-                case "G5":
-                    LoginDevice = Vendor.EasyStorage;
-                    LoginModel = Model.G5;
-                    LoadUIByModel(LoginModel);
-                    LoadConfigByModel(LoginModel);
-                    break;
-                case "G9":
-                    LoginDevice = Vendor.Cammpro;
-                    LoginModel = Model.G9;
-                    LoadUIByModel(LoginModel);
-                    LoadConfigByModel(LoginModel);
-                    break;
-                default:
-                    break;
-            }
-
-
-
-
-        }
 
 
 
@@ -330,42 +384,50 @@ namespace AutoBatchForProductionLine
             {
                 case Model.H6:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = true;
                     chkSetAPN.Enabled = false;
                     chkSetCMSV6.Enabled = false;
                     chkSetGB28181.Enabled = false;
                     chkSetWiFi.Enabled = false;
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 case Model.H8:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = false;
                     chkSetAPN.Enabled = false;
                     chkSetCMSV6.Enabled = false;
                     chkSetGB28181.Enabled = false;
                     chkSetWiFi.Enabled = false;
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
-                    chkSetPoweOff.Enabled = false;
+                    chkSetFormat.Enabled = true;
+                    chkSetPoweOff.Enabled = true;
                     break;
                 case Model.G5:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = false;
                     chkSetAPN.Enabled = true;
                     chkSetCMSV6.Enabled = true;
                     chkSetGB28181.Enabled = true;
                     chkSetWiFi.Enabled = true;
                     chkSetGPS.Enabled = true;
                     chkSetCheckNet.Enabled = true;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = true;
                     break;
                 case Model.G9:
                     chkSyncTime.Enabled = true;
+                    chkSetSN.Enabled = true;
                     chkSetAPN.Enabled = false;
                     chkSetCMSV6.Enabled = true;
                     chkSetGB28181.Enabled = false;
                     chkSetWiFi.Enabled = true;
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
+                    chkSetFormat.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 default:
@@ -381,22 +443,34 @@ namespace AutoBatchForProductionLine
         private void LoadConfigByModel(Model _model)
         {
             p.SyncTime = IniFile.IniReadValue(_model.ToString(), "SyncTime");
+            p.SetSN = IniFile.IniReadValue(_model.ToString(), "SetSN");
             p.SetWiFi = IniFile.IniReadValue(_model.ToString(), "SetWiFi");
             p.SetAPN = IniFile.IniReadValue(_model.ToString(), "SetAPN");
             p.SetCMSV6 = IniFile.IniReadValue(_model.ToString(), "SetCMSV6");
             p.SetGB28181 = IniFile.IniReadValue(_model.ToString(), "SetGB28181");
             p.SetCheckNet = IniFile.IniReadValue(_model.ToString(), "SetCheckNet");
             p.SetGPS = IniFile.IniReadValue(_model.ToString(), "SetGPS");
+            p.SetFormat = IniFile.IniReadValue( _model.ToString(), "SetFormat");
             p.SetPowerOff = IniFile.IniReadValue(_model.ToString(), "SetPowerOff");
 
             CheckConfigValueAndCheckbox(p.SyncTime, chkSyncTime);
+            CheckConfigValueAndCheckbox(p.SetSN, chkSetSN);
             CheckConfigValueAndCheckbox(p.SetWiFi, chkSetWiFi);
             CheckConfigValueAndCheckbox(p.SetAPN, chkSetAPN);
             CheckConfigValueAndCheckbox(p.SetCMSV6, chkSetCMSV6);
             CheckConfigValueAndCheckbox(p.SetGB28181, chkSetGB28181);
             CheckConfigValueAndCheckbox(p.SetCheckNet, chkSetCheckNet);
             CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
+            CheckConfigValueAndCheckbox(p.SetFormat, chkSetFormat);
             CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
+            if (LoginModel == Model.H8 | LoginModel == Model.G5)
+            {
+                if (chkSetFormat.Checked)
+                {
+                    chkSetPoweOff.Checked = false;
+                    chkSetPoweOff.Enabled = false;
+                }
+            }
 
 
         }
@@ -606,6 +680,18 @@ namespace AutoBatchForProductionLine
                     switch (LoginModel)
 	                        {
                                 case Model.H6:
+                                    if (p.SetSN == "1")
+                                    {
+                                        if (string.IsNullOrEmpty(p.StartSN))
+                                            return p.SetErrorCode.StartSNEmpty;
+                                        if (string.IsNullOrEmpty(p.EndSN))
+                                            return p.SetErrorCode.EndSNEmpty;
+                                        if (!p.StartSN.StartsWith("6"))
+                                            return p.SetErrorCode.StartSNStartNotMatch;
+                                        if (!p.EndSN.StartsWith("6"))
+                                            return p.SetErrorCode.EndSNStartNotMacth;
+                                    }
+
                                     break;
                                 case Model.H8:
                                     break;
@@ -619,6 +705,19 @@ namespace AutoBatchForProductionLine
                                             if (string.IsNullOrEmpty(p.WiFiPwd))
                                                 return p.SetErrorCode.WIFIPWD;
                                          }
+
+                                     if (p.SetSN == "1")
+                                     {
+                                         if (string.IsNullOrEmpty(p.StartSN))
+                                             return p.SetErrorCode.StartSNEmpty;
+                                         if (string.IsNullOrEmpty(p.EndSN))
+                                             return p.SetErrorCode.EndSNEmpty;
+                                         if (!p.StartSN.StartsWith("9"))
+                                             return p.SetErrorCode.StartSNStartNotMatch;
+                                         if (!p.EndSN.StartsWith("9"))
+                                             return p.SetErrorCode.EndSNStartNotMacth;
+                                     }
+
                                      if (p.SetCMSV6 == "1")
                                          {
                                             if (string.IsNullOrEmpty(p.CMSV6IP))
@@ -691,6 +790,13 @@ namespace AutoBatchForProductionLine
 	                        }
                     break;
                 default:
+                    if (p.SetSN == "1")
+                    {
+                        if (string.IsNullOrEmpty(p.StartSN))
+                            return p.SetErrorCode.StartSNEmpty;
+                        if (string.IsNullOrEmpty(p.EndSN))
+                            return p.SetErrorCode.EndSNEmpty;
+                    }
                     break;
             }
 
@@ -699,15 +805,25 @@ namespace AutoBatchForProductionLine
 
         private void btnOnlyOnce_Click(object sender, EventArgs e)
         {
-
+            ClickOnce = true;
             RunSetItem();
-
+            ClickOnce = false;
 
         }
 
 
         private void RunSetItem()
         {
+
+            if (string.IsNullOrEmpty(p.CurrentDevice))
+            {
+                MessageBox.Show("请选选择执法仪型号", "未选择执法仪型号", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                comboBodyType.Focus();
+                SetItemState = true;
+                return;
+            }
+
+
             StartLockUI();
             int Init_Device_iRet = -1;
             byte[] _IDCode = new byte[5];
@@ -718,27 +834,43 @@ namespace AutoBatchForProductionLine
 
             if (p.CheckParamErrorCode == p.SetErrorCode.OK)
             {
-
                 if (LoginDevice == Vendor.Cammpro)
                 {
-                    iUSBInsert = 3;
+                   // iUSBInsert = 3;
                     DevicePwd = "000000";
-                    //
+
+                    if (!ClickOnce )
+                        Delay(7000);
 
                     ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
                     if (Init_Device_iRet == 1)
                     {
                         GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                         updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
-                        if (DI.cSerial.Length == 8)
-                            DI.cSerial = DI.cSerial.Substring(0, 7);
+
+                        p.WriteLog("检测到设备,SN:" + DI.cSerial);
+                        DI.cSerial = DI.cSerial.TrimEnd('\0');        
                     }
-
-
+                    else
+                    {
+                        updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
+                        p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
+                        SetItemState = true;
+                        EndUnLockUI();
+                        return;
+                    }
                 }
 
                 else
                 {
+                    if (!ClickOnce)
+                    {
+                        if (LoginModel == Model.G5)
+                            Delay(2000);
+                        if (LoginModel == Model.H8)
+                            Delay(3000);
+                        
+                    }
                     Init_Device_iRet = BODYCAMDLL_API_YZ.BC_ProbeDevEx(out _IDCode[0]);
                     DevicePwd = "888888";
                     BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
@@ -751,10 +883,17 @@ namespace AutoBatchForProductionLine
                         p.WriteLog("检测到设备" + IDCode + ",SN:" + DI.cSerial);
                     }
                     else
+                    {
+
+                        updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
+                        p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
+                        SetItemState = true;
+                        EndUnLockUI();
                         return;
+                    }
                 }
 
-                //
+                // 自动同步时间
                 if (p.SyncTime == "1")
                 {
                     //updateMessage(lstMsg, DI.cSerial.Trim () + ":准备开始同步时间");
@@ -772,6 +911,49 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":同步设备时间失败.");
                     }
                 }
+                // 自动写SN
+                if (p.SetSN == "1")
+                {
+
+                    if (DI.cSerial == "000000")
+                    {
+                        updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
+                        p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
+                        UpdateSN(ref DI);
+                       
+                    }
+                    else
+                    {
+                        if (CheckBodySN(DI.cSerial, LoginModel))
+                        {
+                            updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
+                            p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
+                            string sql = "select usedtime from " + comboBodyType.Text + "sn where sn = '" + DI.cSerial  + "'";
+                            string result = "";
+                            p.queryDatafromDB(sql, "usedtime", out result);
+                            if (!string.IsNullOrEmpty(result))
+                            {
+                                updateMessage(lstMsg, DI.cSerial + "被使用的时间为:" + result);
+                                p.WriteLog(DI.cSerial + "被使用的时间为:" + result);
+                            }
+                            else
+                            {
+                                sql = "insert into " + comboBodyType.Text + "sn (sn,usedtime,remark) values ('" + DI.cSerial  + "','" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','SN not in the DB,auto insert')";
+                                p.updateData2DB(sql);
+                                updateMessage(lstMsg, DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
+                                p.WriteLog(DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
+                            }
+              
+                        }
+                        else
+                        {
+                            updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
+                            p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
+                            UpdateSN(ref DI);
+                        }
+                    }
+                }
+
                 //WiFi
                 if (p.SetWiFi == "1")
                 {
@@ -823,10 +1005,6 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":设置执法仪APN信息成功.");
                     }
                 }
-
-
-
-
 
                 //GB28181
                 if (p.SetGB28181 == "1")
@@ -885,6 +1063,47 @@ namespace AutoBatchForProductionLine
                     }
                 }
 
+
+                if (p.SetFormat == "1")
+                {
+                    updateMessage(lstMsg, DI.cSerial + ":准备开始设置格式化,文件系统格式:" + p.Format);
+                    p.WriteLog(DI.cSerial + ":准备开始设置格式化,文件系统格式:" + p.Format);
+                    if (FormatDisk(LoginDevice, DevicePwd, p.Format))
+                    {
+                        if (LoginDevice == Vendor.EasyStorage)
+                        {
+                            ezUSB.RemoveUSBEventWatcher();
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
+                            MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                            ezUSB.RemoveUSBEventWatcher();
+                            
+                        }
+                        if (LoginDevice == Vendor.Cammpro)
+                        {
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功.");
+
+                        }
+                    }
+                    else
+                    {
+                        if (LoginDevice == Vendor.EasyStorage)
+                        {
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "失败.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "失败.");
+                        }
+                        if (LoginDevice == Vendor.Cammpro)
+                        {
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "失败,详细信息请查看log");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "失败,详细信息请查看log");
+                        }
+                    }
+
+                }
+
+
+
                 //shutdown
                 if (p.SetPowerOff == "1")
                 {
@@ -914,7 +1133,9 @@ namespace AutoBatchForProductionLine
                 f.ShowDialog();
             }
 
+            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             SetItemState = true;
+
             EndUnLockUI();
 
         }
@@ -983,6 +1204,58 @@ namespace AutoBatchForProductionLine
 
 
         #region Item
+
+
+
+        private void UpdateSN(ref DeviceInfo dii)
+        {
+            Int32 start = Convert.ToInt32(p.StartSN);
+            Int32 end = Convert.ToInt32(p.EndSN);
+            string result = string.Empty;
+          
+
+            string sql = "";
+
+            for (int i = start; i <= end; i++)
+            {
+                sql = "select usedtime from " + comboBodyType.Text + "sn where sn = '" + i.ToString() + "'";
+                p.queryDatafromDB(sql, "usedtime", out result);
+
+                if (string.IsNullOrEmpty(result))
+                {
+                    DeviceInfo di = new DeviceInfo();
+                    updateMessage(lstMsg, i + "还未使用,将写入当前设备.");
+                    p.WriteLog(i + "还未使用,将写入当前设备.");
+                    di.cSerial = i.ToString();
+                    di.userNo = p.SN_userNo;
+                    di.userName = p.SN_userName;
+                    di.unitNo = p.SN_unitNo;
+                    di.unitName = p.SN_unitName;
+                    if (WriteDeviceInfo(LoginDevice, DevicePwd, di))
+                    {
+                        dii.cSerial = di.cSerial;
+                        sql = "insert into " + comboBodyType.Text +"sn (sn,usedtime,remark) values ('" + i +"','" + DateTime.Now.ToString ("yyyyMMddhhmmss") +"','')";
+                        p.updateData2DB(sql);
+                        updateMessage(lstMsg, "向执法仪写入SN:" + i + "成功.");
+                        p.WriteLog("向执法仪写入SN:" + i + "成功.");
+                        break;
+                    }
+                    else
+                    {
+                        updateMessage(lstMsg, "向执法仪写入SN:" + i + "失败.");
+                        p.WriteLog("向执法仪写入SN:" + i + "失败.");
+                    }
+
+
+                }
+                else
+                {
+                    updateMessage(lstMsg, i + "该条码已经使用,使用时间:" + result);
+                    p.WriteLog(i + "该条码已经使用,使用时间:" + result);
+                }
+            }
+        }
+
 
         /// <summary>
         /// 同步时间
@@ -1296,8 +1569,239 @@ namespace AutoBatchForProductionLine
         }
 
 
+        /// <summary>
+        /// 向执法仪写入信息
+        /// </summary>
+        /// <param name="devicetype"></param>
+        /// <param name="password"></param>
+        /// <param name="deviceinfo"></param>
+        /// <returns>true,成功,false失败</returns>
+        private bool WriteDeviceInfo(Vendor devicetype, string password, DeviceInfo deviceinfo)
+        {
+            int WriteZFYInfo_iRet = -1;
+            if (LoginDevice == Vendor.Cammpro)
+            {
+                ZFYDLL_API_MC.ZFY_INFO info = new ZFYDLL_API_MC.ZFY_INFO();
+                info.cSerial = Encoding.Default.GetBytes(deviceinfo.cSerial.PadRight(7, '\0').ToArray());
+                info.userNo = Encoding.Default.GetBytes(deviceinfo.userNo.PadRight(6, '\0').ToArray());
+                info.userName = Encoding.Default.GetBytes(deviceinfo.userName.PadRight(33, '\0').ToArray());
+                info.unitNo = Encoding.Default.GetBytes(deviceinfo.unitNo.PadRight(13, '\0').ToArray());
+                info.unitName = Encoding.Default.GetBytes(deviceinfo.unitName.PadRight(33, '\0').ToArray());
+                ZFYDLL_API_MC.WriteZFYInfo(ref info, password, ref WriteZFYInfo_iRet);
+            }
+            //if (LoginDevice == Vendor.EasyStorage) /// debug
+            //{
+            //    BODYCAMDLL_API_YZ.ZFY_INFO info = new BODYCAMDLL_API_YZ.ZFY_INFO();
+
+            //    info.cSerial = Encoding.Default.GetBytes(deviceinfo.cSerial.PadRight(8, '\0').ToArray());
+            //    info.userNo = Encoding.Default.GetBytes(deviceinfo.userNo.PadRight(7, '\0').ToArray());
+            //    info.userName = Encoding.Default.GetBytes(deviceinfo.userName.PadRight(33, '\0').ToArray());
+            //    info.unitNo = Encoding.Default.GetBytes(deviceinfo.unitNo.PadRight(13, '\0').ToArray());
+            //    info.unitName = Encoding.Default.GetBytes(deviceinfo.unitName.PadRight(33, '\0').ToArray());
+            //    BODYCAMDLL_API_YZ.WriteZFYInfo(ref info, password, ref WriteZFYInfo_iRet);
+            //    //byte[] _psw = Encoding.Default.GetBytes(password);
+            //    //BODYCAMDLL_API_YZ.ZFY_INFO_N info = new BODYCAMDLL_API_YZ.ZFY_INFO_N();
+            //    //info.cSerial = deviceinfo.cSerial;
+            //    //info.userNo = deviceinfo.userNo;
+            //    //info.userName = deviceinfo.userName;
+            //    //info.unitNo = deviceinfo.unitNo;
+            //    //info.unitName = deviceinfo.unitName;
+            //    WriteZFYInfo_iRet = BODYCAMDLL_API_YZ.BC_SetDevInfo(BCHandle, password, ref info);
+
+            //}
+            if (WriteZFYInfo_iRet == 1)
+                return true;
+            return false;
+
+        }
+
+
+        /// <summary>
+        /// 格式化设备
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <param name="format"></param>
+        /// <returns></returns>
+        private bool FormatDisk(Vendor logindevice, string password, string format)
+        {
+            if (logindevice == Vendor.EasyStorage)
+            {
+                int result = -1;
+                result = BODYCAMDLL_API_YZ.BC_FormatUdisk(BCHandle, password, p.FsType);
+                if (result == 0)
+                    return true;
+                else
+                    return false;
+            }
+
+            if (logindevice == Vendor.Cammpro)
+            {
+
+                if (SetDeviceMSDC(logindevice, DevicePwd))
+                {
+                    while (CammUSB )
+                    {
+
+                        Delay(500);
+                        while (Directory.Exists (BodyUDisk ))
+                        {
+                            CammUSB = false;
+                            Delay(500);
+                            updateMessage(lstMsg, "执法仪已经进入U盘模式,盘符:" + BodyUDisk);
+                            if (BodyUDisk.Contains(@"\"))
+                                BodyUDisk = BodyUDisk.Replace(@"\", "");
+
+                            ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
+                            processStartInfo.RedirectStandardInput = true;
+                            processStartInfo.RedirectStandardOutput = true;
+                            processStartInfo.UseShellExecute = false;
+                            processStartInfo.CreateNoWindow = true;
+                            Process process = Process.Start(processStartInfo);
+                            if (process != null)
+                            {
+                                process.StandardInput.WriteLine(@"FORMAT " + BodyUDisk + " /y /FS:" + p.Format +" /Q");
+                                process.StandardInput.Close();
+                                string outputString = process.StandardOutput.ReadToEnd();
+                                p.WriteLog(outputString);
+                                if (outputString.Contains("已完成"))
+                                {
+                                    return true;
+                                }
+                                else
+                                    return false;
+                              
+                            }
+
+                        }
+                    }
+
+                }
+
+            }
+            return false;
+        }
+
+
+
+        private void WriteBat(string Path,string format)
+        {
+
+            if (Path.Contains(@"\"))
+                Path = Path.Replace(@"\", "");
+
+
+            string bat = p.AppFolder +@"\format.bat";
+            if (File.Exists(bat))
+                File.Delete(bat);
+            System.IO.StreamWriter sw = new StreamWriter(bat);
+            sw.WriteLine("@ECHO OFF");
+            sw.WriteLine(@"echo y | format " + Path + @" /FS:" + format + @"/V:" + Path + @" /Q");
+            sw.WriteLine(@"exit");
+            sw.Close();
+        }
+
+
+
+
+
+
+
+        public bool  FortMat(string Path,string format)
+        {
+            //string strInput ="format F: /FS:FAT32 /Q /A:32k /Y";
+            Process pp = new Process();
+            //string strInput = @"echo y | format " + Path + @" /FS:" + format + @"/V:" + Path + @" /Q";
+            string strInput = "format " + Path + " /FS:exFAT /Q /A:32k /Y";
+            // MessageBox.Show(strInput);
+
+            //设置要启动的应用程序
+            pp.StartInfo.FileName = "cmd.exe";
+            //是否使用操作系统shell启动
+            pp.StartInfo.UseShellExecute = false;
+            // 接受来自调用程序的输入信息
+            pp.StartInfo.RedirectStandardInput = true;
+            //输出信息
+            pp.StartInfo.RedirectStandardOutput = true;
+            // 输出错误
+            pp.StartInfo.RedirectStandardError = true;
+            //不显示程序窗口
+            //p.StartInfo.CreateNoWindow = true;
+            pp.StartInfo.CreateNoWindow = true;
+            //启动程序
+            pp.Start();
+
+            //向cmd窗口发送输入信息
+           // pp.StandardInput.WriteLine(strInput + @" | exit");
+            pp.StandardInput.WriteLine(strInput + "&exit");
+            // p.StandardInput.WriteLine(strInput + "&exit");
+            pp.StandardInput.AutoFlush = true;
+
+            //获取输出信息
+            string strOuput = pp.StandardOutput.ReadToEnd();
+            //等待程序执行完退出进程
+            pp.WaitForExit();
+            pp.Close();
+            //p.WriteLog(strOuput);
+            
+            //if (strOuput.ToLower().Contains ("formate complete") | strOuput.Contains ("格式化已完成"))
+            //    return true;
+            //else 
+            //   return false ;
+
+            return true;
+
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="logindevice"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        private bool SetDeviceMSDC(Vendor  logindevice, string password)
+        {
+            int iRet_SetMSDC = -1;
+            if (logindevice == Vendor.EasyStorage)
+            {
+                //BODYCAMDLL_API_YZ.SetMSDC(password, ref iRet_SetMSDC);
+                iRet_SetMSDC = BODYCAMDLL_API_YZ.BC_EnterDiskMode(BCHandle, password);
+                if (iRet_SetMSDC == 1)
+                    return true;
+                else
+                    return false;
+            }
+            if (logindevice == Vendor.Cammpro)
+            {
+                ZFYDLL_API_MC.SetMSDC(password, ref iRet_SetMSDC);
+                if (iRet_SetMSDC == 7)
+                    return true;
+                else
+                    return false;
+            }
+
+            return false;
+        }
+
 
         #endregion
+
+
+        /// <summary>
+        /// 延時子程序
+        /// </summary>
+        /// <param name="interval">延時的時間，单位毫秒</param>
+        private void Delay(double interval)
+        {
+            DateTime time = DateTime.Now;
+            double span = interval * 10000;
+            while (DateTime.Now.Ticks - time.Ticks < span)
+            {
+                Application.DoEvents();
+            }
+
+        }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -1338,7 +1842,7 @@ namespace AutoBatchForProductionLine
             timer1.Stop();
             if (CurrentUSB == USBState.YES && !SetItemState )
             {
-
+                //Delay(2000);
                 RunSetItem();
             }
             timer1.Start();
@@ -1349,5 +1853,149 @@ namespace AutoBatchForProductionLine
         {
             lstMsg.Items.Clear();
         }
+
+        private void chkSetSN_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetSN);
+            string State = string.Empty;
+            if (chkSetSN.Checked)
+                State = "1";
+            else
+                State = "0";
+            p.SetSN  = State;
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetSN", State);
+        }
+
+        private void chkSetFormat_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetFormat );
+            string State = string.Empty;
+            if (chkSetFormat.Checked)
+                State = "1";
+            else
+                State = "0";
+            p.SetFormat = State;
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetFormat", State);
+
+            if (chkSetFormat.Checked)
+            {
+                chkSetPoweOff.Enabled = false;
+                chkSetPoweOff.Checked = false;
+
+            }
+            else
+            {
+                if (LoginModel == Model.G5 || LoginModel == Model.H8 )
+                    chkSetPoweOff.Enabled = true;
+
+
+              
+               // chkSetPoweOff.Checked = true;
+            }
+
+
+
+
+        }
+
+
+
+
+        private bool CheckBodySN(string sn, Model loginmodel)
+        {
+            switch (loginmodel)
+            {
+                case Model.H6:
+                    if (sn.StartsWith("6"))
+                        return true;
+                    break;
+                case Model.H8:
+                    if (sn.StartsWith("7"))
+                        return true;
+                    break;
+                case Model.G5:
+                    if (sn.StartsWith("5"))
+                        return true;
+                    break;
+                case Model.G9:
+                    if (sn.StartsWith("9"))
+                        return true;
+                    break;
+                default:
+                    break;
+            }
+
+
+            return false;
+        }
+        private void chkSetSN_EnabledChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetSN);
+        }
+
+        private void chkSetFormat_EnabledChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetFormat);
+        }
+
+
+
+        private void lstMsg_DoubleClick(object sender, EventArgs e)
+        {
+            Clipboard.SetText(lstMsg.SelectedItem.ToString());
+        }
+
+        private void comboBodyType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            p.CurrentDevice = comboBodyType.Text;
+            IniFile.IniWriteValue("SysConfig", "CurrentDevice", comboBodyType.Text);
+            switch (comboBodyType.Text)
+            {
+
+                case "H6":
+                    LoginDevice = Vendor.Cammpro;
+                    LoginModel = Model.H6;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
+                    //  ezUSB.RemoveUSBEventWatcher();
+                    // updateMessage(lstMsg, "H6不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                    //p.WriteLog("H6不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+
+                    break;
+                case "H8":
+                    LoginDevice = Vendor.EasyStorage;
+                    LoginModel = Model.H8;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
+                    //ezUSB.RemoveUSBEventWatcher();
+                    //// updateMessage(lstMsg, "H8不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                    // p.WriteLog("H8不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                    break;
+                case "G5":
+                    LoginDevice = Vendor.EasyStorage;
+                    LoginModel = Model.G5;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
+                    // ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+                    //updateMessage(lstMsg, "G5支持插入设备自动运行,也可以插入设备后点击'手动单次运行'");
+                    //p.WriteLog("G5支持插入设备自动运行,也可以插入设备后点击'手动单次运行'");
+
+                    break;
+                case "G9":
+                    LoginDevice = Vendor.Cammpro;
+                    LoginModel = Model.G9;
+                    LoadUIByModel(LoginModel);
+                    LoadConfigByModel(LoginModel);
+                    //  updateMessage(lstMsg, "G9不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                    //  p.WriteLog("G9不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
+                    // ezUSB.RemoveUSBEventWatcher();
+
+                    break;
+                default:
+                    break;
+            }
+        }
+
+   
     }
 }

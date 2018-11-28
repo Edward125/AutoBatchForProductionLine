@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using Edward;
+using SDK;
 
 namespace AutoBatchForProductionLine
 {
@@ -152,6 +153,10 @@ namespace AutoBatchForProductionLine
         {
             this.Text = "详细参数设置,Ver:" + Application.ProductVersion;
             //
+            txtStartSN.Text = p.StartSN;
+            txtEndSN.Text = p.EndSN;
+
+            //
             txtWiFiSSID.Text = p.WiFiSSID;
             txtWiFiPwd.Text = p.WiFiPwd;
             //
@@ -186,6 +191,20 @@ namespace AutoBatchForProductionLine
                 rabOpenGPS.Checked = true;
             else
                 rabCloseGPS.Checked = true;
+
+            //
+            if (p.Format == "FAT32")
+            {
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_FAT32;
+                comboFormat.SelectedIndex = 0;
+            }
+
+            if (p.Format == "exFAT")
+            {
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
+                comboFormat.SelectedIndex = 1;
+            }
+
 
             switch (p.CheckParamErrorCode)
             {
@@ -272,6 +291,233 @@ namespace AutoBatchForProductionLine
             if (rabOpenGPS.Checked )
                 p.GPS = "1";
             IniFile.IniWriteValue("GPS", "GPS", p.GPS);
+        }
+
+        private void txtCMSV6Port_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtStartSN_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtEndSN_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtTotalSN_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtGB2_Port_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtCheckNetPort_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void txtCMSV6ReportTime_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!(Char.IsNumber(e.KeyChar)) && e.KeyChar != (char)13 && e.KeyChar != (char)8)
+            {
+                e.Handled = true;
+            }
+        }
+
+
+        private void CalcSNSum()
+        {
+            int start = 0;
+            int end  = 0;
+            try
+            {
+               start =  Convert.ToInt32(txtStartSN.Text.Trim());
+            }
+            catch (Exception)
+            {
+                start = 0;
+            }
+
+            try
+            {
+                end = Convert.ToInt32(txtEndSN.Text.Trim());
+            }
+            catch (Exception)
+            {
+
+                end = 0;
+            }
+
+          
+            if (end >= start )
+                txtTotalSN.Text = (  end - start+1).ToString();
+        }
+
+
+        private void txtStartSN_TextChanged(object sender, EventArgs e)
+        {
+            p.StartSN = txtStartSN.Text.Trim();
+            IniFile.IniWriteValue("SN", "StartSN", p.StartSN);
+            CalcSNSum();
+           
+        }
+
+
+        private void txtEndSN_TextChanged(object sender, EventArgs e)
+        {
+            p.EndSN = txtEndSN.Text.Trim();
+            IniFile.IniWriteValue("SN", "EndSN", p.EndSN);
+            CalcSNSum();
+        }
+
+        private void txtTotalSN_TextChanged(object sender, EventArgs e)
+        {
+            //int start = 0;
+            //int end = 0;
+            //int total = 0;
+            //try
+            //{
+            //    total = Convert.ToInt32(txtTotalSN.Text.Trim());
+            //}
+            //catch (Exception)
+            //{
+            //    total = 0;
+            //}
+            //try
+            //{
+            //    start = Convert.ToInt32(txtStartSN.Text.Trim());
+            //}
+            //catch (Exception)
+            //{
+            //    start = 0;
+            //}
+
+            //try
+            //{
+            //    end = Convert.ToInt32(txtEndSN.Text.Trim());
+            //}
+            //catch (Exception)
+            //{
+
+            //    end = 0;
+            //}
+
+            //if (txtTotalSN.Focused )
+            //{
+
+            //    if (start != 0 && end == 0)
+            //        txtEndSN.Text = (start + total).ToString();
+            //    if (start == 0 && end != 0)
+            //        txtStartSN.Text = (end - start).ToString();
+
+            //}
+
+
+
+        }
+
+        private void comboFormat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (comboFormat.SelectedIndex != -1)
+                p.Format = comboFormat.Text;
+            if (comboFormat.SelectedIndex == 0)
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_FAT32;
+            if (comboFormat.SelectedIndex == 1)
+                p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
+            IniFile.IniWriteValue("Format", "Format", p.Format);
+
+        }
+
+
+        private bool  CheckParam()
+        {
+            switch (frmMain.LoginModel)
+            {
+                case frmMain.Model.H6:
+                    if (p.SetSN == "1")
+                    {
+                        if (!txtStartSN.Text.StartsWith("6"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtStartSN.SelectAll();
+                            txtStartSN.Focus();
+                            return false;
+                        }
+                        if (!txtEndSN.Text.StartsWith("6"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtEndSN.SelectAll();
+                            txtEndSN.Focus();
+                            return false;
+                        }
+                    }
+                   
+
+                    break;
+                case frmMain.Model.H8:
+                    break;
+                case frmMain.Model.G5:
+                    break;
+                case frmMain.Model.G9:
+                    if (p.SetSN == "1")
+                    {
+                        if (!txtStartSN.Text.StartsWith("9"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtStartSN.SelectAll();
+                            txtStartSN.Focus();
+                            return false;
+                        }
+                        if (!txtEndSN.Text.StartsWith("9"))
+                        {
+                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtEndSN.SelectAll();
+                            txtEndSN.Focus();
+                            return false;
+                        }
+                    }
+                   
+                    break;
+                default:
+                    break;
+            }
+
+
+
+
+            return true;
+        }
+
+        private void frmSetting_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!CheckParam())
+                e.Cancel = true;
+
         }
     }
 }

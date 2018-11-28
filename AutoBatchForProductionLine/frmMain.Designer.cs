@@ -34,6 +34,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBodyType = new System.Windows.Forms.ComboBox();
             this.grbItem = new System.Windows.Forms.GroupBox();
+            this.chkSetFormat = new System.Windows.Forms.CheckBox();
+            this.chkSetSN = new System.Windows.Forms.CheckBox();
             this.btnSetting = new System.Windows.Forms.Button();
             this.chkSetPoweOff = new System.Windows.Forms.CheckBox();
             this.chkSetGPS = new System.Windows.Forms.CheckBox();
@@ -88,11 +90,13 @@
             this.comboBodyType.Location = new System.Drawing.Point(76, 16);
             this.comboBodyType.Name = "comboBodyType";
             this.comboBodyType.Size = new System.Drawing.Size(57, 20);
-            this.comboBodyType.TabIndex = 2;
-            this.comboBodyType.SelectedIndexChanged += new System.EventHandler(this.cmboBodyType_SelectedIndexChanged);
+            this.comboBodyType.TabIndex = 0;
+            this.comboBodyType.SelectedIndexChanged += new System.EventHandler(this.comboBodyType_SelectedIndexChanged);
             // 
             // grbItem
             // 
+            this.grbItem.Controls.Add(this.chkSetFormat);
+            this.grbItem.Controls.Add(this.chkSetSN);
             this.grbItem.Controls.Add(this.btnSetting);
             this.grbItem.Controls.Add(this.chkSetPoweOff);
             this.grbItem.Controls.Add(this.chkSetGPS);
@@ -104,18 +108,48 @@
             this.grbItem.Controls.Add(this.chkSyncTime);
             this.grbItem.Location = new System.Drawing.Point(12, 74);
             this.grbItem.Name = "grbItem";
-            this.grbItem.Size = new System.Drawing.Size(145, 230);
+            this.grbItem.Size = new System.Drawing.Size(145, 269);
             this.grbItem.TabIndex = 2;
             this.grbItem.TabStop = false;
             this.grbItem.Text = "项目设置";
             // 
+            // chkSetFormat
+            // 
+            this.chkSetFormat.AutoSize = true;
+            this.chkSetFormat.BackColor = System.Drawing.SystemColors.Control;
+            this.chkSetFormat.Enabled = false;
+            this.chkSetFormat.ForeColor = System.Drawing.Color.Black;
+            this.chkSetFormat.Location = new System.Drawing.Point(13, 187);
+            this.chkSetFormat.Name = "chkSetFormat";
+            this.chkSetFormat.Size = new System.Drawing.Size(84, 16);
+            this.chkSetFormat.TabIndex = 9;
+            this.chkSetFormat.Text = "自动格式化";
+            this.chkSetFormat.UseVisualStyleBackColor = false;
+            this.chkSetFormat.CheckedChanged += new System.EventHandler(this.chkSetFormat_CheckedChanged);
+            this.chkSetFormat.EnabledChanged += new System.EventHandler(this.chkSetFormat_EnabledChanged);
+            // 
+            // chkSetSN
+            // 
+            this.chkSetSN.AutoSize = true;
+            this.chkSetSN.BackColor = System.Drawing.SystemColors.Control;
+            this.chkSetSN.Enabled = false;
+            this.chkSetSN.ForeColor = System.Drawing.Color.Black;
+            this.chkSetSN.Location = new System.Drawing.Point(13, 38);
+            this.chkSetSN.Name = "chkSetSN";
+            this.chkSetSN.Size = new System.Drawing.Size(108, 16);
+            this.chkSetSN.TabIndex = 2;
+            this.chkSetSN.Text = "自动填写序列号";
+            this.chkSetSN.UseVisualStyleBackColor = false;
+            this.chkSetSN.CheckedChanged += new System.EventHandler(this.chkSetSN_CheckedChanged);
+            this.chkSetSN.EnabledChanged += new System.EventHandler(this.chkSetSN_EnabledChanged);
+            // 
             // btnSetting
             // 
             this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSetting.Location = new System.Drawing.Point(19, 192);
+            this.btnSetting.Location = new System.Drawing.Point(13, 231);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(102, 30);
-            this.btnSetting.TabIndex = 3;
+            this.btnSetting.TabIndex = 11;
             this.btnSetting.Text = "详细参数设置";
             this.btnSetting.UseVisualStyleBackColor = true;
             this.btnSetting.Click += new System.EventHandler(this.btnSetting_Click);
@@ -126,10 +160,10 @@
             this.chkSetPoweOff.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetPoweOff.Enabled = false;
             this.chkSetPoweOff.ForeColor = System.Drawing.Color.Black;
-            this.chkSetPoweOff.Location = new System.Drawing.Point(19, 170);
+            this.chkSetPoweOff.Location = new System.Drawing.Point(13, 209);
             this.chkSetPoweOff.Name = "chkSetPoweOff";
             this.chkSetPoweOff.Size = new System.Drawing.Size(120, 16);
-            this.chkSetPoweOff.TabIndex = 8;
+            this.chkSetPoweOff.TabIndex = 10;
             this.chkSetPoweOff.Text = "设置完毕自动关机";
             this.chkSetPoweOff.UseVisualStyleBackColor = false;
             this.chkSetPoweOff.CheckedChanged += new System.EventHandler(this.chkSetPoweOff_CheckedChanged);
@@ -141,10 +175,10 @@
             this.chkSetGPS.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetGPS.Enabled = false;
             this.chkSetGPS.ForeColor = System.Drawing.Color.Black;
-            this.chkSetGPS.Location = new System.Drawing.Point(19, 148);
+            this.chkSetGPS.Location = new System.Drawing.Point(13, 166);
             this.chkSetGPS.Name = "chkSetGPS";
             this.chkSetGPS.Size = new System.Drawing.Size(90, 16);
-            this.chkSetGPS.TabIndex = 7;
+            this.chkSetGPS.TabIndex = 8;
             this.chkSetGPS.Text = "自动打开GPS";
             this.chkSetGPS.UseVisualStyleBackColor = false;
             this.chkSetGPS.CheckedChanged += new System.EventHandler(this.chkSetGPS_CheckedChanged);
@@ -156,10 +190,10 @@
             this.chkSetAPN.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetAPN.Enabled = false;
             this.chkSetAPN.ForeColor = System.Drawing.Color.Black;
-            this.chkSetAPN.Location = new System.Drawing.Point(19, 82);
+            this.chkSetAPN.Location = new System.Drawing.Point(13, 100);
             this.chkSetAPN.Name = "chkSetAPN";
             this.chkSetAPN.Size = new System.Drawing.Size(90, 16);
-            this.chkSetAPN.TabIndex = 3;
+            this.chkSetAPN.TabIndex = 5;
             this.chkSetAPN.Text = "自动设置APN";
             this.chkSetAPN.UseVisualStyleBackColor = false;
             this.chkSetAPN.CheckedChanged += new System.EventHandler(this.chkSetAPN_CheckedChanged);
@@ -171,10 +205,10 @@
             this.chkSetCheckNet.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetCheckNet.Enabled = false;
             this.chkSetCheckNet.ForeColor = System.Drawing.Color.Black;
-            this.chkSetCheckNet.Location = new System.Drawing.Point(19, 126);
+            this.chkSetCheckNet.Location = new System.Drawing.Point(13, 144);
             this.chkSetCheckNet.Name = "chkSetCheckNet";
             this.chkSetCheckNet.Size = new System.Drawing.Size(120, 16);
-            this.chkSetCheckNet.TabIndex = 6;
+            this.chkSetCheckNet.TabIndex = 7;
             this.chkSetCheckNet.Text = "自动设置网络检查";
             this.chkSetCheckNet.UseVisualStyleBackColor = false;
             this.chkSetCheckNet.CheckedChanged += new System.EventHandler(this.chkSetCheckNet_CheckedChanged);
@@ -186,10 +220,10 @@
             this.chkSetGB28181.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetGB28181.Enabled = false;
             this.chkSetGB28181.ForeColor = System.Drawing.Color.Black;
-            this.chkSetGB28181.Location = new System.Drawing.Point(19, 104);
+            this.chkSetGB28181.Location = new System.Drawing.Point(13, 121);
             this.chkSetGB28181.Name = "chkSetGB28181";
             this.chkSetGB28181.Size = new System.Drawing.Size(114, 16);
-            this.chkSetGB28181.TabIndex = 5;
+            this.chkSetGB28181.TabIndex = 6;
             this.chkSetGB28181.Text = "自动设置GB28181";
             this.chkSetGB28181.UseVisualStyleBackColor = false;
             this.chkSetGB28181.CheckedChanged += new System.EventHandler(this.chkSetGB28181_CheckedChanged);
@@ -201,7 +235,7 @@
             this.chkSetCMSV6.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetCMSV6.Enabled = false;
             this.chkSetCMSV6.ForeColor = System.Drawing.Color.Black;
-            this.chkSetCMSV6.Location = new System.Drawing.Point(19, 60);
+            this.chkSetCMSV6.Location = new System.Drawing.Point(13, 79);
             this.chkSetCMSV6.Name = "chkSetCMSV6";
             this.chkSetCMSV6.Size = new System.Drawing.Size(102, 16);
             this.chkSetCMSV6.TabIndex = 4;
@@ -216,10 +250,10 @@
             this.chkSetWiFi.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetWiFi.Enabled = false;
             this.chkSetWiFi.ForeColor = System.Drawing.Color.Black;
-            this.chkSetWiFi.Location = new System.Drawing.Point(19, 38);
+            this.chkSetWiFi.Location = new System.Drawing.Point(13, 57);
             this.chkSetWiFi.Name = "chkSetWiFi";
             this.chkSetWiFi.Size = new System.Drawing.Size(96, 16);
-            this.chkSetWiFi.TabIndex = 2;
+            this.chkSetWiFi.TabIndex = 3;
             this.chkSetWiFi.Text = "自动设置WiFi";
             this.chkSetWiFi.UseVisualStyleBackColor = false;
             this.chkSetWiFi.CheckedChanged += new System.EventHandler(this.chkSetWiFi_CheckedChanged);
@@ -231,7 +265,7 @@
             this.chkSyncTime.BackColor = System.Drawing.SystemColors.Control;
             this.chkSyncTime.Enabled = false;
             this.chkSyncTime.ForeColor = System.Drawing.Color.Black;
-            this.chkSyncTime.Location = new System.Drawing.Point(19, 16);
+            this.chkSyncTime.Location = new System.Drawing.Point(13, 19);
             this.chkSyncTime.Name = "chkSyncTime";
             this.chkSyncTime.Size = new System.Drawing.Size(96, 16);
             this.chkSyncTime.TabIndex = 1;
@@ -245,7 +279,7 @@
             this.groupBox3.Controls.Add(this.lstMsg);
             this.groupBox3.Location = new System.Drawing.Point(163, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(682, 408);
+            this.groupBox3.Size = new System.Drawing.Size(600, 447);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "信息列表";
@@ -256,15 +290,16 @@
             this.lstMsg.ItemHeight = 12;
             this.lstMsg.Location = new System.Drawing.Point(15, 20);
             this.lstMsg.Name = "lstMsg";
-            this.lstMsg.Size = new System.Drawing.Size(659, 376);
+            this.lstMsg.Size = new System.Drawing.Size(577, 412);
             this.lstMsg.TabIndex = 0;
+            this.lstMsg.DoubleClick += new System.EventHandler(this.lstMsg_DoubleClick);
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.btnClearInfo);
             this.groupBox4.Controls.Add(this.btnRestart);
             this.groupBox4.Controls.Add(this.btnOnlyOnce);
-            this.groupBox4.Location = new System.Drawing.Point(12, 310);
+            this.groupBox4.Location = new System.Drawing.Point(12, 349);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(145, 125);
             this.groupBox4.TabIndex = 0;
@@ -276,8 +311,8 @@
             this.btnClearInfo.Location = new System.Drawing.Point(19, 87);
             this.btnClearInfo.Name = "btnClearInfo";
             this.btnClearInfo.Size = new System.Drawing.Size(102, 30);
-            this.btnClearInfo.TabIndex = 3;
-            this.btnClearInfo.Text = "清楚信息列表";
+            this.btnClearInfo.TabIndex = 14;
+            this.btnClearInfo.Text = "清除信息列表";
             this.btnClearInfo.UseVisualStyleBackColor = true;
             this.btnClearInfo.Click += new System.EventHandler(this.btnClearInfo_Click);
             // 
@@ -287,7 +322,7 @@
             this.btnRestart.Location = new System.Drawing.Point(19, 51);
             this.btnRestart.Name = "btnRestart";
             this.btnRestart.Size = new System.Drawing.Size(102, 30);
-            this.btnRestart.TabIndex = 2;
+            this.btnRestart.TabIndex = 13;
             this.btnRestart.Text = "重启软件";
             this.btnRestart.UseVisualStyleBackColor = true;
             this.btnRestart.Click += new System.EventHandler(this.btnRestart_Click);
@@ -298,14 +333,13 @@
             this.btnOnlyOnce.Location = new System.Drawing.Point(19, 16);
             this.btnOnlyOnce.Name = "btnOnlyOnce";
             this.btnOnlyOnce.Size = new System.Drawing.Size(102, 30);
-            this.btnOnlyOnce.TabIndex = 1;
+            this.btnOnlyOnce.TabIndex = 12;
             this.btnOnlyOnce.Text = "手动单次运行";
             this.btnOnlyOnce.UseVisualStyleBackColor = true;
             this.btnOnlyOnce.Click += new System.EventHandler(this.btnOnlyOnce_Click);
             // 
             // timer1
             // 
-            this.timer1.Enabled = true;
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
@@ -314,7 +348,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(856, 446);
+            this.ClientSize = new System.Drawing.Size(775, 481);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -359,6 +393,8 @@
         private System.Windows.Forms.Button btnSetting;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btnClearInfo;
+        private System.Windows.Forms.CheckBox chkSetFormat;
+        private System.Windows.Forms.CheckBox chkSetSN;
     }
 }
 
