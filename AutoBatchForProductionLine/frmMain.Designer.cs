@@ -52,6 +52,7 @@
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timerFormat = new System.Windows.Forms.Timer(this.components);
             this.groupBox2.SuspendLayout();
             this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -292,6 +293,7 @@
             this.lstMsg.Name = "lstMsg";
             this.lstMsg.Size = new System.Drawing.Size(659, 412);
             this.lstMsg.TabIndex = 0;
+            this.lstMsg.DoubleClick += new System.EventHandler(this.lstMsg_DoubleClick);
             // 
             // groupBox4
             // 
@@ -341,6 +343,11 @@
             // 
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+            // 
+            // timerFormat
+            // 
+            this.timerFormat.Interval = 500;
+            this.timerFormat.Tick += new System.EventHandler(this.timerFormat_Tick);
             // 
             // frmMain
             // 
@@ -394,6 +401,7 @@
         private System.Windows.Forms.Button btnClearInfo;
         private System.Windows.Forms.CheckBox chkSetFormat;
         private System.Windows.Forms.CheckBox chkSetSN;
+        private System.Windows.Forms.Timer timerFormat;
     }
 }
 

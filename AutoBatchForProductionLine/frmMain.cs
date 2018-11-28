@@ -43,6 +43,8 @@ namespace AutoBatchForProductionLine
         public static bool SetItemState = false; //程序未运行
         public static int iUSBInsert = 3; //Campro 执法仪插入计数
         public static string BodyUDisk = string.Empty;
+        public static bool CammUSB = false;// cammpro 形成U盘
+        public static bool CammFormat = false; // 还没有执行
 
         public enum Model
         {
@@ -187,6 +189,7 @@ namespace AutoBatchForProductionLine
                                 if (drive.DriveType == DriveType.Removable)
                                 {
                                     BodyUDisk = drive.Name;
+                                    CammUSB = true;
                                     break;
                                 }
                             }
@@ -243,7 +246,7 @@ namespace AutoBatchForProductionLine
 
         private void LoadUI()
         {
-          //  ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+           // ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             p.CreateFolder();
             p.CreateIni();
             p.ReadIni();
@@ -300,6 +303,17 @@ namespace AutoBatchForProductionLine
                 // this.SetText("\tDependent：" + Device.Dependent + "\r\n");
                 p.WriteLog("Antecedent：" + Device.Antecedent);
                 p.WriteLog("Dependent：" + Device.Dependent);
+                if (LoginDevice == Vendor.Cammpro)
+                {
+                    if (Device.Dependent.ToUpper().StartsWith("USBSTOR"))
+                    {
+                        CammUSB = true;
+                        timerFormat.Enabled = true;
+                    }
+                    
+                   
+                }
+                //i
             }
         }
 
@@ -964,21 +978,7 @@ namespace AutoBatchForProductionLine
                             p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",但不满足公司要求,即将更新序列号.");
                             UpdateSN(ref DI);
                         }
-       
                     }
-
-                  
-
-
-
-                
-                    ////di.cSerial = this.tb_DevID.Text;
-        
-
-
-
-
-
                 }
 
 
@@ -1115,14 +1115,21 @@ namespace AutoBatchForProductionLine
                         {
                             updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功.");
                             p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功.");
-                            //MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                           // ezUSB.RemoveUSBEventWatcher();
+
                         }
                     }
                     else
                     {
-                        updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "失败.");
-                        p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "失败.");
+                        if (LoginDevice == Vendor.EasyStorage)
+                        {
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "失败.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "失败.");
+                        }
+                        if (LoginDevice == Vendor.Cammpro)
+                        {
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "失败,详细信息请查看log");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "失败,详细信息请查看log");
+                        }
                     }
 
                 }
@@ -1661,15 +1668,42 @@ namespace AutoBatchForProductionLine
 
                 if (SetDeviceMSDC(logindevice, DevicePwd))
                 {
-                    Delay(2000);
-                    string IDTXTFile = BodyUDisk + "ID.txt";
-                    //if (File.Exists(@IDTXTFile))
-                    //{
-                        FortMat(BodyUDisk.Replace("\\", ""), p.Format);
-                        return true;
-                    //}
-                    //else
-                    //    return false;
+                    while (CammUSB )
+                    {
+
+                        Delay(500);
+                        while (Directory.Exists (BodyUDisk ))
+                        {
+                            CammUSB = false;
+                            Delay(500);
+                            updateMessage(lstMsg, "执法仪已经进入U盘模式,盘符:" + BodyUDisk);
+                            if (BodyUDisk.Contains(@"\"))
+                                BodyUDisk = BodyUDisk.Replace(@"\", "");
+
+                            ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
+                            processStartInfo.RedirectStandardInput = true;
+                            processStartInfo.RedirectStandardOutput = true;
+                            processStartInfo.UseShellExecute = false;
+                            processStartInfo.CreateNoWindow = true;
+                            Process process = Process.Start(processStartInfo);
+                            if (process != null)
+                            {
+                                process.StandardInput.WriteLine(@"FORMAT " + BodyUDisk + " /y /FS:" + p.Format +" /Q");
+                                process.StandardInput.Close();
+                                string outputString = process.StandardOutput.ReadToEnd();
+                                p.WriteLog(outputString);
+                                if (outputString.Contains("已完成"))
+                                {
+                                    return true;
+                                }
+                                else
+                                    return false;
+                              
+                            }
+
+                        }
+                    }
+
                 }
 
             }
@@ -1678,42 +1712,72 @@ namespace AutoBatchForProductionLine
 
 
 
+        private void WriteBat(string Path,string format)
+        {
+
+            if (Path.Contains(@"\"))
+                Path = Path.Replace(@"\", "");
+
+
+            string bat = p.AppFolder +@"\format.bat";
+            if (File.Exists(bat))
+                File.Delete(bat);
+            System.IO.StreamWriter sw = new StreamWriter(bat);
+            sw.WriteLine("@ECHO OFF");
+            sw.WriteLine(@"echo y | format " + Path + @" /FS:" + format + @"/V:" + Path + @" /Q");
+            sw.WriteLine(@"exit");
+            sw.Close();
+        }
 
 
 
-        public void FortMat(string Path,string format)
+
+
+
+
+        public bool  FortMat(string Path,string format)
         {
             //string strInput ="format F: /FS:FAT32 /Q /A:32k /Y";
-            string strInput = "format " + Path + " /FS:" + format +" /Q /A:32k /Y";
+            Process pp = new Process();
+            //string strInput = @"echo y | format " + Path + @" /FS:" + format + @"/V:" + Path + @" /Q";
+            string strInput = "format " + Path + " /FS:exFAT /Q /A:32k /Y";
             // MessageBox.Show(strInput);
-            Process p = new Process();
+
             //设置要启动的应用程序
-            p.StartInfo.FileName = "cmd.exe";
+            pp.StartInfo.FileName = "cmd.exe";
             //是否使用操作系统shell启动
-            p.StartInfo.UseShellExecute = false;
+            pp.StartInfo.UseShellExecute = false;
             // 接受来自调用程序的输入信息
-            p.StartInfo.RedirectStandardInput = true;
+            pp.StartInfo.RedirectStandardInput = true;
             //输出信息
-            p.StartInfo.RedirectStandardOutput = true;
+            pp.StartInfo.RedirectStandardOutput = true;
             // 输出错误
-            p.StartInfo.RedirectStandardError = true;
+            pp.StartInfo.RedirectStandardError = true;
             //不显示程序窗口
             //p.StartInfo.CreateNoWindow = true;
-            p.StartInfo.CreateNoWindow = true;
+            pp.StartInfo.CreateNoWindow = true;
             //启动程序
-            p.Start();
+            pp.Start();
 
             //向cmd窗口发送输入信息
-            p.StandardInput.WriteLine(strInput + "&exit");
+           // pp.StandardInput.WriteLine(strInput + @" | exit");
+            pp.StandardInput.WriteLine(strInput + "&exit");
             // p.StandardInput.WriteLine(strInput + "&exit");
-            p.StandardInput.AutoFlush = true;
+            pp.StandardInput.AutoFlush = true;
 
             //获取输出信息
-            string strOuput = p.StandardOutput.ReadToEnd();
+            string strOuput = pp.StandardOutput.ReadToEnd();
             //等待程序执行完退出进程
-            p.WaitForExit();
-            p.Close();
+            pp.WaitForExit();
+            pp.Close();
+            //p.WriteLog(strOuput);
+            
+            //if (strOuput.ToLower().Contains ("formate complete") | strOuput.Contains ("格式化已完成"))
+            //    return true;
+            //else 
+            //   return false ;
 
+            return true;
 
         }
 
@@ -1900,6 +1964,22 @@ namespace AutoBatchForProductionLine
         private void chkSetFormat_EnabledChanged(object sender, EventArgs e)
         {
             CheckCheckboxCheckState(chkSetFormat);
+        }
+
+        private void timerFormat_Tick(object sender, EventArgs e)
+        {
+            if (!CammFormat && !CammFormat)
+            {
+                if (FortMat(BodyUDisk.Replace("\\", ""), p.Format))
+                    updateMessage(lstMsg, "格式化成功");
+                else
+                    updateMessage(lstMsg, "格式化失败");
+            }
+        }
+
+        private void lstMsg_DoubleClick(object sender, EventArgs e)
+        {
+            Clipboard.SetText(lstMsg.SelectedItem.ToString());
         }
     }
 }
