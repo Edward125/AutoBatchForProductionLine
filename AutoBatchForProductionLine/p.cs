@@ -65,7 +65,7 @@ namespace AutoBatchForProductionLine
         //NetCheck
         public static string NetCheckIP = "127.0.0.1";
         public static string NetCheckPort = "554";
-        public static string NetCheckEnable = "0";
+        public static string NetCheckEnable = "1";
         //
         public static string Format = "exFAT";
 

@@ -992,7 +992,6 @@ namespace AutoBatchForProductionLine
                                 p.WriteLog(DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
                             }
               
-           
                         }
                         else
                         {
