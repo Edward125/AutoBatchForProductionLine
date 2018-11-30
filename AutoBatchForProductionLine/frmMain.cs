@@ -839,58 +839,121 @@ namespace AutoBatchForProductionLine
                    // iUSBInsert = 3;
                     DevicePwd = "000000";
 
-                    if (!ClickOnce )
-                        Delay(7000);
-
-                    ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
-                    if (Init_Device_iRet == 1)
+                    if (!ClickOnce)
                     {
-                        GetDeviceInfo(LoginDevice, DevicePwd, out DI);
-                        updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
+                        //Delay(7000);
+                        for (int i = 1; i <= 7; i++)
+                        {
+                            Delay(1000);
 
-                        p.WriteLog("检测到设备,SN:" + DI.cSerial);
-                        DI.cSerial = DI.cSerial.TrimEnd('\0');        
+                            updateMessage(lstMsg, "第" + i + "次尝试连接设备.");
+                            p.WriteLog("第" + i + "次尝试连接设备.");
+                            ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
+                            if (Init_Device_iRet == 1)
+                            {
+                                GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                                updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
+
+                                p.WriteLog("检测到设备,SN:" + DI.cSerial);
+                                DI.cSerial = DI.cSerial.TrimEnd('\0');
+                                break;
+                            }
+
+                        }
+                        if (Init_Device_iRet != 1)
+                        {
+                            updateMessage(lstMsg, "达到最大尝试次数,仍未检测到设备,请重新插拔或者点手动运行确认.");
+                            p.WriteLog("达到最大尝试次数,仍未检测到设备,请重新插拔或者点手动运行确认.");
+                            SetItemState = true;
+                            EndUnLockUI();
+                            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+                            return;
+
+                        }
                     }
                     else
                     {
-                        updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
-                        p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
-                        SetItemState = true;
-                        EndUnLockUI();
-                        return;
+                        ZFYDLL_API_MC.Init_Device(IDCode, ref Init_Device_iRet);
+                        if (Init_Device_iRet == 1)
+                        {
+                            GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                            updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
+
+                            p.WriteLog("检测到设备,SN:" + DI.cSerial);
+                            DI.cSerial = DI.cSerial.TrimEnd('\0');
+     
+                         }
+                        else
+                        {
+                            updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
+                            p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
+                            SetItemState = true;
+                            EndUnLockUI();
+                            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+                            return;
+                        }
                     }
+         
                 }
 
                 else
                 {
                     if (!ClickOnce)
                     {
-                        if (LoginModel == Model.G5)
-                            Delay(2000);
-                        if (LoginModel == Model.H8)
-                            Delay(3000);
-                        
-                    }
-                    Init_Device_iRet = BODYCAMDLL_API_YZ.BC_ProbeDevEx(out _IDCode[0]);
-                    DevicePwd = "888888";
-                    BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
-                    IDCode = System.Text.Encoding.Default.GetString(_IDCode, 0, _IDCode.Length);
-                    if (BCHandle != IntPtr.Zero)
-                    {
 
-                        GetDeviceInfo(LoginDevice, DevicePwd, out DI);
-                        updateMessage(lstMsg, "检测到设备" + IDCode + ",SN:" + DI.cSerial);
-                        p.WriteLog("检测到设备" + IDCode + ",SN:" + DI.cSerial);
+                        for (int i = 1; i <= 7; i++)
+                        {
+                            Delay(1000);
+                            updateMessage(lstMsg, "第" + i + "次尝试连接设备.");
+                            p.WriteLog("第" + i + "次尝试连接设备.");
+                            Init_Device_iRet = BODYCAMDLL_API_YZ.BC_ProbeDevEx(out _IDCode[0]);
+                            DevicePwd = "888888";
+                            BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
+                            IDCode = System.Text.Encoding.Default.GetString(_IDCode, 0, _IDCode.Length);
+                            if (BCHandle != IntPtr.Zero)
+                            {
+
+                                GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                                updateMessage(lstMsg, "检测到设备" + IDCode + ",SN:" + DI.cSerial);
+                                p.WriteLog("检测到设备" + IDCode + ",SN:" + DI.cSerial);
+                                break;
+                            }
+
+                        }
+                        if (BCHandle == IntPtr.Zero)
+                        {
+                            updateMessage(lstMsg, "达到最大尝试次数,仍未检测到设备,请重新插拔或者点手动运行确认.");
+                            p.WriteLog("达到最大尝试次数,仍未检测到设备,请重新插拔或者点手动运行确认.");
+                            SetItemState = true;
+                            EndUnLockUI();
+                            return;
+                        }
                     }
                     else
                     {
 
-                        updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
-                        p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
-                        SetItemState = true;
-                        EndUnLockUI();
-                        return;
+                        Init_Device_iRet = BODYCAMDLL_API_YZ.BC_ProbeDevEx(out _IDCode[0]);
+                        DevicePwd = "888888";
+                        BCHandle = BODYCAMDLL_API_YZ.BC_InitDevEx(_IDCode);
+                        IDCode = System.Text.Encoding.Default.GetString(_IDCode, 0, _IDCode.Length);
+                        if (BCHandle != IntPtr.Zero)
+                        {
+
+                            GetDeviceInfo(LoginDevice, DevicePwd, out DI);
+                            updateMessage(lstMsg, "检测到设备" + IDCode + ",SN:" + DI.cSerial);
+                            p.WriteLog("检测到设备" + IDCode + ",SN:" + DI.cSerial);
+                        }
+                        else
+                        {
+
+                            updateMessage(lstMsg, "未检测到设备,请重新插拔或者点手动运行确认.");
+                            p.WriteLog("未检测到设备,请重新插拔或者点手动运行确认.");
+                            SetItemState = true;
+                            EndUnLockUI();
+                            return;
+                        }
                     }
+                 
                 }
 
                 // 自动同步时间
@@ -1957,39 +2020,24 @@ namespace AutoBatchForProductionLine
                     LoginModel = Model.H6;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
-                    //  ezUSB.RemoveUSBEventWatcher();
-                    // updateMessage(lstMsg, "H6不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
-                    //p.WriteLog("H6不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
-
                     break;
                 case "H8":
                     LoginDevice = Vendor.EasyStorage;
                     LoginModel = Model.H8;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
-                    //ezUSB.RemoveUSBEventWatcher();
-                    //// updateMessage(lstMsg, "H8不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
-                    // p.WriteLog("H8不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
                     break;
                 case "G5":
                     LoginDevice = Vendor.EasyStorage;
                     LoginModel = Model.G5;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
-                    // ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
-                    //updateMessage(lstMsg, "G5支持插入设备自动运行,也可以插入设备后点击'手动单次运行'");
-                    //p.WriteLog("G5支持插入设备自动运行,也可以插入设备后点击'手动单次运行'");
-
                     break;
                 case "G9":
                     LoginDevice = Vendor.Cammpro;
                     LoginModel = Model.G9;
                     LoadUIByModel(LoginModel);
                     LoadConfigByModel(LoginModel);
-                    //  updateMessage(lstMsg, "G9不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
-                    //  p.WriteLog("G9不支持插入设备自动运行,请插入设备后点击'手动单次运行'");
-                    // ezUSB.RemoveUSBEventWatcher();
-
                     break;
                 default:
                     break;
