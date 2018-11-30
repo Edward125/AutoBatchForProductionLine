@@ -34,6 +34,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.comboBodyType = new System.Windows.Forms.ComboBox();
             this.grbItem = new System.Windows.Forms.GroupBox();
+            this.chkSetUpdate = new System.Windows.Forms.CheckBox();
             this.chkSetFormat = new System.Windows.Forms.CheckBox();
             this.chkSetSN = new System.Windows.Forms.CheckBox();
             this.btnSetting = new System.Windows.Forms.Button();
@@ -46,14 +47,14 @@
             this.chkSetWiFi = new System.Windows.Forms.CheckBox();
             this.chkSyncTime = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.pBarUpdate = new System.Windows.Forms.ProgressBar();
             this.lstMsg = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.btnClearInfo = new System.Windows.Forms.Button();
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.pBarUpdate = new System.Windows.Forms.ProgressBar();
-            this.chkSetUpdate = new System.Windows.Forms.CheckBox();
+            this.skinEngine1 = new Sunisoft.IrisSkin.SkinEngine();
             this.groupBox2.SuspendLayout();
             this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -115,6 +116,21 @@
             this.grbItem.TabIndex = 2;
             this.grbItem.TabStop = false;
             this.grbItem.Text = "项目设置";
+            // 
+            // chkSetUpdate
+            // 
+            this.chkSetUpdate.AutoSize = true;
+            this.chkSetUpdate.BackColor = System.Drawing.SystemColors.Control;
+            this.chkSetUpdate.Enabled = false;
+            this.chkSetUpdate.ForeColor = System.Drawing.Color.Black;
+            this.chkSetUpdate.Location = new System.Drawing.Point(13, 209);
+            this.chkSetUpdate.Name = "chkSetUpdate";
+            this.chkSetUpdate.Size = new System.Drawing.Size(96, 16);
+            this.chkSetUpdate.TabIndex = 12;
+            this.chkSetUpdate.Text = "自动升级系统";
+            this.chkSetUpdate.UseVisualStyleBackColor = false;
+            this.chkSetUpdate.CheckedChanged += new System.EventHandler(this.chkSetUpdate_CheckedChanged);
+            this.chkSetUpdate.EnabledChanged += new System.EventHandler(this.chkSetUpdate_EnabledChanged);
             // 
             // chkSetFormat
             // 
@@ -288,6 +304,13 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "信息列表";
             // 
+            // pBarUpdate
+            // 
+            this.pBarUpdate.Location = new System.Drawing.Point(15, 439);
+            this.pBarUpdate.Name = "pBarUpdate";
+            this.pBarUpdate.Size = new System.Drawing.Size(577, 23);
+            this.pBarUpdate.TabIndex = 1;
+            // 
             // lstMsg
             // 
             this.lstMsg.FormattingEnabled = true;
@@ -347,27 +370,14 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // pBarUpdate
+            // skinEngine1
             // 
-            this.pBarUpdate.Location = new System.Drawing.Point(15, 439);
-            this.pBarUpdate.Name = "pBarUpdate";
-            this.pBarUpdate.Size = new System.Drawing.Size(577, 23);
-            this.pBarUpdate.TabIndex = 1;
-            // 
-            // chkSetUpdate
-            // 
-            this.chkSetUpdate.AutoSize = true;
-            this.chkSetUpdate.BackColor = System.Drawing.SystemColors.Control;
-            this.chkSetUpdate.Enabled = false;
-            this.chkSetUpdate.ForeColor = System.Drawing.Color.Black;
-            this.chkSetUpdate.Location = new System.Drawing.Point(13, 209);
-            this.chkSetUpdate.Name = "chkSetUpdate";
-            this.chkSetUpdate.Size = new System.Drawing.Size(96, 16);
-            this.chkSetUpdate.TabIndex = 12;
-            this.chkSetUpdate.Text = "自动升级系统";
-            this.chkSetUpdate.UseVisualStyleBackColor = false;
-            this.chkSetUpdate.CheckedChanged += new System.EventHandler(this.chkSetUpdate_CheckedChanged);
-            this.chkSetUpdate.EnabledChanged += new System.EventHandler(this.chkSetUpdate_EnabledChanged);
+            this.skinEngine1.@__DrawButtonFocusRectangle = true;
+            this.skinEngine1.DisabledButtonTextColor = System.Drawing.Color.Gray;
+            this.skinEngine1.DisabledMenuFontColor = System.Drawing.SystemColors.GrayText;
+            this.skinEngine1.InactiveCaptionColor = System.Drawing.SystemColors.InactiveCaptionText;
+            this.skinEngine1.SerialNumber = "";
+            this.skinEngine1.SkinFile = null;
             // 
             // frmMain
             // 
@@ -423,6 +433,7 @@
         private System.Windows.Forms.CheckBox chkSetSN;
         private System.Windows.Forms.ProgressBar pBarUpdate;
         private System.Windows.Forms.CheckBox chkSetUpdate;
+        private Sunisoft.IrisSkin.SkinEngine skinEngine1;
     }
 }
 

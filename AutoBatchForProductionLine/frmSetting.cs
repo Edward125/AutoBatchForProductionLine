@@ -19,6 +19,21 @@ namespace AutoBatchForProductionLine
             InitializeComponent();
         }
 
+
+        #region 防止屏幕闪烁
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;
+                return cp;
+            }
+
+        }
+        #endregion
+
         private void txtWiFiSSID_TextChanged(object sender, EventArgs e)
         {
             p.WiFiSSID = txtWiFiSSID.Text.Trim();
@@ -205,10 +220,35 @@ namespace AutoBatchForProductionLine
                 p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
                 comboFormat.SelectedIndex = 1;
             }
+            txtWiFiSSID.SetWatermark ("请输入WiFi名称");
+            txtWiFiPwd.SetWatermark("请输入WiFi密码");
 
+            txtStartSN.SetWatermark("序列号起始号");
+            txtEndSN.SetWatermark("序列号结束号");
+            txtSN_userNo.SetWatermark("警员编号");
+            txtSN_userName.SetWatermark("设置警员名称,不设置保持为空");
+            txtSN_unitNo.SetWatermark("单位编号");
+            txtSN_unitName.SetWatermark("设置单位名称,不设置保持为空");
+
+            txtCMSV6IP.SetWatermark("输入服务器IP地址,如111.9.31.168");
+            txtCMSV6Port.SetWatermark("端口");
             txtBinFile.Text = p.BinFile;
+            txtBinFile.SetWatermark("双击此处,选择升级文件");
 
+            txtAPN.SetWatermark("设置APN的名称,不设置保持为空");
+            txtAPNUser.SetWatermark("设置APN账号,不设置保持为空");
+            txtAPNPwd.SetWatermark("账号密码,可为空");
 
+            txtGB2_IP.SetWatermark("服务器IP地址");
+            txtGB2_Port.SetWatermark("端口");
+            txtGB2_ServNo.SetWatermark("服务器ID,不可为空");
+            txtGB2_DevNo.SetWatermark("设备ID, 不可为空");
+            txtGB2_ChnNo.SetWatermark("通道ID,不可为空");
+            txtGB2_ChnName.SetWatermark("通道名称");
+            txtGB2_Passwd.SetWatermark("密码");
+
+            txtCheckNetIP.SetWatermark("IP地址");
+            txtCheckNetPort.SetWatermark("端口");
 
             switch (p.CheckParamErrorCode)
             {

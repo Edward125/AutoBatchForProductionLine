@@ -93,8 +93,8 @@
             this.txtEndSN = new System.Windows.Forms.TextBox();
             this.txtStartSN = new System.Windows.Forms.TextBox();
             this.groupBox9 = new System.Windows.Forms.GroupBox();
-            this.label28 = new System.Windows.Forms.Label();
             this.txtBinFile = new System.Windows.Forms.TextBox();
+            this.label28 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -500,6 +500,7 @@
             this.txtCheckNetPort.Name = "txtCheckNetPort";
             this.txtCheckNetPort.Size = new System.Drawing.Size(47, 21);
             this.txtCheckNetPort.TabIndex = 20;
+            this.txtCheckNetPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtCheckNetPort.TextChanged += new System.EventHandler(this.txtCheckNetPort_TextChanged);
             this.txtCheckNetPort.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtCheckNetPort_KeyPress);
             // 
@@ -509,6 +510,7 @@
             this.txtCheckNetIP.Name = "txtCheckNetIP";
             this.txtCheckNetIP.Size = new System.Drawing.Size(137, 21);
             this.txtCheckNetIP.TabIndex = 19;
+            this.txtCheckNetIP.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtCheckNetIP.TextChanged += new System.EventHandler(this.txtCheckNetIP_TextChanged);
             // 
             // groupBox6
@@ -745,15 +747,6 @@
             this.groupBox9.TabStop = false;
             this.groupBox9.Text = "升级文件设置";
             // 
-            // label28
-            // 
-            this.label28.AutoSize = true;
-            this.label28.Location = new System.Drawing.Point(14, 25);
-            this.label28.Name = "label28";
-            this.label28.Size = new System.Drawing.Size(53, 12);
-            this.label28.TabIndex = 18;
-            this.label28.Text = "文件路径";
-            // 
             // txtBinFile
             // 
             this.txtBinFile.Location = new System.Drawing.Point(73, 22);
@@ -762,6 +755,15 @@
             this.txtBinFile.TabIndex = 19;
             this.txtBinFile.TextChanged += new System.EventHandler(this.txtBinFile_TextChanged);
             this.txtBinFile.DoubleClick += new System.EventHandler(this.txtBinFile_DoubleClick);
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(14, 25);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(53, 12);
+            this.label28.TabIndex = 18;
+            this.label28.Text = "文件路径";
             // 
             // frmSetting
             // 

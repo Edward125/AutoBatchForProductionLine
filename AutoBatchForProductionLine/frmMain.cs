@@ -12,6 +12,7 @@ using System.Management;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Runtime.InteropServices;
 
 namespace AutoBatchForProductionLine
 {
@@ -20,13 +21,34 @@ namespace AutoBatchForProductionLine
         public frmMain()
         {
             InitializeComponent();
+
+           // se.SkinFile = Properties.Resources.MacOS;
+           // byte[] obj = (byte[])Properties.Resources.ResourceManager.GetObject("MacOS");
+            byte[] obj = Properties.Resources.MacOS;
+            //se.SkinStream = new MemoryStream(obj);
+            skinEngine1.SkinAllForm = true;
+            skinEngine1.SkinDialogs = true;
+            skinEngine1.SkinStream = new MemoryStream(obj);
         }
 
 
 
         //SN:H6:6;H8:7;G5:5;G9:9,R3:3
-        
 
+
+        #region 防止屏幕闪烁
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+
+                CreateParams cp = base.CreateParams;
+                cp.ExStyle |= 0x02000000;
+                return cp;
+            }
+
+        }
+        #endregion
 
 
         #region 参数定义
@@ -256,6 +278,8 @@ namespace AutoBatchForProductionLine
             p.CreateIni();
             p.ReadIni();
             LoadData();
+
+
         }
 
 
@@ -509,6 +533,7 @@ namespace AutoBatchForProductionLine
             if (!checkbox.Enabled)
             {
                 checkbox.BackColor = SystemColors.Control;
+                checkbox.ForeColor = Color.White;
                 checkbox.Checked = false;
             }
             else
@@ -1224,6 +1249,7 @@ namespace AutoBatchForProductionLine
                                         p.WriteLog("开始直接复制" + fi.Name + "升级,文件大小:" + fi.Length);
                                         thdAddFile = new Thread(new ThreadStart(SetAddFile));//创建一个线程
                                         thdAddFile.Start();//执行当前线程
+                            
                                     }
                                     else
                                     {
@@ -2226,6 +2252,9 @@ namespace AutoBatchForProductionLine
             progressBar1.Value = 0;
 
         }
-   
+
+
+
     }
+    
 }
