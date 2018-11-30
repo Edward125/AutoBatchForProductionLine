@@ -11,6 +11,7 @@ using SDK;
 using System.Management;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 
 namespace AutoBatchForProductionLine
 {
@@ -46,6 +47,8 @@ namespace AutoBatchForProductionLine
         public static bool CammUSB = false;// cammpro 形成U盘
         public static bool CammFormat = false; // 还没有执行
         public static bool ClickOnce = false;//手动点击单词运行
+
+        public static  System.Threading.Thread thdAddFile; //创建一个线程
 
 
         public enum Model
@@ -392,6 +395,7 @@ namespace AutoBatchForProductionLine
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
                     chkSetFormat.Enabled = true;
+                    chkSetUpdate.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 case Model.H8:
@@ -404,6 +408,7 @@ namespace AutoBatchForProductionLine
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
                     chkSetFormat.Enabled = true;
+                    chkSetUpdate.Enabled = false;
                     chkSetPoweOff.Enabled = true;
                     break;
                 case Model.G5:
@@ -416,6 +421,7 @@ namespace AutoBatchForProductionLine
                     chkSetGPS.Enabled = true;
                     chkSetCheckNet.Enabled = true;
                     chkSetFormat.Enabled = true;
+                    chkSetUpdate.Enabled = false;
                     chkSetPoweOff.Enabled = true;
                     break;
                 case Model.G9:
@@ -428,6 +434,7 @@ namespace AutoBatchForProductionLine
                     chkSetGPS.Enabled = false;
                     chkSetCheckNet.Enabled = false;
                     chkSetFormat.Enabled = true;
+                    chkSetUpdate.Enabled = true;
                     chkSetPoweOff.Enabled = false;
                     break;
                 default:
@@ -451,6 +458,7 @@ namespace AutoBatchForProductionLine
             p.SetCheckNet = IniFile.IniReadValue(_model.ToString(), "SetCheckNet");
             p.SetGPS = IniFile.IniReadValue(_model.ToString(), "SetGPS");
             p.SetFormat = IniFile.IniReadValue( _model.ToString(), "SetFormat");
+            p.SetUpdate = IniFile.IniReadValue(_model.ToString(), "SetUpdate");
             p.SetPowerOff = IniFile.IniReadValue(_model.ToString(), "SetPowerOff");
 
             CheckConfigValueAndCheckbox(p.SyncTime, chkSyncTime);
@@ -462,6 +470,7 @@ namespace AutoBatchForProductionLine
             CheckConfigValueAndCheckbox(p.SetCheckNet, chkSetCheckNet);
             CheckConfigValueAndCheckbox(p.SetGPS, chkSetGPS);
             CheckConfigValueAndCheckbox(p.SetFormat, chkSetFormat);
+            CheckConfigValueAndCheckbox(p.SetUpdate, chkSetUpdate);
             CheckConfigValueAndCheckbox(p.SetPowerOff, chkSetPoweOff);
             if (LoginModel == Model.H8 | LoginModel == Model.G5)
             {
@@ -1126,7 +1135,7 @@ namespace AutoBatchForProductionLine
                     }
                 }
 
-
+                // 格式化
                 if (p.SetFormat == "1")
                 {
                     updateMessage(lstMsg, DI.cSerial + ":准备开始设置格式化,文件系统格式:" + p.Format);
@@ -1163,6 +1172,70 @@ namespace AutoBatchForProductionLine
                         }
                     }
 
+                }
+
+
+                //update
+                if (p.SetUpdate == "1")
+                {
+                    //先判定下是否有格式化,如果格式化,直接复制,如果未格式化,先进入U盘
+
+
+
+                    if (p.SetFormat == "1")
+                    {
+                        FileInfo fi = new FileInfo(p.BinFile);
+                        if (fi.Exists)
+                        {
+                            updateMessage(lstMsg, "侦测到有格式化,直接复制" + fi.Name + "升级,文件大小:" + fi.Length);
+                            p.WriteLog("侦测到有格式化,直接复制" + fi.Name + "升级,文件大小:" + fi.Length);
+                            thdAddFile = new Thread(new ThreadStart(SetAddFile));//创建一个线程
+                            thdAddFile.Start();//执行当前线程
+                        }
+                        else
+                        {
+                            updateMessage(lstMsg, p.BinFile + "文件不存在,请重新设置");
+                            p.WriteLog(p.BinFile + "文件不存在,请重新设置");
+                        }
+
+                
+
+                    }
+                    else
+                    {
+                        updateMessage(lstMsg, "侦测到没有格式化,先让执法仪进入U盘模式.");
+                        p.WriteLog("侦测到没有格式化,先让执法仪进入U盘模式.");
+
+                        if (SetDeviceMSDC(LoginDevice, DevicePwd))
+                        {
+                            while (CammUSB)
+                            {
+                                Delay(500);
+                                while (Directory.Exists(BodyUDisk))
+                                {
+                                    CammUSB = false;
+                                    Delay(500);
+                                    updateMessage(lstMsg, "执法仪已经进入U盘模式,盘符:" + BodyUDisk);
+                                    p.WriteLog("执法仪已经进入U盘模式,盘符:" + BodyUDisk);
+                                    FileInfo fi = new FileInfo(p.BinFile);
+                                    if (fi.Exists)
+                                    {
+                                        updateMessage(lstMsg, "开始直接复制" + fi.Name + "升级,文件大小:" + fi.Length);
+                                        p.WriteLog("开始直接复制" + fi.Name + "升级,文件大小:" + fi.Length);
+                                        thdAddFile = new Thread(new ThreadStart(SetAddFile));//创建一个线程
+                                        thdAddFile.Start();//执行当前线程
+                                    }
+                                    else
+                                    {
+                                        updateMessage(lstMsg, p.BinFile + "文件不存在,请重新设置");
+                                        p.WriteLog(p.BinFile + "文件不存在,请重新设置");
+                                    }
+                                    break;
+                     
+                                }
+                            }
+                        }
+                    }
                 }
 
 
@@ -1701,7 +1774,7 @@ namespace AutoBatchForProductionLine
             if (logindevice == Vendor.Cammpro)
             {
 
-                if (SetDeviceMSDC(logindevice, DevicePwd))
+                if (SetDeviceMSDC(logindevice, password))
                 {
                     while (CammUSB )
                     {
@@ -2044,6 +2117,115 @@ namespace AutoBatchForProductionLine
             }
         }
 
+        private void chkSetUpdate_CheckedChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetUpdate);
+            string State = string.Empty;
+            if (chkSetUpdate.Checked)
+                State = "1";
+            else
+                State = "0";
+            p.SetUpdate = State;
+            IniFile.IniWriteValue(LoginModel.ToString(), "SetUpdate", State);
+
+            if (p.SetUpdate == "1")
+            {
+                if (!System.IO.File.Exists(p.BinFile))
+                {
+                    MessageBox.Show("选择的执法仪升级文件不存在,请重新设置.", "文件不存在", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    Form f = new frmSetting();
+                    f.ShowDialog();
+        
+                }
+            }
+        }
+
+        private void chkSetUpdate_EnabledChanged(object sender, EventArgs e)
+        {
+            CheckCheckboxCheckState(chkSetUpdate);
+        }
+
+
+
+
+        public delegate void AddFile();//定度委托
+        /// <summary>
+        /// 在线程上执行委托
+        /// </summary>
+        public void SetAddFile()
+        {
+            this.Invoke(new AddFile(RunAddFile));//在线程上执行指定的委托
+        }
+
+        /// <summary>
+        /// 对文件进行复制，并在复制完成后关闭线程
+        /// </summary>
+        public void RunAddFile()
+        {
+            FileInfo fi = new FileInfo(p.BinFile);
+            string ToFile = string.Empty;
+            ToFile = BodyUDisk + fi.Name;
+            CopyFile(p.BinFile , ToFile, 1024, pBarUpdate );//复制文件
+            thdAddFile.Abort();//关闭线程
+        }
+
+        /// <summary>
+        /// 文件的复制
+        /// </summary>
+        /// <param FormerFile="string">源文件路径</param>
+        /// <param toFile="string">目的文件路径</param> 
+        /// <param SectSize="int">传输大小</param> 
+        /// <param progressBar="ProgressBar">ProgressBar控件</param> 
+        public void CopyFile(string FormerFile, string toFile, int SectSize, ProgressBar progressBar1)
+        {
+            progressBar1.Value = 0;//设置进度栏的当前位置为0
+            progressBar1.Minimum = 0;//设置进度栏的最小值为0
+            FileStream fileToCreate = new FileStream(toFile, FileMode.Create);//创建目的文件，如果已存在将被覆盖
+            fileToCreate.Close();//关闭所有资源
+            fileToCreate.Dispose();//释放所有资源
+           FileStream  FormerOpen = new FileStream(FormerFile, FileMode.Open, FileAccess.Read);//以只读方式打开源文件
+           FileStream  ToFileOpen = new FileStream(toFile, FileMode.Append, FileAccess.Write);//以写方式打开目的文件
+            int max = Convert.ToInt32(Math.Ceiling((double)FormerOpen.Length / (double)SectSize));//根据一次传输的大小，计算传输的个数
+            progressBar1.Maximum = max;//设置进度栏的最大值
+            int FileSize;//要拷贝的文件的大小
+            if (SectSize < FormerOpen.Length)//如果分段拷贝，即每次拷贝内容小于文件总长度
+            {
+                byte[] buffer = new byte[SectSize];//根据传输的大小，定义一个字节数组
+                int copied = 0;//记录传输的大小
+                int tem_n = 1;//设置进度栏中进度块的增加个数
+                while (copied <= ((int)FormerOpen.Length - SectSize))//拷贝主体部分
+                {
+                    FileSize = FormerOpen.Read(buffer, 0, SectSize);//从0开始读，每次最大读SectSize
+                    FormerOpen.Flush();//清空缓存
+                    ToFileOpen.Write(buffer, 0, SectSize);//向目的文件写入字节
+                    ToFileOpen.Flush();//清空缓存
+                    ToFileOpen.Position = FormerOpen.Position;//使源文件和目的文件流的位置相同
+                    copied += FileSize;//记录已拷贝的大小
+                    progressBar1.Value = progressBar1.Value + tem_n;//增加进度栏的进度块
+                }
+                int left = (int)FormerOpen.Length - copied;//获取剩余大小
+                FileSize = FormerOpen.Read(buffer, 0, left);//读取剩余的字节
+                FormerOpen.Flush();//清空缓存
+                ToFileOpen.Write(buffer, 0, left);//写入剩余的部分
+                ToFileOpen.Flush();//清空缓存
+            }
+            else//如果整体拷贝，即每次拷贝内容大于文件总长度
+            {
+                byte[] buffer = new byte[FormerOpen.Length];//获取文件的大小
+                FormerOpen.Read(buffer, 0, (int)FormerOpen.Length);//读取源文件的字节
+                FormerOpen.Flush();//清空缓存
+                ToFileOpen.Write(buffer, 0, (int)FormerOpen.Length);//写放字节
+                ToFileOpen.Flush();//清空缓存
+            }
+            FormerOpen.Close();//释放所有资源
+            ToFileOpen.Close();//释放所有资源
+            updateMessage(lstMsg, "升级文件拷贝完成.");
+            p.WriteLog("升级文件拷贝完成.");
+            updateMessage(lstMsg, "请拔掉USB数据线，静待系统自动升级.");
+            p.WriteLog("请拔掉USB数据线，静待系统自动升级.");
+            progressBar1.Value = 0;
+
+        }
    
     }
 }

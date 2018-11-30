@@ -52,6 +52,8 @@
             this.btnRestart = new System.Windows.Forms.Button();
             this.btnOnlyOnce = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.pBarUpdate = new System.Windows.Forms.ProgressBar();
+            this.chkSetUpdate = new System.Windows.Forms.CheckBox();
             this.groupBox2.SuspendLayout();
             this.grbItem.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -95,6 +97,7 @@
             // 
             // grbItem
             // 
+            this.grbItem.Controls.Add(this.chkSetUpdate);
             this.grbItem.Controls.Add(this.chkSetFormat);
             this.grbItem.Controls.Add(this.chkSetSN);
             this.grbItem.Controls.Add(this.btnSetting);
@@ -108,7 +111,7 @@
             this.grbItem.Controls.Add(this.chkSyncTime);
             this.grbItem.Location = new System.Drawing.Point(12, 74);
             this.grbItem.Name = "grbItem";
-            this.grbItem.Size = new System.Drawing.Size(145, 269);
+            this.grbItem.Size = new System.Drawing.Size(145, 293);
             this.grbItem.TabIndex = 2;
             this.grbItem.TabStop = false;
             this.grbItem.Text = "项目设置";
@@ -146,7 +149,7 @@
             // btnSetting
             // 
             this.btnSetting.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnSetting.Location = new System.Drawing.Point(13, 231);
+            this.btnSetting.Location = new System.Drawing.Point(13, 257);
             this.btnSetting.Name = "btnSetting";
             this.btnSetting.Size = new System.Drawing.Size(102, 30);
             this.btnSetting.TabIndex = 11;
@@ -160,7 +163,7 @@
             this.chkSetPoweOff.BackColor = System.Drawing.SystemColors.Control;
             this.chkSetPoweOff.Enabled = false;
             this.chkSetPoweOff.ForeColor = System.Drawing.Color.Black;
-            this.chkSetPoweOff.Location = new System.Drawing.Point(13, 209);
+            this.chkSetPoweOff.Location = new System.Drawing.Point(13, 232);
             this.chkSetPoweOff.Name = "chkSetPoweOff";
             this.chkSetPoweOff.Size = new System.Drawing.Size(120, 16);
             this.chkSetPoweOff.TabIndex = 10;
@@ -276,10 +279,11 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.pBarUpdate);
             this.groupBox3.Controls.Add(this.lstMsg);
             this.groupBox3.Location = new System.Drawing.Point(163, 27);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(600, 447);
+            this.groupBox3.Size = new System.Drawing.Size(600, 471);
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "信息列表";
@@ -299,7 +303,7 @@
             this.groupBox4.Controls.Add(this.btnClearInfo);
             this.groupBox4.Controls.Add(this.btnRestart);
             this.groupBox4.Controls.Add(this.btnOnlyOnce);
-            this.groupBox4.Location = new System.Drawing.Point(12, 349);
+            this.groupBox4.Location = new System.Drawing.Point(12, 373);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(145, 125);
             this.groupBox4.TabIndex = 0;
@@ -343,12 +347,34 @@
             this.timer1.Interval = 500;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // pBarUpdate
+            // 
+            this.pBarUpdate.Location = new System.Drawing.Point(15, 439);
+            this.pBarUpdate.Name = "pBarUpdate";
+            this.pBarUpdate.Size = new System.Drawing.Size(577, 23);
+            this.pBarUpdate.TabIndex = 1;
+            // 
+            // chkSetUpdate
+            // 
+            this.chkSetUpdate.AutoSize = true;
+            this.chkSetUpdate.BackColor = System.Drawing.SystemColors.Control;
+            this.chkSetUpdate.Enabled = false;
+            this.chkSetUpdate.ForeColor = System.Drawing.Color.Black;
+            this.chkSetUpdate.Location = new System.Drawing.Point(13, 209);
+            this.chkSetUpdate.Name = "chkSetUpdate";
+            this.chkSetUpdate.Size = new System.Drawing.Size(96, 16);
+            this.chkSetUpdate.TabIndex = 12;
+            this.chkSetUpdate.Text = "自动升级系统";
+            this.chkSetUpdate.UseVisualStyleBackColor = false;
+            this.chkSetUpdate.CheckedChanged += new System.EventHandler(this.chkSetUpdate_CheckedChanged);
+            this.chkSetUpdate.EnabledChanged += new System.EventHandler(this.chkSetUpdate_EnabledChanged);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(775, 481);
+            this.ClientSize = new System.Drawing.Size(773, 511);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -395,6 +421,8 @@
         private System.Windows.Forms.Button btnClearInfo;
         private System.Windows.Forms.CheckBox chkSetFormat;
         private System.Windows.Forms.CheckBox chkSetSN;
+        private System.Windows.Forms.ProgressBar pBarUpdate;
+        private System.Windows.Forms.CheckBox chkSetUpdate;
     }
 }
 

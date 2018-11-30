@@ -92,6 +92,9 @@
             this.label20 = new System.Windows.Forms.Label();
             this.txtEndSN = new System.Windows.Forms.TextBox();
             this.txtStartSN = new System.Windows.Forms.TextBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.label28 = new System.Windows.Forms.Label();
+            this.txtBinFile = new System.Windows.Forms.TextBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -100,6 +103,7 @@
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
             this.groupBox8.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
@@ -730,11 +734,41 @@
             this.txtStartSN.TextChanged += new System.EventHandler(this.txtStartSN_TextChanged);
             this.txtStartSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtStartSN_KeyPress);
             // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.txtBinFile);
+            this.groupBox9.Controls.Add(this.label28);
+            this.groupBox9.Location = new System.Drawing.Point(221, 389);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(412, 52);
+            this.groupBox9.TabIndex = 22;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "升级文件设置";
+            // 
+            // label28
+            // 
+            this.label28.AutoSize = true;
+            this.label28.Location = new System.Drawing.Point(14, 25);
+            this.label28.Name = "label28";
+            this.label28.Size = new System.Drawing.Size(53, 12);
+            this.label28.TabIndex = 18;
+            this.label28.Text = "文件路径";
+            // 
+            // txtBinFile
+            // 
+            this.txtBinFile.Location = new System.Drawing.Point(73, 22);
+            this.txtBinFile.Name = "txtBinFile";
+            this.txtBinFile.Size = new System.Drawing.Size(322, 21);
+            this.txtBinFile.TabIndex = 19;
+            this.txtBinFile.TextChanged += new System.EventHandler(this.txtBinFile_TextChanged);
+            this.txtBinFile.DoubleClick += new System.EventHandler(this.txtBinFile_DoubleClick);
+            // 
             // frmSetting
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(657, 395);
+            this.ClientSize = new System.Drawing.Size(652, 453);
+            this.Controls.Add(this.groupBox9);
             this.Controls.Add(this.groupBox8);
             this.Controls.Add(this.txtAPNPwd);
             this.Controls.Add(this.groupBox7);
@@ -769,6 +803,8 @@
             this.groupBox7.PerformLayout();
             this.groupBox8.ResumeLayout(false);
             this.groupBox8.PerformLayout();
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -839,5 +875,8 @@
         private System.Windows.Forms.Label label24;
         private System.Windows.Forms.TextBox txtSN_userNo;
         private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.GroupBox groupBox9;
+        private System.Windows.Forms.TextBox txtBinFile;
+        private System.Windows.Forms.Label label28;
     }
 }

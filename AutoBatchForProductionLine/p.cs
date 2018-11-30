@@ -30,6 +30,7 @@ namespace AutoBatchForProductionLine
         public static string SetCheckNet = "0";
         public static string SetGPS = "0";
         public static string SetFormat = "0";
+        public static string SetUpdate = "0";
         public static string SetPowerOff = "0";
 
 
@@ -66,9 +67,10 @@ namespace AutoBatchForProductionLine
         public static string NetCheckIP = "127.0.0.1";
         public static string NetCheckPort = "554";
         public static string NetCheckEnable = "1";
-        //
+        //SetFormat
         public static string Format = "exFAT";
-
+        //
+        public static string BinFile = string.Empty;
         //GPS
         public static string GPS = "0";
         //PowerOff
@@ -170,6 +172,7 @@ namespace AutoBatchForProductionLine
                 IniFile.IniWriteValue("SysConfig", "SetCheckNet",SetCheckNet);
                 IniFile.IniWriteValue("SysConfig", "SetGPS", SetGPS);
                 IniFile.IniWriteValue("SysConfig", "SetFormat", p.SetFormat);
+                IniFile.IniWriteValue("SysConfig", "SetUpdate", p.SetUpdate);
                 IniFile.IniWriteValue("SysConfig", "SetPowerOff", SetPowerOff);
                 //
                 IniFile.IniWriteValue("SN", "StartSN", StartSN);
@@ -201,6 +204,8 @@ namespace AutoBatchForProductionLine
                 //
                 IniFile.IniWriteValue("Format", "Format", Format);
                 //
+                IniFile.IniWriteValue("Update", "BinFile", BinFile);
+                //
                 IniFile.IniWriteValue("GPS", "GPS", GPS);
                 //
                 IniFile.IniWriteValue("PowerOff", "PowerOff", PowerOff);
@@ -225,6 +230,7 @@ namespace AutoBatchForProductionLine
                 SetCheckNet = IniFile.IniReadValue("SysConfig", "SetCheckNet");
                 SetGPS = IniFile.IniReadValue("SysConfig", "SetGPS");
                 SetFormat = IniFile.IniReadValue("SysConfig", "SetFormat");
+                SetUpdate = IniFile.IniReadValue("SysConfig", "SetUpdate");
                 SetPowerOff = IniFile.IniReadValue("SysConfig", "SetPowerOff");
                 //
                 StartSN = IniFile.IniReadValue("SN", "StartSN");
@@ -255,6 +261,10 @@ namespace AutoBatchForProductionLine
                NetCheckEnable = IniFile.IniReadValue("NetCheck", "NetCheckEnable");
                //
                GPS = IniFile.IniReadValue("GPS", "GPS");
+                //
+               Format = IniFile.IniReadValue("Format", "Format");
+                //
+               BinFile = IniFile.IniReadValue("Update", "BinFile");
                //
                PowerOff = IniFile.IniReadValue("PowerOff", "PowerOff");
            

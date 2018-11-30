@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Edward;
 using SDK;
+using System.IO;
 
 namespace AutoBatchForProductionLine
 {
@@ -204,6 +205,9 @@ namespace AutoBatchForProductionLine
                 p.FsType = BODYCAMDLL_API_YZ.FSTYPE_E.FS_EXFAT;
                 comboFormat.SelectedIndex = 1;
             }
+
+            txtBinFile.Text = p.BinFile;
+
 
 
             switch (p.CheckParamErrorCode)
@@ -476,7 +480,19 @@ namespace AutoBatchForProductionLine
                             return false;
                         }
                     }
-                   
+
+
+                    if (p.SetUpdate == "1")
+                    {
+                        if (!System.IO.File.Exists(txtBinFile.Text.Trim()))
+                        {
+                            MessageBox.Show("选择的执法仪升级文件不存在,请重新设置.", "文件不存在", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtBinFile.SelectAll();
+                            txtBinFile.Focus();
+                            return false;
+                        }
+                    }
+
 
                     break;
                 case frmMain.Model.H8:
@@ -501,6 +517,18 @@ namespace AutoBatchForProductionLine
                             return false;
                         }
                     }
+
+                    if (p.SetUpdate == "1")
+                    {
+                        if (!System.IO.File.Exists(txtBinFile.Text.Trim()))
+                        {
+                            MessageBox.Show("选择的执法仪升级文件不存在,请重新设置.", "文件不存在", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                            txtBinFile.SelectAll();
+                            txtBinFile.Focus();
+                            return false;
+                        }
+                    }
+
                    
                     break;
                 default:
@@ -519,5 +547,27 @@ namespace AutoBatchForProductionLine
                 e.Cancel = true;
 
         }
+
+        private void txtBinFile_DoubleClick(object sender, EventArgs e)
+        {
+            OpenFileDialog ofg = new OpenFileDialog();
+            ofg.Filter = "升级文件(*.Bin)|*.Bin|所有文件(*.*)|*.*";
+            if (ofg.ShowDialog() == DialogResult.OK)//打开文件对话框
+            {
+                txtBinFile.Text = ofg.FileName;
+            }
+            p.BinFile = txtBinFile.Text.Trim();
+            IniFile.IniWriteValue("Update", "BinFile", p.BinFile);
+        }
+
+        private void txtBinFile_TextChanged(object sender, EventArgs e)
+        {
+            p.BinFile = txtBinFile.Text.Trim();
+            IniFile.IniWriteValue("Update", "BinFile", p.BinFile);
+        }
+
+
+
+
     }
 }
