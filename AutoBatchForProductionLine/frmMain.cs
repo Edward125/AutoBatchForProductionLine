@@ -1280,9 +1280,9 @@ namespace AutoBatchForProductionLine
                 if (LoginDevice == Vendor.EasyStorage)
                 {
                     BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
-                    updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
-                    p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
                 }
+                updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
+                p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
 
 
 
