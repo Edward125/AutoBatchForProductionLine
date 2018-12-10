@@ -2221,6 +2221,7 @@ namespace AutoBatchForProductionLine
                 int tem_n = 1;//设置进度栏中进度块的增加个数
                 while (copied <= ((int)FormerOpen.Length - SectSize))//拷贝主体部分
                 {
+                    Application.DoEvents();
                     FileSize = FormerOpen.Read(buffer, 0, SectSize);//从0开始读，每次最大读SectSize
                     FormerOpen.Flush();//清空缓存
                     ToFileOpen.Write(buffer, 0, SectSize);//向目的文件写入字节
