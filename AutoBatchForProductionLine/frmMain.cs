@@ -1173,8 +1173,7 @@ namespace AutoBatchForProductionLine
                             updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
                             p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
                             MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            ezUSB.RemoveUSBEventWatcher();
-                            
+                            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));   
                         }
                         if (LoginDevice == Vendor.Cammpro)
                         {
