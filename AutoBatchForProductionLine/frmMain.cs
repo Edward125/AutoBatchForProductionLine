@@ -1169,11 +1169,10 @@ namespace AutoBatchForProductionLine
                     {
                         if (LoginDevice == Vendor.EasyStorage)
                         {
-                            ezUSB.RemoveUSBEventWatcher();
-                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
-                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启.");
-                            MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));   
+                            updateMessage(lstMsg, DI.cSerial + ":格式化成" + p.Format + "成功.");
+                            p.WriteLog(DI.cSerial + ":格式化成" + p.Format + "成功.");
+                           // MessageBox.Show(DI.cSerial + ":格式化成" + p.Format + "成功,设备将重启,避免再次自动操作,请拔出设备后点确定.", "格式化完成", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                           // ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));   
                         }
                         if (LoginDevice == Vendor.Cammpro)
                         {
@@ -1278,7 +1277,16 @@ namespace AutoBatchForProductionLine
 
                 if (LoginDevice == Vendor.EasyStorage)
                 {
-                    BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
+                    try
+                    {
+                        BODYCAMDLL_API_YZ.BC_UnInitDevEx(BCHandle);
+                    }
+                    catch (Exception)
+                    {
+                       // 
+                       // throw;
+                    }
+                  
                 }
                 updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
                 p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
@@ -1788,12 +1796,54 @@ namespace AutoBatchForProductionLine
         {
             if (logindevice == Vendor.EasyStorage)
             {
-                int result = -1;
-                result = BODYCAMDLL_API_YZ.BC_FormatUdisk(BCHandle, password, p.FsType);
-                if (result == 0)
-                    return true;
-                else
-                    return false;
+               // ezUSB.RemoveUSBEventWatcher();
+                //int result = -1;
+                //result = BODYCAMDLL_API_YZ.BC_FormatUdisk(BCHandle, password, p.FsType);
+                //if (result == 0)
+                //    return true;
+                //else
+                //    return false;
+
+                if (SetDeviceMSDC(logindevice, password))
+                {
+                    CammUSB = true;   //和cammpro进入U盘有差异，手动
+                 //   updateMessage(lstMsg, "CamUsb:" + CammUSB.ToString());
+                    while (CammUSB )
+                    {
+                        Delay(500);
+                        while (Directory.Exists(BodyUDisk))
+                        {
+                            CammUSB = false;
+                            Delay(500);
+                            updateMessage(lstMsg, "执法仪已经进入U盘模式,盘符:" + BodyUDisk);
+                            if (BodyUDisk.Contains(@"\"))
+                                BodyUDisk = BodyUDisk.Replace(@"\", "");
+                            ProcessStartInfo processStartInfo = new ProcessStartInfo("cmd.exe");
+                            processStartInfo.RedirectStandardInput = true;
+                            processStartInfo.RedirectStandardOutput = true;
+                            processStartInfo.UseShellExecute = false;
+                            processStartInfo.CreateNoWindow = true;
+                            Process process = Process.Start(processStartInfo);
+                            if (process != null)
+                            {
+                                process.StandardInput.WriteLine(@"FORMAT " + BodyUDisk + " /y /FS:" + p.Format + " /Q");
+                                process.StandardInput.Close();
+                                string outputString = process.StandardOutput.ReadToEnd();
+                                p.WriteLog(outputString);
+                                if (outputString.Contains("已完成"))
+                                {
+                                    return true;
+                                }
+                                else
+                                    return false;
+
+                            }
+
+                        }
+                        
+                    }
+                }
+
             }
 
             if (logindevice == Vendor.Cammpro)
@@ -1801,9 +1851,11 @@ namespace AutoBatchForProductionLine
 
                 if (SetDeviceMSDC(logindevice, password))
                 {
+
+
+                 //   updateMessage(lstMsg, "CamUsb:" + CammUSB.ToString());
                     while (CammUSB )
                     {
-
                         Delay(500);
                         while (Directory.Exists (BodyUDisk ))
                         {
