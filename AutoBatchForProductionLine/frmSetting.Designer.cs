@@ -682,6 +682,7 @@
             this.txtTotalSN.Name = "txtTotalSN";
             this.txtTotalSN.Size = new System.Drawing.Size(42, 21);
             this.txtTotalSN.TabIndex = 5;
+            this.txtTotalSN.Text = "1";
             this.txtTotalSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txtTotalSN.TextChanged += new System.EventHandler(this.txtTotalSN_TextChanged);
             this.txtTotalSN.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtTotalSN_KeyPress);

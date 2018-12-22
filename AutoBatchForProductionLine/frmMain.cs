@@ -73,6 +73,13 @@ namespace AutoBatchForProductionLine
 
         public static  System.Threading.Thread thdAddFile; //创建一个线程
 
+        //兼容老版本
+
+        public static string WorkPath = @"D:\H6_WorkList\H6_PPID.log";
+        public static string WorkMark = @"D:\H6_WorkList\H6_Mark.log";
+        public static string WorkPathBak = @"E:\H6_WorkBakList\H6_PPID.log";
+
+
 
         public enum Model
         {
@@ -279,6 +286,35 @@ namespace AutoBatchForProductionLine
             p.CreateIni();
             p.ReadIni();
             LoadData();
+
+
+            //兼容老版本
+
+            //工作路径
+            string testfolder = @"D:\H6_WorkList\";
+            if (!Directory.Exists(testfolder))
+                Directory.CreateDirectory(testfolder);
+
+            //备份路径
+            string testfolderbak = @"E:\H6_WorkBakList\";
+            if (!Directory.Exists(testfolderbak))
+                Directory.CreateDirectory(testfolderbak);
+
+            if (!File.Exists(@WorkPath))
+            {
+                FileStream fs = File.Create(@WorkPath);
+                fs.Close();
+                string First = "          时间                ,     序号   ,   方式   , 结果" + "\r\n";   //add by channing Wang
+                File.AppendAllText(@WorkPath, @First);
+            }
+
+            if (!File.Exists(@WorkPathBak))
+            {
+                FileStream fs = File.Create(@WorkPathBak);
+                fs.Close();
+                string First = "          时间                ,     序号   ,   方式   , 结果" + "\r\n";   //add by channing Wang
+                File.AppendAllText(@WorkPathBak, @First);
+            }
 
 
         }
@@ -998,8 +1034,6 @@ namespace AutoBatchForProductionLine
                     p.WriteLog(DI.cSerial + ":准备开始同步时间");
                     if (SyncDeviceTime(LoginDevice, DevicePwd))
                     {
-
-                  
                         updateMessage(lstMsg, DI.cSerial + ":同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
                         p.WriteLog(DI.cSerial + ":同步设备时间成功.（" + DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + ")");
                     }
@@ -1028,18 +1062,27 @@ namespace AutoBatchForProductionLine
                             p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",且满足公司要求,不更新序列号.");
                             string sql = "select usedtime from " + comboBodyType.Text + "sn where sn = '" + DI.cSerial  + "'";
                             string result = "";
+
+                            //旧版本
+                            string oldusedtime = string.Empty;
+                            bool oldVerUsed = false; //查看旧版本是已经使用
+                            oldVerUsed = ManualCheckPPID(DI.cSerial, out oldusedtime);//true 重复。
                             p.queryDatafromDB(sql, "usedtime", out result);
-                            if (!string.IsNullOrEmpty(result))
+                            if (!string.IsNullOrEmpty(result) & !oldVerUsed )
                             {
-                                updateMessage(lstMsg, DI.cSerial + "被使用的时间为:" + result);
-                                p.WriteLog(DI.cSerial + "被使用的时间为:" + result);
+                                updateMessage(lstMsg, DI.cSerial + "在新版本中被使用的时间为:" + result);
+                                p.WriteLog(DI.cSerial + "在新版本中被使用的时间为:" + result);
                             }
-                            else
+                            else if (string.IsNullOrEmpty(result) & oldVerUsed)
                             {
-                                sql = "insert into " + comboBodyType.Text + "sn (sn,usedtime,remark) values ('" + DI.cSerial  + "','" + DateTime.Now.ToString("yyyyMMddhhmmss") + "','SN not in the DB,auto insert')";
+                                updateMessage(lstMsg, DI.cSerial + "在旧版本中被使用的时间为:" + oldusedtime);
+                                p.WriteLog(DI.cSerial + "在旧版本中被使用的时间为:" + oldusedtime);
+                                DateTime dt = Convert.ToDateTime(oldusedtime);
+                                sql = "insert into " + comboBodyType.Text + "sn (sn,usedtime,remark) values ('" + DI.cSerial + "','" + dt.ToString("yyyyMMddHHmmss") + "','SN not in the DB,auto insert')";
                                 p.updateData2DB(sql);
                                 updateMessage(lstMsg, DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
                                 p.WriteLog(DI.cSerial + "该序列号没有在数据中被发现,自动添加入数据库");
+
                             }
               
                         }
@@ -1401,16 +1444,21 @@ namespace AutoBatchForProductionLine
             Int32 start = Convert.ToInt32(p.StartSN);
             Int32 end = Convert.ToInt32(p.EndSN);
             string result = string.Empty;
-          
+            string oldusedtime = string.Empty;
+            //
+            bool oldVerUsed = false; //查看旧版本是已经使用
 
             string sql = "";
 
             for (int i = start; i <= end; i++)
             {
+                //从数据库中查询
                 sql = "select usedtime from " + comboBodyType.Text + "sn where sn = '" + i.ToString() + "'";
                 p.queryDatafromDB(sql, "usedtime", out result);
+                //兼容旧版本,从旧版本数据中查询
+                oldVerUsed  = ManualCheckPPID(i.ToString(),out oldusedtime);//true 重复。
 
-                if (string.IsNullOrEmpty(result))
+                if (string.IsNullOrEmpty(result) | !oldVerUsed)
                 {
                     DeviceInfo di = new DeviceInfo();
                     updateMessage(lstMsg, i + "还未使用,将写入当前设备.");
@@ -1423,10 +1471,13 @@ namespace AutoBatchForProductionLine
                     if (WriteDeviceInfo(LoginDevice, DevicePwd, di))
                     {
                         dii.cSerial = di.cSerial;
-                        sql = "insert into " + comboBodyType.Text +"sn (sn,usedtime,remark) values ('" + i +"','" + DateTime.Now.ToString ("yyyyMMddhhmmss") +"','')";
+                        sql = "insert into " + comboBodyType.Text +"sn (sn,usedtime,remark) values ('" + i +"','" + DateTime.Now.ToString ("yyyyMMddHHmmss") +"','')";
                         p.updateData2DB(sql);
                         updateMessage(lstMsg, "向执法仪写入SN:" + i + "成功.");
                         p.WriteLog("向执法仪写入SN:" + i + "成功.");
+                        //兼容旧版本
+                        SaveTestLog(@WorkPath, i.ToString(), "Auto", true); //原文件
+                        SaveTestLog(@WorkPathBak, i.ToString(), "Auto", true); //备份
                         break;
                     }
                     else
@@ -1435,12 +1486,20 @@ namespace AutoBatchForProductionLine
                         p.WriteLog("向执法仪写入SN:" + i + "失败.");
                     }
 
-
                 }
                 else
                 {
-                    updateMessage(lstMsg, i + "该条码已经使用,使用时间:" + result);
-                    p.WriteLog(i + "该条码已经使用,使用时间:" + result);
+                    if (!string.IsNullOrEmpty (result ))
+                    {
+                      updateMessage(lstMsg, i + "该条码在新版本中已经使用,使用时间:" + result);
+                      p.WriteLog(i + "该条码在新版本中已经使用,使用时间:" + result);
+                    }
+
+                    if (!string.IsNullOrEmpty(oldusedtime ))
+                    {
+                       updateMessage(lstMsg, i + "该条码在旧版本中已经使用,使用时间:" + result);
+                       p.WriteLog(i + "该条码在旧版本中已经使用,使用时间:" + result);
+                    }
                 }
             }
         }
@@ -2076,10 +2135,10 @@ namespace AutoBatchForProductionLine
             if (CurrentUSB == USBState.YES && !SetItemState )
             {
 
-                updateMessage(lstMsg, "CurrentUSB:" + CurrentUSB.ToString());
-                p.WriteLog("CurrentUSB:" + CurrentUSB.ToString());
-                updateMessage(lstMsg, "SetItemState:" + SetItemState.ToString());
-                p.WriteLog("SetItemState:" + SetItemState.ToString());
+                //updateMessage(lstMsg, "CurrentUSB:" + CurrentUSB.ToString());
+                //p.WriteLog("CurrentUSB:" + CurrentUSB.ToString());
+                //updateMessage(lstMsg, "SetItemState:" + SetItemState.ToString());
+                //p.WriteLog("SetItemState:" + SetItemState.ToString());
 
                 //Delay(2000);
                 RunSetItem();
@@ -2334,12 +2393,115 @@ namespace AutoBatchForProductionLine
             updateMessage(lstMsg, "升级文件拷贝完成，用时(s):" + ts.TotalSeconds);
             p.WriteLog("升级文件拷贝完成，用时(s):" + ts.TotalSeconds);
             updateMessage(lstMsg, "请拔掉USB数据线，静待系统自动升级.");
+            //updateMessage(lstMsg, "*******************************************");
             p.WriteLog("请拔掉USB数据线，静待系统自动升级.");
             progressBar1.Value = 0;
 
         }
 
 
+
+        #region 兼容旧版本
+
+
+
+        public static void SaveTestLog(string FilePath, string PPID, string WriteType, bool Output)
+        {
+
+            string testlogpath = @WorkPath;
+            if (!File.Exists(@FilePath))
+            {
+                FileStream fs = File.Create(@FilePath);
+                fs.Close();
+                string First = "          时间                ,     序号   ,   方式   , 结果" + "\r\n";   //add by channing Wang
+                File.AppendAllText(@FilePath, @First);
+            }
+            string logcontents = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " , " + PPID + " , " + WriteType + " , " + Output.ToString() + "\r\n";
+            File.AppendAllText(@FilePath, @logcontents);
+        }
+
+
+
+        /// <summary>
+        /// 查看PPID是否已经被使用
+        /// </summary>
+        /// <param name="strPPID"></param>
+        /// <returns></returns>
+        public bool ManualCheckPPID(string strPPID)
+        {
+            string rePPID = string.Empty;
+            //检测序列号是否重复
+            string line;
+            string txtPPID = string.Empty;
+            bool PPIDrepeat = false;//PPID未重复
+            System.IO.StreamReader file = new System.IO.StreamReader(@WorkPath);
+            while ((line = file.ReadLine()) != null)
+            {
+                txtPPID = line.Split(',')[1].ToString().Replace(" ", "");//清除空格
+
+                if (txtPPID == strPPID)
+                {
+                    //MessageBox.Show("txtPPID = " + txtPPID.ToString() + "\n\t strPPID = " + strPPID);
+                    PPIDrepeat = true;
+                    rePPID = txtPPID;
+                }
+            }
+            file.Close();
+            return PPIDrepeat;
+        }
+
+
+        /// <summary>
+        /// 查看PPID是否已经被使用
+        /// </summary>
+        /// <param name="strPPID"></param>
+        /// <returns></returns>
+        public bool ManualCheckPPID(string strPPID,out string usedtime)
+        {
+            usedtime = string.Empty;
+            string rePPID = string.Empty;
+            //检测序列号是否重复
+            string line;
+            string txtPPID = string.Empty;
+            bool PPIDrepeat = false;//PPID未重复
+            System.IO.StreamReader file = new System.IO.StreamReader(@WorkPath);
+
+
+            //while ((line = file.ReadLine()) != null)
+            //{
+            //    txtPPID = line.Split(',')[1].ToString().Replace(" ", "");//清除空格
+
+            //    if (txtPPID == strPPID)
+            //    {
+            //        //MessageBox.Show("txtPPID = " + txtPPID.ToString() + "\n\t strPPID = " + strPPID);
+            //        PPIDrepeat = true;
+            //        rePPID = txtPPID;
+            //        usedtime = line.Split(',')[0].Trim();
+            //    }
+            //}
+
+            while (!file.EndOfStream)
+            {
+                line = file.ReadLine();
+                if (!string.IsNullOrEmpty (line.Trim ()))
+                {
+                    txtPPID = line.Split(',')[1].Trim();
+
+                    if (txtPPID == strPPID)
+                    {
+                        //MessageBox.Show("txtPPID = " + txtPPID.ToString() + "\n\t strPPID = " + strPPID);
+                        PPIDrepeat = true;
+                        rePPID = txtPPID;
+                        usedtime = line.Split(',')[0].Trim();
+                    }
+                }
+            }
+
+
+            file.Close();
+            return PPIDrepeat;
+        }
+        #endregion
 
     }
     

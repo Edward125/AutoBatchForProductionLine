@@ -170,7 +170,7 @@ namespace AutoBatchForProductionLine
             this.Text = "详细参数设置,Ver:" + Application.ProductVersion;
             //
             txtStartSN.Text = p.StartSN;
-            txtEndSN.Text = p.EndSN;
+          //  txtEndSN.Text = p.EndSN;
 
             //
             txtWiFiSSID.Text = p.WiFiSSID;
@@ -418,6 +418,7 @@ namespace AutoBatchForProductionLine
             }
 
                 //txtTotalSN.Text = (  end - start+1).ToString();
+
             txtEndSN.Text = (start + num - 1).ToString();
         }
 
@@ -426,6 +427,7 @@ namespace AutoBatchForProductionLine
         {
             p.StartSN = txtStartSN.Text.Trim();
             IniFile.IniWriteValue("SN", "StartSN", p.StartSN);
+            CalcSNSum();
       
            
         }
@@ -433,9 +435,9 @@ namespace AutoBatchForProductionLine
 
         private void txtEndSN_TextChanged(object sender, EventArgs e)
         {
-            p.EndSN = txtEndSN.Text.Trim();
-            IniFile.IniWriteValue("SN", "EndSN", p.EndSN);
-            CalcSNSum();
+            //p.EndSN = txtEndSN.Text.Trim();
+            //IniFile.IniWriteValue("SN", "EndSN", p.EndSN);
+            //CalcSNSum();
         }
 
         private void txtTotalSN_TextChanged(object sender, EventArgs e)
