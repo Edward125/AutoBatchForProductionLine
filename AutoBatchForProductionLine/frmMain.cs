@@ -1935,6 +1935,7 @@ namespace AutoBatchForProductionLine
                  //   updateMessage(lstMsg, "CamUsb:" + CammUSB.ToString());
                     while (CammUSB )
                     {
+                        CammUSB = true; //H6
                         Delay(500);
                         while (Directory.Exists (BodyUDisk ))
                         {
