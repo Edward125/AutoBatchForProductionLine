@@ -88,9 +88,19 @@ namespace AutoBatchForProductionLine
         /// 显示已运行的程序。
         /// </summary>
         public static void HandleRunningInstance(Process instance)
+            
         {
-            ShowWindowAsync(instance.MainWindowHandle, WS_SHOWNORMAL); //显示，可以注释掉
-            SetForegroundWindow(instance.MainWindowHandle);            //放到前端
+            try
+            {
+                ShowWindowAsync(instance.MainWindowHandle, WS_SHOWNORMAL); //显示，可以注释掉
+                SetForegroundWindow(instance.MainWindowHandle);            //放到前端
+            }
+            catch (Exception)
+            {
+                
+               // throw;
+            }
+
         }
 
 
