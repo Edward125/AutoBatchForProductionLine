@@ -680,7 +680,6 @@
             // 
             this.txtTotalSN.Location = new System.Drawing.Point(353, 18);
             this.txtTotalSN.Name = "txtTotalSN";
-            this.txtTotalSN.ReadOnly = true;
             this.txtTotalSN.Size = new System.Drawing.Size(42, 21);
             this.txtTotalSN.TabIndex = 5;
             this.txtTotalSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -719,6 +718,7 @@
             this.txtEndSN.Location = new System.Drawing.Point(219, 18);
             this.txtEndSN.MaxLength = 7;
             this.txtEndSN.Name = "txtEndSN";
+            this.txtEndSN.ReadOnly = true;
             this.txtEndSN.Size = new System.Drawing.Size(82, 21);
             this.txtEndSN.TabIndex = 1;
             this.txtEndSN.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;

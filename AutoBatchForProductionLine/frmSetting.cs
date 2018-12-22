@@ -397,7 +397,7 @@ namespace AutoBatchForProductionLine
         private void CalcSNSum()
         {
             int start = 0;
-            int end  = 0;
+            int num  = 0;
             try
             {
                start =  Convert.ToInt32(txtStartSN.Text.Trim());
@@ -409,17 +409,16 @@ namespace AutoBatchForProductionLine
 
             try
             {
-                end = Convert.ToInt32(txtEndSN.Text.Trim());
+                num = Convert.ToInt32(txtTotalSN.Text.Trim());
             }
             catch (Exception)
             {
 
-                end = 0;
+                num = 0;
             }
 
-          
-            if (end >= start )
-                txtTotalSN.Text = (  end - start+1).ToString();
+                //txtTotalSN.Text = (  end - start+1).ToString();
+            txtEndSN.Text = (start + num - 1).ToString();
         }
 
 
@@ -427,7 +426,7 @@ namespace AutoBatchForProductionLine
         {
             p.StartSN = txtStartSN.Text.Trim();
             IniFile.IniWriteValue("SN", "StartSN", p.StartSN);
-            CalcSNSum();
+      
            
         }
 
@@ -481,7 +480,7 @@ namespace AutoBatchForProductionLine
 
             //}
 
-
+            CalcSNSum();
 
         }
 
@@ -498,7 +497,7 @@ namespace AutoBatchForProductionLine
         }
 
 
-        private bool  CheckParam()
+        private void  CheckParam(object sender, ref FormClosingEventArgs e)
         {
             switch (frmMain.LoginModel)
             {
@@ -507,17 +506,41 @@ namespace AutoBatchForProductionLine
                     {
                         if (!txtStartSN.Text.StartsWith("6"))
                         {
-                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            txtStartSN.SelectAll();
-                            txtStartSN.Focus();
-                            return false;
+                          DialogResult dr =  MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置,设置点OK,强制退出点Cancel", "SN不匹配", MessageBoxButtons.OKCancel , MessageBoxIcon.Stop);
+                          if (dr == DialogResult.OK)
+                          {
+                              txtStartSN.SelectAll();
+                              txtStartSN.Focus();
+                              e.Cancel = true;
+                              //  return false;
+                              break;
+                          }
+                          else
+                          {
+                              e.Cancel = false;
+                              break;
+                          }
+
+                       
+
+                         
                         }
                         if (!txtEndSN.Text.StartsWith("6"))
                         {
-                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            txtEndSN.SelectAll();
-                            txtEndSN.Focus();
-                            return false;
+                            DialogResult dr = MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,H6以6开始,请重新设置,设置点OK,强制退出点Cancel.", "SN不匹配", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
+                            if (dr == DialogResult.OK)
+                            {
+                                txtEndSN.SelectAll();
+                                txtEndSN.Focus();
+                                e.Cancel = true;
+                                break;
+                            }
+                            else
+                            {
+                                e.Cancel = false;
+                                break;
+                            }
+                            
                         }
                     }
 
@@ -526,11 +549,20 @@ namespace AutoBatchForProductionLine
                     {
                         if (!System.IO.File.Exists(txtBinFile.Text.Trim()))
                         {
-                            MessageBox.Show("选择的执法仪升级文件不存在,请重新设置.", "文件不存在", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            txtBinFile.SelectAll();
-                            txtBinFile.Focus();
-                            return false;
-                        }
+                            DialogResult dr = MessageBox.Show("选择的执法仪升级文件不存在,请重新设置,设置点OK,强制退出点Cancel.", "文件不存在", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
+                            if (dr == DialogResult.OK)
+                            {
+                                txtBinFile.SelectAll();
+                                txtBinFile.Focus();
+                                e.Cancel = true;
+                                break;
+                            }
+                            else
+                            {
+                                e.Cancel = false;
+                                break;
+                            }
+                    }
                     }
 
 
@@ -544,17 +576,36 @@ namespace AutoBatchForProductionLine
                     {
                         if (!txtStartSN.Text.StartsWith("9"))
                         {
-                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            txtStartSN.SelectAll();
-                            txtStartSN.Focus();
-                            return false;
+                            DialogResult dr = MessageBox.Show("执法仪设备序列号设置不满足执法仪要求,G9以9开始,请重新设置,设置点OK,强制退出点Cancel.", "SN不匹配", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
+                            if (dr == System.Windows.Forms.DialogResult.OK)
+                            {
+                                txtStartSN.SelectAll();
+                                txtStartSN.Focus();
+                                e.Cancel = true;
+                                break;
+                            }
+                            else
+                            {
+                                e.Cancel = false;
+                                break;
+                            }
                         }
                         if (!txtEndSN.Text.StartsWith("9"))
                         {
-                            MessageBox.Show("执法仪设备序列号设置不满足执法仪要求G9以9开始,请重新设置.", "SN不匹配", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            txtEndSN.SelectAll();
-                            txtEndSN.Focus();
-                            return false;
+                            DialogResult dr = MessageBox.Show("执法仪设备序列号设置不满足执法仪要求G9以9开始,请重新设置,设置点OK,强制退出点Cancel.", "SN不匹配", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
+                            if (dr == System.Windows.Forms.DialogResult.OK)
+                            {
+                                txtEndSN.SelectAll();
+                                txtEndSN.Focus();
+                                e.Cancel = true;
+                                break;
+                            }
+                            else
+                            {
+                                e.Cancel = false;
+                                break;
+                            }
+                           
                         }
                     }
 
@@ -562,10 +613,19 @@ namespace AutoBatchForProductionLine
                     {
                         if (!System.IO.File.Exists(txtBinFile.Text.Trim()))
                         {
-                            MessageBox.Show("选择的执法仪升级文件不存在,请重新设置.", "文件不存在", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                            txtBinFile.SelectAll();
-                            txtBinFile.Focus();
-                            return false;
+                            DialogResult dr = MessageBox.Show("选择的执法仪升级文件不存在,请重新设置,设置点OK,强制退出点Cancel.", "文件不存在", MessageBoxButtons.OKCancel, MessageBoxIcon.Stop);
+                            if (dr == System.Windows.Forms.DialogResult.OK)
+                            {
+                                txtBinFile.SelectAll();
+                                txtBinFile.Focus();
+                                e.Cancel = true;
+                                break;
+                            }
+                            else
+                            {
+                                e.Cancel = false;
+                                break;
+                            }
                         }
                     }
 
@@ -578,13 +638,14 @@ namespace AutoBatchForProductionLine
 
 
 
-            return true;
+           
         }
 
         private void frmSetting_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!CheckParam())
-                e.Cancel = true;
+            //if (!CheckParam())
+            //    e.Cancel = true;
+            CheckParam(sender, ref e);
 
         }
 

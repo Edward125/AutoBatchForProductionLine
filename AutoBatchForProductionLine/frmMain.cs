@@ -69,6 +69,7 @@ namespace AutoBatchForProductionLine
         public static bool CammUSB = false;// cammpro 形成U盘
         public static bool CammFormat = false; // 还没有执行
         public static bool ClickOnce = false;//手动点击单词运行
+        public static int BufferSize = 2048000;
 
         public static  System.Threading.Thread thdAddFile; //创建一个线程
 
@@ -198,67 +199,67 @@ namespace AutoBatchForProductionLine
 
 
 
-        protected override void WndProc(ref Message m)
-        {
-            try
-            {
-                if (m.Msg == WM_DEVICECHANGE)
-                {
-                    switch (m.WParam.ToInt32())
-                    {
-                        case WM_DEVICECHANGE:
-                            break;
-                        case DBT_DEVICEARRIVAL://U盘插入
+        //protected override void WndProc(ref Message m)
+        //{
+        //    try
+        //    {
+        //        if (m.Msg == WM_DEVICECHANGE)
+        //        {
+        //            switch (m.WParam.ToInt32())
+        //            {
+        //                case WM_DEVICECHANGE:
+        //                    break;
+        //                case DBT_DEVICEARRIVAL://U盘插入
 
-                            DriveInfo[] s = DriveInfo.GetDrives();
-                            foreach (DriveInfo drive in s)
-                            {
-                                if (drive.DriveType == DriveType.Removable)
-                                {
-                                    BodyUDisk = drive.Name;
-                                    CammUSB = true;
-                                    break;
-                                }
-                            }
-                            break;
-                        case DBT_CONFIGCHANGECANCELED:
-                            break;
-                        case DBT_CONFIGCHANGED:
-                            break;
-                        case DBT_CUSTOMEVENT:
-                            break;
-                        case DBT_DEVICEQUERYREMOVE:
-                            break;
-                        case DBT_DEVICEQUERYREMOVEFAILED:
-                            break;
-                        case DBT_DEVICEREMOVECOMPLETE: //U盘卸载
-                            //updateMessage(lb_StateInfo, "U盘已卸载！");
+        //                    DriveInfo[] s = DriveInfo.GetDrives();
+        //                    foreach (DriveInfo drive in s)
+        //                    {
+        //                        if (drive.DriveType == DriveType.Removable)
+        //                        {
+        //                            BodyUDisk = drive.Name;
+        //                            CammUSB = true;
+        //                            break;
+        //                        }
+        //                    }
+        //                    break;
+        //                case DBT_CONFIGCHANGECANCELED:
+        //                    break;
+        //                case DBT_CONFIGCHANGED:
+        //                    break;
+        //                case DBT_CUSTOMEVENT:
+        //                    break;
+        //                case DBT_DEVICEQUERYREMOVE:
+        //                    break;
+        //                case DBT_DEVICEQUERYREMOVEFAILED:
+        //                    break;
+        //                case DBT_DEVICEREMOVECOMPLETE: //U盘卸载
+        //                    //updateMessage(lb_StateInfo, "U盘已卸载！");
 
-                            //isCopy = false;
-                            //isCopyEnd = false;
-                            break;
-                        case DBT_DEVICEREMOVEPENDING:
-                            break;
-                        case DBT_DEVICETYPESPECIFIC:
-                            break;
-                        case DBT_DEVNODES_CHANGED:
-                            break;
-                        case DBT_QUERYCHANGECONFIG:
-                            break;
-                        case DBT_USERDEFINED:
-                            break;
-                        default:
-                            break;
-                    }
-                }
-            }
-            catch (Exception )
-            {
-                // updateMessage(lb_StateInfo, "Error:" + ex.Message);
+        //                    //isCopy = false;
+        //                    //isCopyEnd = false;
+        //                    break;
+        //                case DBT_DEVICEREMOVEPENDING:
+        //                    break;
+        //                case DBT_DEVICETYPESPECIFIC:
+        //                    break;
+        //                case DBT_DEVNODES_CHANGED:
+        //                    break;
+        //                case DBT_QUERYCHANGECONFIG:
+        //                    break;
+        //                case DBT_USERDEFINED:
+        //                    break;
+        //                default:
+        //                    break;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception )
+        //    {
+        //        // updateMessage(lb_StateInfo, "Error:" + ex.Message);
 
-            }
-            base.WndProc(ref m);
-        }
+        //    }
+        //    base.WndProc(ref m);
+        //}
 
 
 
@@ -1288,8 +1289,11 @@ namespace AutoBatchForProductionLine
                     }
                   
                 }
-                updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
-                p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
+                if (p.SetFormat != "1")
+                {
+                    updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
+                    p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
+                }
 
 
 
@@ -2242,7 +2246,7 @@ namespace AutoBatchForProductionLine
             FileInfo fi = new FileInfo(p.BinFile);
             string ToFile = string.Empty;
             ToFile = BodyUDisk + fi.Name;
-            CopyFile(p.BinFile , ToFile, 1024, pBarUpdate );//复制文件
+            CopyFile(p.BinFile , ToFile, BufferSize , pBarUpdate );//复制文件
             thdAddFile.Abort();//关闭线程
         }
 
@@ -2255,6 +2259,11 @@ namespace AutoBatchForProductionLine
         /// <param progressBar="ProgressBar">ProgressBar控件</param> 
         public void CopyFile(string FormerFile, string toFile, int SectSize, ProgressBar progressBar1)
         {
+
+            Stopwatch sw = new Stopwatch();
+            TimeSpan ts = new TimeSpan();
+            sw.Start();
+
             progressBar1.Value = 0;//设置进度栏的当前位置为0
             progressBar1.Minimum = 0;//设置进度栏的最小值为0
             FileStream fileToCreate = new FileStream(toFile, FileMode.Create);//创建目的文件，如果已存在将被覆盖
@@ -2297,8 +2306,11 @@ namespace AutoBatchForProductionLine
             }
             FormerOpen.Close();//释放所有资源
             ToFileOpen.Close();//释放所有资源
-            updateMessage(lstMsg, "升级文件拷贝完成.");
-            p.WriteLog("升级文件拷贝完成.");
+            sw.Stop();
+            ts = sw.Elapsed;
+
+            updateMessage(lstMsg, "升级文件拷贝完成，用时(s):" + ts.TotalSeconds);
+            p.WriteLog("升级文件拷贝完成，用时(s):" + ts.TotalSeconds);
             updateMessage(lstMsg, "请拔掉USB数据线，静待系统自动升级.");
             p.WriteLog("请拔掉USB数据线，静待系统自动升级.");
             progressBar1.Value = 0;
