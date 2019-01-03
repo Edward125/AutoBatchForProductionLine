@@ -785,8 +785,8 @@ namespace AutoBatchForProductionLine
                                              return p.SetErrorCode.EndSNEmpty;
                                          if (!p.StartSN.StartsWith("9"))
                                              return p.SetErrorCode.StartSNStartNotMatch;
-                                         if (!p.EndSN.StartsWith("9"))
-                                             return p.SetErrorCode.EndSNStartNotMacth;
+                                         //if (!p.EndSN.StartsWith("9"))
+                                         //    return p.SetErrorCode.EndSNStartNotMacth;
                                      }
 
                                      if (p.SetCMSV6 == "1")
@@ -1047,7 +1047,7 @@ namespace AutoBatchForProductionLine
                 if (p.SetSN == "1")
                 {
 
-                    if (DI.cSerial == "000000")
+                    if (DI.cSerial == "0000000")
                     {
                         updateMessage(lstMsg, "侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
                         p.WriteLog("侦测到执法仪" + comboBodyType.Text + " 已有设备号:" + DI.cSerial + ",为原始序列号,更新序列号.");
@@ -1130,7 +1130,6 @@ namespace AutoBatchForProductionLine
                     }
                 }
 
-
                 //APN
                 if (p.SetAPN == "1")
                 {
@@ -1168,7 +1167,6 @@ namespace AutoBatchForProductionLine
                     }
                 }
 
-
                 //CheckNet
                 if (p.SetCheckNet == "1")
                 {
@@ -1184,7 +1182,6 @@ namespace AutoBatchForProductionLine
                         p.WriteLog(DI.cSerial + ":设置NetCheck Server类型服务器信息成功.");
                     }
                 }
-
 
                 //SetGPS
                 if (p.SetGPS == "1")
@@ -1353,9 +1350,6 @@ namespace AutoBatchForProductionLine
                     updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
                     p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
                 }
-
-
-
 
             }
             else

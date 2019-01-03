@@ -435,8 +435,8 @@ namespace AutoBatchForProductionLine
 
         private void txtEndSN_TextChanged(object sender, EventArgs e)
         {
-            //p.EndSN = txtEndSN.Text.Trim();
-            //IniFile.IniWriteValue("SN", "EndSN", p.EndSN);
+            p.EndSN = txtEndSN.Text.Trim();
+            IniFile.IniWriteValue("SN", "EndSN", p.EndSN);
             //CalcSNSum();
         }
 
