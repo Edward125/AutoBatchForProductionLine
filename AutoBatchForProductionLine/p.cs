@@ -42,6 +42,7 @@ namespace AutoBatchForProductionLine
         public static string SN_userName = string.Empty;
         public static string SN_unitNo = string.Empty;
         public static string SN_unitName = string.Empty;
+        public static string SN_Count = "1";
 
         //WiFi
         public static string WiFiSSID = string.Empty;
@@ -177,6 +178,7 @@ namespace AutoBatchForProductionLine
                 //
                 IniFile.IniWriteValue("SN", "StartSN", StartSN);
                 IniFile.IniWriteValue("SN", "EndSN", EndSN);
+                IniFile.IniWriteValue("SN", "SNCount", SN_Count);
                 //
                 IniFile.IniWriteValue("WiFi", "WiFiSSID", WiFiSSID);
                 IniFile.IniWriteValue("WiFi", "WiFiSSID", WiFiPwd);
@@ -235,6 +237,7 @@ namespace AutoBatchForProductionLine
                 //
                 StartSN = IniFile.IniReadValue("SN", "StartSN");
                 EndSN = IniFile.IniReadValue("SN", "EndSN");
+                SN_Count = IniFile.IniReadValue("SN", "SN_Count");
                 //
                 WiFiSSID = IniFile.IniReadValue("WiFi", "WiFiSSID");
                 WiFiPwd = IniFile.IniReadValue("WiFi", "WiFiPwd");

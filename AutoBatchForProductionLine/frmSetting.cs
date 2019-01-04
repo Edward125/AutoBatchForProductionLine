@@ -171,7 +171,7 @@ namespace AutoBatchForProductionLine
             //
             txtStartSN.Text = p.StartSN;
           //  txtEndSN.Text = p.EndSN;
-
+            txtTotalSN.Text = p.SN_Count;
             //
             txtWiFiSSID.Text = p.WiFiSSID;
             txtWiFiPwd.Text = p.WiFiPwd;
@@ -481,7 +481,8 @@ namespace AutoBatchForProductionLine
             //        txtStartSN.Text = (end - start).ToString();
 
             //}
-
+            p.SN_Count = txtTotalSN.Text.Trim();
+            IniFile.IniWriteValue("SN", "SN_Count", p.SN_Count);
             CalcSNSum();
 
         }
