@@ -428,6 +428,7 @@ namespace AutoBatchForProductionLine
             p.StartSN = txtStartSN.Text.Trim();
             IniFile.IniWriteValue("SN", "StartSN", p.StartSN);
             CalcSNSum();
+            p.CurrentSN = 0;
       
            
         }

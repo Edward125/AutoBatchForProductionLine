@@ -79,6 +79,8 @@ namespace AutoBatchForProductionLine
         public static string WorkMark = @"D:\H6_WorkList\H6_Mark.log";
         public static string WorkPathBak = @"E:\H6_WorkBakList\H6_PPID.log";
 
+      
+
 
 
         public enum Model
@@ -281,7 +283,7 @@ namespace AutoBatchForProductionLine
 
         private void LoadUI()
         {
-            ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
+           ezUSB.AddUSBEventWatcher(USBEventHandler, USBEventHandler, new TimeSpan(0, 0, 3));
             p.CreateFolder();
             p.CreateIni();
             p.ReadIni();
@@ -733,7 +735,8 @@ namespace AutoBatchForProductionLine
         private void btnSetting_Click(object sender, EventArgs e)
         {
             Form f = new frmSetting();
-            f.ShowDialog();
+          DialogResult dr =   f.ShowDialog();
+
         }
 
 
@@ -1444,6 +1447,11 @@ namespace AutoBatchForProductionLine
 
             string sql = "";
 
+
+            if (p.CurrentSN != 0)   //跳过以前的
+                start =p. CurrentSN;
+
+
             for (int i = start; i <= end; i++)
             {
                 //从数据库中查询
@@ -1469,6 +1477,7 @@ namespace AutoBatchForProductionLine
                         p.updateData2DB(sql);
                         updateMessage(lstMsg, "向执法仪写入SN:" + i + "成功.");
                         p.WriteLog("向执法仪写入SN:" + i + "成功.");
+                        p.CurrentSN = i;    //记录当前SN；
                         //兼容旧版本
                         SaveTestLog(@WorkPath, i.ToString(), "Auto", true); //原文件
                         SaveTestLog(@WorkPathBak, i.ToString(), "Auto", true); //备份

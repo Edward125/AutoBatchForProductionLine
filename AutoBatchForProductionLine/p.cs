@@ -87,6 +87,8 @@ namespace AutoBatchForProductionLine
 
         public static SetErrorCode CheckParamErrorCode;
 
+        public static Int32 CurrentSN = 0;
+
         public   enum SetErrorCode
         {
             OK = 0,
