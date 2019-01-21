@@ -157,6 +157,32 @@ namespace AutoBatchForProductionLine
 
 
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="log"></param>
+        public static void WriteLog(string logname,string log)
+        {
+            string logfile = LogFolder + @"\" +logname +"_" +DateTime.Now.ToString("yyyyMMdd") + ".log";
+            try
+            {
+                StreamWriter sw = new StreamWriter(logfile, true);
+                log = DateTime.Now.ToString("HH:mm:ss") + "->" + log;
+                sw.WriteLine(log);
+                sw.Close();
+            }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
+
+        }
+
+
+
         public static void CreateIni()
         {
             IniFile.iniFilePathValue = IniPath;

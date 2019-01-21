@@ -927,7 +927,6 @@ namespace AutoBatchForProductionLine
                             {
                                 GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                                 updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
-
                                 p.WriteLog("检测到设备,SN:" + DI.cSerial);
                                 DI.cSerial = DI.cSerial.TrimEnd('\0');
                                 break;
@@ -952,10 +951,8 @@ namespace AutoBatchForProductionLine
                         {
                             GetDeviceInfo(LoginDevice, DevicePwd, out DI);
                             updateMessage(lstMsg, "检测到设备,SN:" + DI.cSerial);
-
                             p.WriteLog("检测到设备,SN:" + DI.cSerial);
                             DI.cSerial = DI.cSerial.TrimEnd('\0');
-     
                          }
                         else
                         {
@@ -1353,6 +1350,10 @@ namespace AutoBatchForProductionLine
                     updateMessage(lstMsg, DI.cSerial + ":已完成配置,请拔出设备");
                     p.WriteLog(DI.cSerial + ":已完成配置,请拔出设备");
                 }
+
+                // 记录SN
+                p.WriteLog(comboBodyType.Text + "_SN", DI.cSerial);
+
 
             }
             else
